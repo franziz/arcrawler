@@ -19,6 +19,7 @@ class ProxySwitcher(object):
 				success = True
 			#end if
 		#end while
+		print({"ip":document["ip"], "country":document["country"], "port": document["port"]})
 		return {"http":"http://{}:{}".format(document["ip"], document["port"])}		
 	#end def
 #end class
@@ -40,7 +41,7 @@ class ProxyCrawler(object):
 				driver.get("http://proxylist.hidemyass.com/search-1301708#listable")
 				proxies = driver.find_elements_by_xpath("//table/tbody//tr")
 
-				for proxy in proxies:
+				for proxy in proxies[0:10]:
 					proxy = proxy.find_elements_by_xpath(".//td")
 					document = dict(
 						ip=proxy[1].text,
