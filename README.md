@@ -1,14 +1,8 @@
 # arcrawler
 AmouRe Crawler. 
 
-# Usage
-```python
-python3 build_crawler.py
-python3 build/runners/producer.py
-python3 build/runners/consumer.py
-```
-
-# Simple Description
-1. Build the crawler
-2. Produce the crawller to RabbitMQ
-3. Consumer the queue from RabbitMQ
+# How to use
+1. Make source to be crawled (you can look at inside src folder)
+2. Build (use build.py)
+3. Test (use test.py)
+4. Deploy (use deploy.py)
