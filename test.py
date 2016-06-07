@@ -12,9 +12,9 @@ for idx,crawler in enumerate(crawlers):
 	print("{}. {}".format(idx+1, crawler))
 #end for
 print("{}. All".format(len(crawlers)+1))
-selection = input("Selection: ")
 
 try:
+	selection = input("Selection: ")
 	selection = int(selection)
 except:
 	raise exceptions.ConversionError("Cannot convert data type")

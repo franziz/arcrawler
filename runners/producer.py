@@ -21,7 +21,7 @@ assert tried < max_try,"Max try exceeded."
 db = MongoClient("mongodb://mongo:27017/monitor")
 db = db.monitor
 
-for document in db.queue.find({"status":"idle"}):
+for document in db.queue.find({"status":"idle", "is_deployed":True}):
 	db.queue.update({"hash":document["hash"]},{"$set":{"status":"publishing"}})
 	channel.basic_publish(
 		exchange='',

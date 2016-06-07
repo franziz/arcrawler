@@ -191,6 +191,7 @@ try:
 		#end for
 	#end for
 
+	print("Saving jobs to DB...")
 	# updating monitor status for queue
 	db = MongoClient("mongodb://mongo:27017/monitor")
 	db = db["monitor"]
@@ -199,7 +200,14 @@ try:
 		_hash = copy.copy(document["hash"])
 		del document["hash"]
 		old_data = [doc for doc in db.queue.find({"hash":_hash})]
-		if len(old_data) == 0: document.update({"status":"idle"})
+
+		# if this document havent been inserted into DB,
+		# make 2 more new field called status and is_deployed
+		# or else, status and is_deployed fields will be preserve
+		if len(old_data) == 0: 
+			document.update({"status":"idle"})
+			document.update({"is_deployed":False})
+		#end if
 		db.queue.update({"hash":_hash},{"$set":document},upsert=True)
 	#end for
 except:

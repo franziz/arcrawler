@@ -19,7 +19,7 @@ class Crawler(object):
 		self.LAST_PAGE_XPATH = '//a[@class=\'tooltips last-page\']/@href'
 		self.PREV_XPATH = '//a[@class=\'tooltips previous-page\']/@href'
 		self.POST_XPATH = '//div[@class=\'row nor-post\']'
-		self.FIELDS = '[{"published_date": {"data_type": "date", "single": true, "xpath": ".//time[@class=\'entry-date\']/@datetime", "concat": false}}, {"permalink": {"data_type": "url", "single": true, "xpath": ".//div[@class=\'permalink\']/a/@href", "concat": false}}, {"author_name": {"data_type": "string", "single": true, "xpath": ".//span[@itemprop=\'name\']//text()", "concat": false}}, {"author_id": {"data_type": "string", "single": true, "xpath": ".//div[@class=\'user-name\']/@data-userid", "concat": false}}, {"content": {"data_type": "string", "single": true, "xpath": ".//div[@class=\'entry\']//text()", "concat": true}}, {"title": {"data_type": "string", "single": true, "xpath": "//div[@class=\'current\']/text()", "concat": false}}]'
+		self.FIELDS = '[{"published_date": {"single": true, "data_type": "date", "concat": false, "xpath": ".//time[@class=\'entry-date\']/@datetime"}}, {"permalink": {"single": true, "data_type": "url", "concat": false, "xpath": ".//div[@class=\'permalink\']/a/@href"}}, {"author_name": {"single": true, "data_type": "string", "concat": false, "xpath": ".//span[@itemprop=\'name\']//text()"}}, {"author_id": {"single": true, "data_type": "string", "concat": false, "xpath": ".//div[@class=\'user-name\']/@data-userid"}}, {"content": {"single": true, "data_type": "string", "concat": true, "xpath": ".//div[@class=\'entry\']//text()"}}, {"title": {"single": true, "data_type": "string", "concat": false, "xpath": "//div[@class=\'current\']/text()"}}]'
 	#end def
 
 	def crawl_callback(self,documents):

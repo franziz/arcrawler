@@ -19,7 +19,7 @@ class Crawler(object):
 		self.LAST_PAGE_XPATH = '//span[@class=\'first_last\']/a/@href'
 		self.PREV_XPATH = '//a[@rel=\'prev\']/@href'
 		self.POST_XPATH = '//ol//li[re:test(@class,\'postbit*\')]'
-		self.FIELDS = '[{"published_date": {"data_type": "date", "single": true, "xpath": ".//span[@class=\'date\']//text()", "concat": true}}, {"permalink": {"data_type": "url", "single": true, "xpath": ".//div[@class=\'postbody\']//span[@class=\'nodecontrols\']/a/@href", "concat": false}}, {"author_name": {"data_type": "string", "single": true, "xpath": ".//a[re:test(@class,\'username*\')]//text()", "concat": false}}, {"content": {"data_type": "string", "single": true, "xpath": ".//div[@class=\'content\']//text()", "concat": true}}, {"title": {"data_type": "string", "single": true, "xpath": "//span[@class=\'threadtitle\']//text()", "concat": false}}]'
+		self.FIELDS = '[{"published_date": {"single": true, "data_type": "date", "concat": true, "xpath": ".//span[@class=\'date\']//text()"}}, {"permalink": {"single": true, "data_type": "url", "concat": false, "xpath": ".//div[@class=\'postbody\']//span[@class=\'nodecontrols\']/a/@href"}}, {"author_name": {"single": true, "data_type": "string", "concat": false, "xpath": ".//a[re:test(@class,\'username*\')]//text()"}}, {"content": {"single": true, "data_type": "string", "concat": true, "xpath": ".//div[@class=\'content\']//text()"}}, {"title": {"single": true, "data_type": "string", "concat": false, "xpath": "//span[@class=\'threadtitle\']//text()"}}]'
 	#end def
 
 	def crawl_callback(self,documents):
