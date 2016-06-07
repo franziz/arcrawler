@@ -1,0 +1,148 @@
+from forum_engine import Engine
+from forum_engine import exceptions
+from pymongo import MongoClient
+import pymongo
+import arrow
+import bson.json_util
+import json
+import tools
+
+class Crawler(object):
+
+	def __init__(self):
+		# initialize variables
+		self.DB_SERVER_ADDRESS = $DB_SERVER_ADDRESS
+		self.DB_SERVER_NAME = $DB_SERVER_NAME
+		self.CRAWLER_NAME = $CRAWLER_NAME
+		self.LINK_TO_CRAWL = $LINK_TO_CRAWL
+		self.COUNTRY = $COUNTRY
+		self.THREAD_XPATH = $THREAD_XPATH
+		self.THREAD_LINK_XPATH = $THREAD_LINK_XPATH
+		self.LAST_PAGE_XPATH = $LAST_PAGE_XPATH
+		self.PREV_XPATH = $PREV_XPATH
+		self.POST_XPATH = $POST_XPATH
+		self.FIELDS = $FIELDS
+	#end def
+
+	def crawl_callback(self,documents):
+		db = MongoClient("mongodb://{}/{}".format(
+			self.DB_SERVER_ADDRESS,
+			self.DB_SERVER_NAME
+		))
+		db = db[self.DB_SERVER_NAME]
+
+		try:
+			for document in documents:
+				# preparing additional data in order to complete insertion
+				document.update({"_country":self.COUNTRY})
+				document.update({"_insert_time":arrow.utcnow().datetime})
+				document.update({"_origin":self.LINK_TO_CRAWL})
+				document.update({"_crawled_by":self.CRAWLER_NAME})
+
+				# print(bson.json_util.dumps(document,indent=4, separators=(",",":")))
+				
+				# set some assertion validation
+				$ASSERTION
+				
+				db.data.insert_one(document)
+				print("[{}] Inserted one document.".format(self.CRAWLER_NAME))
+			#end for
+		except pymongo.errors.DuplicateKeyError as duplicate_key:
+			raise exceptions.DuplicateData("Ops! Duplicate Data!")
+		except AssertionError as assertion_error:
+			print("[{}] Assertion is not passed! Data will not be inserted".format(self.CRAWLER_NAME))
+			pass
+		#end try
+	#end def
+
+	def preflight_check(self):
+		db = MongoClient("mongodb://{}/{}".format(
+			self.DB_SERVER_ADDRESS,
+			self.DB_SERVER_NAME
+		))
+		db = db[self.DB_SERVER_NAME]
+
+		has_database = False
+		max_try = 10
+		tried = 0
+
+		while not has_database:
+			try:
+				has_permalink_index = False
+				tools._force_create_index(
+					db=db,
+					collection="data",
+					field="permalink"
+				)
+				has_permalink_index = True
+
+				# check if has permalink field, because it is really critical
+				has_permalink_field = False
+				fields = json.loads(self.FIELDS)
+				for field in fields:
+					for key, value in field.items():
+						if "permalink" in key:
+							has_permalink_field = True
+						#end if
+					#end for
+				#end for
+
+				# set the flag has_database = True
+				# here! Because, if all operation above is OK! it means the database is OK also
+				has_database = True
+			except pymongo.errors.OperationFailure as no_db:
+				db.data.insert({"_dummy":1})
+				db.data.remove({"_dummy":1})
+				tried = tried + 1
+			#end try
+		#end while
+
+		if has_permalink_index and has_permalink_field and has_database:
+			return True
+		else:
+			return False
+		#end if
+	#end def
+
+	def crawl(self):
+		# check database indexes
+		assert self.preflight_check()==True, "Pre-Flight is not satisfied."
+
+		global engine
+		engine = Engine()
+		engine.set_name(self.CRAWLER_NAME)
+		engine.set_method(engine.BACKWARD)
+		engine.set_link_to_crawl(self.LINK_TO_CRAWL)
+		engine.set_thread_xpath(self.THREAD_XPATH)
+		engine.set_thread_link_xpath(self.THREAD_LINK_XPATH)
+		engine.set_last_page_xpath(self.LAST_PAGE_XPATH)
+		engine.set_prev_xpath(self.PREV_XPATH)
+		engine.set_post_xpath(self.POST_XPATH)
+
+		fields = json.loads(self.FIELDS)
+		for field in fields:
+			for key,value in field.items():
+				assert type(value) is dict, "Value inside the field's title should be in dict type"
+				engine.add_field(
+					title=key,
+					xpath=value["xpath"],
+					single=value["single"],
+					concat=value["concat"],
+					data_type=value["data_type"]
+				)
+			#end for
+		#end for
+
+		threads = engine.get_threads()
+		for thread in threads:
+			try:
+				engine.crawl(thread, callback=self.crawl_callback)
+				engine.crawl_next()
+			except exceptions.DuplicateData as duplicate_data:
+				print("[{}] Ops! Duplicate Data!".format(self.CRAWLER_NAME))
+			except exceptions.NoPrevious as no_prev:
+				pass
+			#end try
+		#end for
+	#end def
+#end class
