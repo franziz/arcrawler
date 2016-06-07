@@ -30,5 +30,3 @@ for document in documents:
 		}}
 	)
 #end for
-
-# db.queue.update_many({"is_deployed":False},{"$set":{"is_deployed":True}})
