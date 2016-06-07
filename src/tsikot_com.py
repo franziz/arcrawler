@@ -1,7 +1,7 @@
 from forum_engine import Template
 
 class Crawler(Template):
-	DB_SERVER_ADDRESS = "10.0.75.2:27017"
+	DB_SERVER_ADDRESS = "mongo:27017"
 	DB_SERVER_NAME = "tsikot"
 	CRAWLER_NAME = "Tsikot Crawler"
 	LINK_TO_CRAWL = [

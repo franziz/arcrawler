@@ -7,7 +7,7 @@ import time
 
 class ProxySwitcher(object):
 	def get_proxy(self):
-		db = MongoClient("mongodb://10.0.75.2:27017/proxies")
+		db = MongoClient("mongodb://mongo:27017/proxies")
 		db = db.proxies
 
 		success = False
@@ -26,7 +26,7 @@ class ProxySwitcher(object):
 class ProxyCrawler(object):
 	def crawl(self):
 		# connect to database
-		db = MongoClient("mongodb://10.0.75.2:27017/proxies")
+		db = MongoClient("mongodb://mongo:27017/proxies")
 		db = db.proxies
 		db.data.update_many({},{"$set":{"new":False}})
 

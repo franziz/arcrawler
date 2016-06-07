@@ -149,7 +149,7 @@ for crawler in crawlers:
 #end for
 
 # updating monitor status for queue
-db = MongoClient("mongodb://10.0.75.2:27017/monitor")
+db = MongoClient("mongodb://mongo:27017/monitor")
 db = db["monitor"]
 tools._force_create_index(db,"queue","hash")
 for document in new_documents:

@@ -18,7 +18,7 @@ while not is_connected and tried< max_try:
 
 assert tried < max_try,"Max try exceeded."
 
-db = MongoClient("mongodb://10.0.75.2:27017/monitor")
+db = MongoClient("mongodb://mongo:27017/monitor")
 db = db.monitor
 
 for document in db.queue.find({"status":"idle"}):

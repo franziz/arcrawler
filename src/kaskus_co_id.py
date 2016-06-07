@@ -1,7 +1,7 @@
 from forum_engine import Template
 
 class Crawler(Template):
-	DB_SERVER_ADDRESS = "10.0.75.2:27017"
+	DB_SERVER_ADDRESS = "mongo:27017"
 	DB_SERVER_NAME = "kaskus"
 	CRAWLER_NAME = "Kaskus Crawler"
 	LINK_TO_CRAWL = "http://www.kaskus.co.id/forum/570/kendaraan-roda-4"
