@@ -19,7 +19,7 @@ class ProxySwitcher(object):
 				success = True
 			#end if
 		#end while
-		print({"ip":document["ip"], "country":document["country"], "port": document["port"]})
+		# print({"ip":document["ip"], "country":document["country"], "port": document["port"]})
 		return {"http":"http://{}:{}".format(document["ip"], document["port"])}		
 	#end def
 #end class
