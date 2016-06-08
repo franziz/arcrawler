@@ -22,9 +22,10 @@ def clear_build():
 #end def
 
 # replace $VAR to STRING
-def patch_variable(template=None, variables=None):
+def patch_variable(template=None, variables=None, link_to_crawl=None):
 	assert template is not None, "Template is not defined."
 	assert variables is not None, "variables is not defined."
+	assert link_to_crawl is not None, "link_to_crawl is not defined."
 
 	new_template = copy.copy(template)
 
@@ -114,26 +115,6 @@ try:
 			f.close()
 		#end with
 	#end for
-	# # crawler template
-	# assert os.path.isfile("./templates/crawler.arct"), "Cannot find the crawler template."
-	# with open("./templates/crawler.arct","r") as f:
-	# 	crawler_template = f.read()
-	# 	f.close()
-	# #end with
-
-	# # consumer template
-	# assert os.path.isfile("./templates/consumer.arct"), "Cannot find the consumer template."
-	# with open("./templates/consumer.arct","r") as f:
-	# 	consumer_template = f.read()
-	# 	f.close()
-	# #end with
-
-	# # test template
-	# assert os.path.isfile("./templates/test.arct"), "Cannot find the test template."
-	# with open("./templates/test.arct","r") as f:
-	# 	test_template = f.read()
-	# 	f.close()
-	# #end with
 
 	print("Generating consumer...")
 	consumer_template = templates["consumer.arct"]
@@ -176,8 +157,16 @@ try:
 			new_template = copy.copy(templates[crawler.TEMPLATE])
 			new_test_template = copy.copy(templates["test.arct"])
 
-			new_template = patch_variable(template=new_template, variables=variables)
-			new_test_template = patch_variable(template=new_test_template, variables=variables)
+			new_template = patch_variable(
+				template=new_template, 
+				variables=variables,
+				link_to_crawl=link_to_crawl
+			)
+			new_test_template = patch_variable(
+				template=new_test_template,
+				variables=variables,
+				link_to_crawl=link_to_crawl
+			)
 
 			crawler_hash = hashlib.sha256(crawler_name.encode("utf-8")).hexdigest()
 			document = dict(
