@@ -1,5 +1,5 @@
-from forum_engine import Engine
-from forum_engine import exceptions
+from $ENGINE import Engine
+from $ENGINE import exceptions
 from pymongo import MongoClient
 import pymongo
 import arrow

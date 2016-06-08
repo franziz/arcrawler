@@ -1,6 +1,7 @@
 from forum_engine import Template
 
 class Crawler(Template):
+	TEMPLATE = "crawler.arct"
 	DB_SERVER_ADDRESS = "mongo:27017"
 	DB_SERVER_NAME = "tsikot"
 	CRAWLER_NAME = "Tsikot Crawler"

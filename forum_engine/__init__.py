@@ -9,6 +9,7 @@ import requests
 import copy
 
 class Template(object):
+	TEMPLATE = ""
 	NAME = ""
 	DB_SERVER_ADDRESS = ""
 	DB_SERVER_NAME = ""
