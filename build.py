@@ -184,7 +184,8 @@ try:
 				db_to_insert=crawler.DB_SERVER_ADDRESS,
 				db_name_to_insert=crawler.DB_SERVER_NAME,
 				country=crawler.COUNTRY,
-				last_update=arrow.utcnow().datetime
+				last_update=arrow.utcnow().datetime,
+				is_deployed=False
 			)
 			new_documents.append(document)
 			
@@ -213,10 +214,7 @@ try:
 		# if this document havent been inserted into DB,
 		# make 2 more new field called status and is_deployed
 		# or else, status and is_deployed fields will be preserve
-		if len(old_data) == 0: 
-			document.update({"status":"idle"})
-			document.update({"is_deployed":False})
-		#end if
+		if len(old_data) == 0: document.update({"status":"idle"})
 		db.queue.update({"hash":_hash},{"$set":document},upsert=True)
 	#end for
 except:
