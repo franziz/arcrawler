@@ -1,4 +1,5 @@
 build/
+tests/
 ghostdriver.log
 unit_tests.py
 # Created by https://www.gitignore.io/api/python,git
