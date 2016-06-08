@@ -106,31 +106,41 @@ try:
 	#end with
 
 	print("Reading template...")
-	# crawler template
-	assert os.path.isfile("./templates/crawler.arct"), "Cannot find the crawler template."
-	with open("./templates/crawler.arct","r") as f:
-		crawler_template = f.read()
-		f.close()
-	#end with
+	templates = dict()
+	for template in glob.glob("./templates/*.arct"):
+		with open(template,"r") as f:
+			template = template.split("/")[-1]
+			templates.update({template:f.read()})
+			f.close()
+		#end with
+	#end for
+	# # crawler template
+	# assert os.path.isfile("./templates/crawler.arct"), "Cannot find the crawler template."
+	# with open("./templates/crawler.arct","r") as f:
+	# 	crawler_template = f.read()
+	# 	f.close()
+	# #end with
 
-	# consumer template
-	assert os.path.isfile("./templates/consumer.arct"), "Cannot find the consumer template."
-	with open("./templates/consumer.arct","r") as f:
-		consumer_template = f.read()
-		f.close()
-	#end with
+	# # consumer template
+	# assert os.path.isfile("./templates/consumer.arct"), "Cannot find the consumer template."
+	# with open("./templates/consumer.arct","r") as f:
+	# 	consumer_template = f.read()
+	# 	f.close()
+	# #end with
 
-	# test template
-	assert os.path.isfile("./templates/test.arct"), "Cannot find the test template."
-	with open("./templates/test.arct","r") as f:
-		test_template = f.read()
-		f.close()
-	#end with
+	# # test template
+	# assert os.path.isfile("./templates/test.arct"), "Cannot find the test template."
+	# with open("./templates/test.arct","r") as f:
+	# 	test_template = f.read()
+	# 	f.close()
+	# #end with
 
 	print("Generating consumer...")
+	consumer_template = templates["consumer.arct"]
 	consumer_template = consumer_template.replace("$MAX_THREAD",str(config["workers"]))
 	with open("./build/runners/consumer.py","w") as f:
 		f.write(consumer_template)
+		f.close()
 	#end with
 
 	# open all file inside ./src/ folder
@@ -150,6 +160,8 @@ try:
 		crawler = importlib.import_module("src.{}".format(crawler))
 		crawler = crawler.Crawler()
 
+		assert crawler.TEMPLATE, "TEMPLATE is not defined."
+
 		# force the LINK_TO_CRAWL to become list if it is str
 		if type(crawler.LINK_TO_CRAWL) is str:
 			crawler.LINK_TO_CRAWL = [crawler.LINK_TO_CRAWL]
@@ -161,8 +173,8 @@ try:
 			# start to build template
 			# by getting all variables and plug it on template
 			variables = [attr for attr in dir(crawler) if not callable(attr) and not attr.startswith("__")]
-			new_template = copy.copy(crawler_template)
-			new_test_template = copy.copy(test_template)
+			new_template = copy.copy(templates[crawler.TEMPLATE])
+			new_test_template = copy.copy(templates["test.arct"])
 
 			new_template = patch_variable(template=new_template, variables=variables)
 			new_test_template = patch_variable(template=new_test_template, variables=variables)
