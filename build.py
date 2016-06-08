@@ -22,8 +22,9 @@ def clear_build():
 #end def
 
 # replace $VAR to STRING
-def patch_variable(template=None, variables=None, link_to_crawl=None):
-	assert template is not None, "Template is not defined."
+def patch_variable(crawler=None, template=None, variables=None, link_to_crawl=None):
+	assert crawler is not None, "crawler is not defined."
+	assert template is not None, "template is not defined."
 	assert variables is not None, "variables is not defined."
 	assert link_to_crawl is not None, "link_to_crawl is not defined."
 
@@ -70,6 +71,11 @@ def patch_variable(template=None, variables=None, link_to_crawl=None):
 		"$ASSERTION",
 		assertion
 	)
+
+	# Detecting what is the engine underlaying the template
+	engine = str(crawler.__class__.__base__)
+	engine = engine[engine.find("'")+1:engine.find("Template")-1]
+	new_template = new_template.replace("$ENGINE",engine)
 
 	return new_template
 #end def
@@ -158,11 +164,13 @@ try:
 			new_test_template = copy.copy(templates["test.arct"])
 
 			new_template = patch_variable(
+				crawler=crawler,
 				template=new_template, 
 				variables=variables,
 				link_to_crawl=link_to_crawl
 			)
 			new_test_template = patch_variable(
+				crawler=crawler,
 				template=new_test_template,
 				variables=variables,
 				link_to_crawl=link_to_crawl
