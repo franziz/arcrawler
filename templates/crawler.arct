@@ -140,6 +140,9 @@ class Crawler(object):
 				engine.crawl_next()
 			except exceptions.DuplicateData as duplicate_data:
 				print("[{}] Ops! Duplicate Data!".format(self.CRAWLER_NAME))
+			except exceptions.NoThreadLink as no_thread_link:
+				# This assume that the crawler will proceed to the next thread if the crawler cannot find thread link.
+				print("[{}] Ops! No Thread Link!".format(self.CRAWLER_NAME))
 			except exceptions.NoPrevious as no_prev:
 				pass
 			#end try
