@@ -44,8 +44,18 @@ class myThread(threading.Thread):
 		crawler = importlib.import_module(
 			"crawlers.{}".format(_hash)
 		)
-		crawler = crawler.Crawler()
-		crawler.crawl()
+		try:
+			crawler = crawler.Crawler()
+			crawler.crawl()
+		except exceptions.NoThreadLink as no_thread_link:
+			db.log.insert_one({
+				"created_date":arrow.utcnow().datetime,
+				"type":"ERROR",
+				"message": no_thread_link.value,
+				"exception": "exceptions.NoThreadLink",
+				"crawler":crawler.get_engine_info()
+			})
+		#end try
 
 		db.queue.update(
 			{"hash":_hash},

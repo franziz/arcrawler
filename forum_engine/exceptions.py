@@ -38,7 +38,7 @@ class CannotFindXPATH(Exception):
 	#end def
 #end class
 
-def MaxTryExceeded(Exception):
+class MaxTryExceeded(Exception):
 	def __init__(self,value):
 		self.value = value
 	#end def
@@ -48,7 +48,7 @@ def MaxTryExceeded(Exception):
 	#end def
 #end class
 
-def BuildFailed(Exception):
+class BuildFailed(Exception):
 	def __init__(self,value):
 		self.value = value
 	#end def
@@ -58,7 +58,7 @@ def BuildFailed(Exception):
 	#end def
 #end class
 
-def ConversionError(Exception):
+class ConversionError(Exception):
 	def __init__(self,value):
 		self.value = value
 	#end def

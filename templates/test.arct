@@ -1,4 +1,4 @@
-from $ENGINE import Engine
+from $ENGINE.engine import Engine
 from $ENGINE import exceptions
 from pymongo import MongoClient
 import pymongo

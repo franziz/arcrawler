@@ -75,6 +75,7 @@ def patch_variable(crawler=None, template=None, variables=None, link_to_crawl=No
 	# Detecting what is the engine underlaying the template
 	engine = str(crawler.__class__.__base__)
 	engine = engine[engine.find("'")+1:engine.find("Template")-1]
+	engine = engine.replace(".template","")
 	new_template = new_template.replace("$ENGINE",engine)
 
 	return new_template
