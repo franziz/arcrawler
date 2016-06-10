@@ -4,6 +4,7 @@ from subprocess import call
 import selenium
 import random
 import time
+import arrow
 
 class ProxySwitcher(object):
 	def get_proxy(self):
@@ -47,6 +48,7 @@ class ProxyCrawler(object):
 						ip=proxy[1].text,
 						port=proxy[2].text,
 						country=proxy[3].text,
+						insert_date=arrow.utcnow().datetime,
 						new=True
 					)
 					db.data.insert_one(document)
