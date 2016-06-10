@@ -10,8 +10,10 @@ import requests
 import arrow
 import socket
 
-def _parse(url=None):
+def _parse(url=None, parse=True):
+	assert url is not None, "url is not defined."
 	proxy_is_ok = False
+	_html = None
 	while not proxy_is_ok:
 		try:
 			assert url is not None, "URL is not defined."
@@ -19,8 +21,8 @@ def _parse(url=None):
 			switcher = ProxySwitcher()
 			page = requests.get(url, proxies=switcher.get_proxy(), timeout=60)
 			# page = requests.get(url, timeout=60)
+			_html = html.fromstring(page.content) if parse else page.content
 			proxy_is_ok = True
-			return html.fromstring(page.content)
 		except requests.exceptions.ProxyError as proxy_error:
 			print("Ops! Proxy is not working. Try again...")
 			proxy_is_ok = False
@@ -34,10 +36,12 @@ def _parse(url=None):
 			raise
 		#end try
 	#end while
+	return _html
 #end def
 
 def _expand_link(domain=None, link=None):
 	assert domain is not None, "Domain is not defined."
+	assert "http://" in domain or "https://" in domain,"domain should have http"
 	assert link is not None, "Link is not defined." 
 
 	generated_link = link
@@ -68,6 +72,26 @@ def _date_parser(str_date=None):
 	assert str_date is not None, "str_date is not defined."
 	assert type(str_date) is str, "str_date should in str."	
 
+	# convert languange to english
+	str_date = str_date.lower().replace("minggu","sunday")
+	str_date = str_date.lower().replace("senin","monday")
+	str_date = str_date.lower().replace("selasa","tuesday")
+	str_date = str_date.lower().replace("rabu","wednesday")
+	str_date = str_date.lower().replace("kamis","thursday")
+	str_date = str_date.lower().replace("jumat","friday")
+	str_date = str_date.lower().replace("sabtu","saturday")
+	str_date = str_date.lower().replace("januari","january")
+	str_date = str_date.lower().replace("februari","february")
+	str_date = str_date.lower().replace("febuari","february")
+	str_date = str_date.lower().replace("maret","march")
+	str_date = str_date.lower().replace("mei","may")
+	str_date = str_date.lower().replace("juni","june")
+	str_date = str_date.lower().replace("juli","july")
+	str_date = str_date.lower().replace("agustus","august")
+	str_date = str_date.lower().replace("oktober","october")
+	str_date = str_date.lower().replace("nopember","november")
+	str_date = str_date.lower().replace("desember","december")
+
 	try:
 		result = dateutil.parser.parse(str_date)
 		if result.tzinfo is None: result = tzlocal.get_localzone().localize(result, is_dst=None)
@@ -86,6 +110,18 @@ def _date_parser(str_date=None):
 	#end try
 
 	return result
+#end def
+
+def _clean_string(string=None):
+	assert string is not None, "string is not defined."
+	
+	string = string.encode("utf-8").replace(b"\xc2\xa0",b" ").decode("utf-8")
+	string = string.replace(u"\r"," ")
+	string = string.replace(u"\n"," ")
+	string = string.replace(u"\t"," ")
+	string = string.lstrip()
+	string = string.rstrip()
+	return string
 #end def
 
 def _assert(condition=None,  exception=None, message=None):
