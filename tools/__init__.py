@@ -79,6 +79,7 @@ def _date_parser(str_date=None):
 	str_date = str_date.lower().replace("rabu","wednesday")
 	str_date = str_date.lower().replace("kamis","thursday")
 	str_date = str_date.lower().replace("jumat","friday")
+	str_date = str_date.lower().replace("jum'at","friday")
 	str_date = str_date.lower().replace("sabtu","saturday")
 	str_date = str_date.lower().replace("januari","january")
 	str_date = str_date.lower().replace("februari","february")
