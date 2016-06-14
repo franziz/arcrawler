@@ -1,11 +1,12 @@
 from forum_engine import Template
 
 class Crawler(Template):
-	TEMPLATE = "crawler.arct"
+	TEMPLATE          = "crawler.arct"
+	TEST_TEMPLATE     = "crawler_test.arct"
 	DB_SERVER_ADDRESS = "mongo:27017"
-	DB_SERVER_NAME = "tsikot"
-	CRAWLER_NAME = "Tsikot Crawler"
-	LINK_TO_CRAWL = [
+	DB_SERVER_NAME    = "tsikot"
+	CRAWLER_NAME      = "Tsikot Crawler"
+	LINK_TO_CRAWL     = [
 		"https://www.tsikot.com/forums/audi-cars-talk-132/",
 		"https://www.tsikot.com/forums/bmw-cars-talk-125/",
 		"https://www.tsikot.com/forums/cadillac-cars-talk-201/",
@@ -77,13 +78,13 @@ class Crawler(Template):
 		"https://www.tsikot.com/forums/goon-squad-hq-19/",
 		"https://www.tsikot.com/forums/racing-off-roading-fun-run-talk-16/",
 	]
-	COUNTRY = "PHL"
-	THREAD_XPATH = "//ol//li[re:test(@id,'thread*')]"
+	COUNTRY           = "PHL"
+	THREAD_XPATH      = "//ol//li[re:test(@id,'thread*')]"
 	THREAD_LINK_XPATH = ".//a[@class='title']/@href"
-	LAST_PAGE_XPATH = "//span[@class='first_last']/a/@href"
-	PREV_XPATH = "//a[@rel='prev']/@href"
-	POST_XPATH = "//ol//li[re:test(@class,'postbit*')]"
-	FIELDS = [
+	LAST_PAGE_XPATH   = "//span[@class='first_last']/a/@href"
+	PREV_XPATH        = "//a[@rel='prev']/@href"
+	POST_XPATH        = "//ol//li[re:test(@class,'postbit*')]"
+	FIELDS            = [
 		{"published_date": {
 			"single": True, 
 			"data_type": "date", 

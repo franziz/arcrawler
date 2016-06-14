@@ -1,0 +1,66 @@
+from news_engine.engine import Engine
+from pymongo            import MongoClient
+import arrow
+import tools
+import pymongo
+import json
+
+class Crawler(object):
+
+	def __init__(self):
+		self.crawler_name      = $CRAWLER_NAME
+		self.country           = $COUNTRY
+
+		self.db = MongoClient("mongodb://{DB_SERVER_ADDRESS}/{DB_SERVER_NAME}".format(
+			DB_SERVER_ADDRESS = $DB_SERVER_ADDRESS,
+			   DB_SERVER_NAME = $DB_SERVER_NAME
+		))
+		self.db = self.db[$DB_SERVER_NAME]
+
+		tools._force_create_index(db=self.db, collection="data", field="url")
+
+		self.engine                         = Engine()
+		self.engine.domain                  = $LINK_TO_CRAWL
+		self.engine.title_fallback          = json.loads($TITLE_FALLBACK)
+		self.engine.content_fallback        = json.loads($CONTENT_FALLBACK)
+		self.engine.published_date_fallback = json.loads($PUBLISHED_DATE_FALLBACK)
+		self.engine.author_name_fallback    = json.loads($AUTHOR_NAME_FALLBACK)
+	#end def
+
+	def crawl(self):
+		assert self.engine is not None, "engine is not defined."
+		assert self.db is not None, "db is not defined."
+
+		for url in self.engine.urls:
+			try:
+				str_processing = "[{CRAWLER_NAME}] Processing: {URL}".format(
+					CRAWLER_NAME = self.crawler_name,
+					         URL = url
+				)
+				print(str_processing.encode("utf-8"))
+				self.engine.parse(url=url)
+
+				assert self.engine.content     is not None, "result has to have content."
+				assert self.engine.title       is not None, "result has to have title."
+				assert self.engine.author_name is not None, "result has to have author_name"
+
+				published_date = self.engine.published_date if self.engine.published_date is not None else arrow.utcnow().datetime
+				self.db.data.insert_one({
+					           "url": self.engine.url,
+					       "content": self.engine.content,
+					         "title": self.engine.title,
+					"published_date": self.engine.published_date,
+					   "author_name": self.engine.author_name,
+					  "_insert_time": arrow.utcnow().datetime,
+					      "_country": self.country,
+					   "_crawled_by": self.crawler_name
+				})
+				print("[{}] Inserted one document.".format(self.crawler_name))				
+			except pymongo.errors.DuplicateKeyError as duplicate:
+				print("[{}] Ops! Duplicate Data!".format(self.crawler_name))
+			except AssertionError:
+				print("[{}] Assertion is not passed! Data will not be inserted".format(self.crawler_name))
+			#end try
+		#end for
+	#end def
+#end class
