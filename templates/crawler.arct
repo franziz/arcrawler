@@ -1,6 +1,6 @@
 from $ENGINE.engine import Engine
-from $ENGINE import exceptions
-from pymongo import MongoClient
+from $ENGINE        import exceptions
+from pymongo        import MongoClient
 import pymongo
 import arrow
 import bson.json_util
@@ -12,22 +12,22 @@ class Crawler(object):
 	def __init__(self):
 		# initialize variables
 		self.DB_SERVER_ADDRESS = $DB_SERVER_ADDRESS
-		self.DB_SERVER_NAME = $DB_SERVER_NAME
-		self.CRAWLER_NAME = $CRAWLER_NAME
-		self.LINK_TO_CRAWL = $LINK_TO_CRAWL
-		self.COUNTRY = $COUNTRY
-		self.THREAD_XPATH = $THREAD_XPATH
+		self.DB_SERVER_NAME    = $DB_SERVER_NAME
+		self.CRAWLER_NAME      = $CRAWLER_NAME
+		self.LINK_TO_CRAWL     = $LINK_TO_CRAWL
+		self.COUNTRY           = $COUNTRY
+		self.THREAD_XPATH      = $THREAD_XPATH
 		self.THREAD_LINK_XPATH = $THREAD_LINK_XPATH
-		self.LAST_PAGE_XPATH = $LAST_PAGE_XPATH
-		self.PREV_XPATH = $PREV_XPATH
-		self.POST_XPATH = $POST_XPATH
-		self.FIELDS = $FIELDS
+		self.LAST_PAGE_XPATH   = $LAST_PAGE_XPATH
+		self.PREV_XPATH        = $PREV_XPATH
+		self.POST_XPATH        = $POST_XPATH
+		self.FIELDS            = $FIELDS
 	#end def
 
 	def crawl_callback(self,documents):
-		db = MongoClient("mongodb://{}/{}".format(
-			self.DB_SERVER_ADDRESS,
-			self.DB_SERVER_NAME
+		db = MongoClient("mongodb://{DB_SERVER_ADDRESS}/{DB_SERVER_NAME}".format(
+			DB_SERVER_ADDRESS = self.DB_SERVER_ADDRESS,
+			   DB_SERVER_NAME = self.DB_SERVER_NAME
 		))
 		db = db[self.DB_SERVER_NAME]
 
@@ -56,36 +56,32 @@ class Crawler(object):
 	#end def
 
 	def preflight_check(self):
-		db = MongoClient("mongodb://{}/{}".format(
-			self.DB_SERVER_ADDRESS,
-			self.DB_SERVER_NAME
+		db = MongoClient("mongodb://{DB_SERVER_ADDRESS}/{DB_SERVER_NAME}".format(
+			DB_SERVER_ADDRESS = self.DB_SERVER_ADDRESS,
+			   DB_SERVER_NAME = self.DB_SERVER_NAME
 		))
 		db = db[self.DB_SERVER_NAME]
 
+		tried        = 0
+		max_try      = 10
 		has_database = False
-		max_try = 10
-		tried = 0
 
 		while not has_database:
 			try:
 				has_permalink_index = False
 				tools._force_create_index(
-					db=db,
-					collection="data",
-					field="permalink"
+					        db = db,
+					collection = "data",
+					     field = "permalink"
 				)
 				has_permalink_index = True
 
 				# check if has permalink field, because it is really critical
+				fields              = json.loads(self.FIELDS)
 				has_permalink_field = False
-				fields = json.loads(self.FIELDS)
 				for field in fields:
 					for key, value in field.items():
-						if "permalink" in key:
-							has_permalink_field = True
-						#end if
-					#end for
-				#end for
+						if "permalink" in key: has_permalink_field = True
 
 				# set the flag has_database = True
 				# here! Because, if all operation above is OK! it means the database is OK also
@@ -97,11 +93,7 @@ class Crawler(object):
 			#end try
 		#end while
 
-		if has_permalink_index and has_permalink_field and has_database:
-			return True
-		else:
-			return False
-		#end if
+		return has_permalink_index and has_permalink_field and has_database
 	#end def
 
 	def crawl(self):
@@ -124,11 +116,11 @@ class Crawler(object):
 			for key,value in field.items():
 				assert type(value) is dict, "Value inside the field's title should be in dict type"
 				engine.add_field(
-					title=key,
-					xpath=value["xpath"],
-					single=value["single"],
-					concat=value["concat"],
-					data_type=value["data_type"]
+					    title = key,
+					    xpath = value["xpath"],
+					   single = value["single"],
+					   concat = value["concat"],
+					data_type = value["data_type"]
 				)
 			#end for
 		#end for

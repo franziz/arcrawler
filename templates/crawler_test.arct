@@ -11,20 +11,19 @@ class Crawler(object):
 
 	def __init__(self):
 		# initialize variables
-		self.CRAWLER_NAME = $CRAWLER_NAME
-		self.LINK_TO_CRAWL = $LINK_TO_CRAWL
-		self.COUNTRY = $COUNTRY
-		self.THREAD_XPATH = $THREAD_XPATH
+		self.CRAWLER_NAME      = $CRAWLER_NAME
+		self.LINK_TO_CRAWL     = $LINK_TO_CRAWL
+		self.COUNTRY           = $COUNTRY
+		self.THREAD_XPATH      = $THREAD_XPATH
 		self.THREAD_LINK_XPATH = $THREAD_LINK_XPATH
-		self.LAST_PAGE_XPATH = $LAST_PAGE_XPATH
-		self.PREV_XPATH = $PREV_XPATH
-		self.POST_XPATH = $POST_XPATH
-		self.FIELDS = $FIELDS
+		self.LAST_PAGE_XPATH   = $LAST_PAGE_XPATH
+		self.PREV_XPATH        = $PREV_XPATH
+		self.POST_XPATH        = $POST_XPATH
+		self.FIELDS            = $FIELDS
 	#end def
 
 	def crawl_callback(self,documents):
-		# preparing additional data in order to complete insertion
-		assert len(documents)>0, "No document found."
+		documents = [] if len(documents) <=0 else documents
 
 		document = documents[0]
 		document.update({"_country":self.COUNTRY})
@@ -40,21 +39,13 @@ class Crawler(object):
 
 	def preflight_check(self):
 		# check if has permalink field, because it is really critical
+		fields              = json.loads(self.FIELDS)
 		has_permalink_field = False
-		fields = json.loads(self.FIELDS)
 		for field in fields:
 			for key, value in field.items():
-				if "permalink" in key:
-					has_permalink_field = True
-				#end if
-			#end for
-		#end for
+				if "permalink" in key:	has_permalink_field = True
 
-		if  has_permalink_field :
-			return True
-		else:
-			return False
-		#end if
+		return has_permalink_field
 	#end def
 
 	def crawl(self):
@@ -77,23 +68,25 @@ class Crawler(object):
 			for key,value in field.items():
 				assert type(value) is dict, "[test][{}] Value inside the field's title should be in dict type".format(self.CRAWLER_NAME)
 				engine.add_field(
-					title=key,
-					xpath=value["xpath"],
-					single=value["single"],
-					concat=value["concat"],
-					data_type=value["data_type"]
+					    title = key,
+					    xpath = value["xpath"],
+					   single = value["single"],
+					   concat = value["concat"],
+					data_type = value["data_type"]
 				)
 			#end for
 		#end for
 
 		threads = engine.get_threads()
 		print("[test][{}] Total threads: {}".format(self.CRAWLER_NAME, len(threads)))
-		try:
-			assert len(threads) > 0, "[test][{}] No thread found.".format(self.CRAWLER_NAME)
-			thread = threads[0]
-			engine.crawl(thread, callback=self.crawl_callback)
-		except exceptions.NoPrevious as no_prev:
-			pass
-		#end try
+
+		for thread in threads:
+			try:
+				assert len(threads) > 0, "[test][{}] No thread found.".format(self.CRAWLER_NAME)
+				engine.crawl(thread, callback=self.crawl_callback)
+			except exceptions.NoPrevious as no_prev:
+				pass
+			#end try
+		#end for
 	#end def
 #end class
