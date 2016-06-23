@@ -4,51 +4,51 @@ class Crawler(Template):
 	TEMPLATE          = "crawler.arct"
 	TEST_TEMPLATE     = "crawler_test.arct"
 	DB_SERVER_ADDRESS = "mongo:27017"
-	DB_SERVER_NAME    = "kaskus"
-	CRAWLER_NAME      = "Kaskus Crawler"
-	LINK_TO_CRAWL     = "http://www.kaskus.co.id/forum/570/kendaraan-roda-4"
+	DB_SERVER_NAME    = "detik"
+	CRAWLER_NAME      = "Detik Forum Crawler"
+	LINK_TO_CRAWL     = "http://forum.detik.com/mobil-f80.html"
 	COUNTRY           = "IDN"
-	THREAD_XPATH      = "//div[@class='post-title']"
-	THREAD_LINK_XPATH = "./a/@href"
-	LAST_PAGE_XPATH   = "//a[@class='tooltips last-page']/@href"
-	PREV_XPATH        = "//a[@class='tooltips previous-page']/@href"
-	POST_XPATH        = "//div[@class='row nor-post']"
+	THREAD_XPATH      = "//tbody[@id='threadbits_forum_80']/tr"
+	THREAD_LINK_XPATH = ".//a[re:test(@id,'thread_title_*')]/@href"
+	LAST_PAGE_XPATH   = "//a[re:test(@title,'Last Page*')]/@href"
+	PREV_XPATH        = "//a[@rel='prev']/@href"
+	POST_XPATH        = "//table[re:test(@id,'post*')]"
 	FIELDS            = [
 		{"published_date": {
 			"single": True, 
 			"data_type": "date", 
-			"concat": False, 
-			"xpath": ".//time[@class=\'entry-date\']/@datetime"
+			"concat": True, 
+			"xpath": "./tbody/tr[1]/td[1]/text()"
 		}},
 		{"permalink": {
 			"single": True, 
 			"data_type": "url", 
 			"concat": False, 
-			"xpath": ".//div[@class=\'permalink\']/a/@href"
+			"xpath": ".//a[re:test(@id,'postcount*')]/@href"
 		}},
 		{"author_name":{
 			"single":True,
 			"data_type": "string",
 			"concat":False,
-			"xpath":".//span[@itemprop='name']//text()"
+			"xpath":".//a[@class='bigusername']/text()"
 		}},
-		{"author_id":{
-			"single":True,
-			"data_type": "string",
-			"concat":False,
-			"xpath":".//div[@class='user-name']/@data-userid"
-		}},
+		# {"author_id":{
+		# 	"single":True,
+		# 	"data_type": "string",
+		# 	"concat":False,
+		# 	"xpath":".//div[@class='user-name']/@data-userid"
+		# }},
 		{"content":{
 			"single":True,
 			"data_type": "string",
 			"concat":True,
-			"xpath":".//div[@class='entry']//text()"
+			"xpath":".//div[re:test(@id,'post_message_*')]//text()"
 		}},
 		{"title":{
 			"single":True,
 			"data_type": "string",
 			"concat":False,
-			"xpath":"//div[@class='current']/text()"
+			"xpath":"//td[@class='navbar']/strong/text()"
 		}}
 	]
 	CONDITIONS = {

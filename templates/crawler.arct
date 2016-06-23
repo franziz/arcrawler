@@ -1,11 +1,11 @@
 from $ENGINE.engine import Engine
 from $ENGINE        import exceptions
 from pymongo        import MongoClient
+from lib            import tools
 import pymongo
 import arrow
 import bson.json_util
 import json
-import tools
 
 class Crawler(object):
 
@@ -57,9 +57,9 @@ class Crawler(object):
 
 	def preflight_check(self):
 		db = MongoClient("mongodb://{DB_SERVER_ADDRESS}/{DB_SERVER_NAME}".format(
-			DB_SERVER_ADDRESS = self.DB_SERVER_ADDRESS,
-			   DB_SERVER_NAME = self.DB_SERVER_NAME
-		))
+				DB_SERVER_ADDRESS = self.DB_SERVER_ADDRESS,
+				   DB_SERVER_NAME = self.DB_SERVER_NAME
+			))
 		db = db[self.DB_SERVER_NAME]
 
 		tried        = 0

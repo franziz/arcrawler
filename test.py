@@ -1,4 +1,4 @@
-from forum_engine import exceptions
+from lib.forum_engine import exceptions
 import glob
 import importlib
 
@@ -23,7 +23,7 @@ except:
 assert selection >= 1 and selection <= len(crawlers)+1, "Invalid input."
 
 selection = selection - 1
-crawlers = [crawlers[selection]] if selection != len(crawlers) else crawlers
+crawlers  = [crawlers[selection]] if selection != len(crawlers) else crawlers
 for crawler in crawlers:
 	print("Testing: {}".format(crawler))
 	crawler = importlib.import_module(

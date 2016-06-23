@@ -1,8 +1,8 @@
-from news_engine.engine import Engine
-from pymongo import MongoClient
+from lib.news_engine.engine import Engine
+from pymongo                import MongoClient
+from lib                    import tools
 import bson.json_util
 import arrow
-import tools
 import pymongo
 import json
 
@@ -21,8 +21,9 @@ class Crawler(object):
 	#end def
 
 	def crawl(self):
-		assert self.engine is not None, "engine is not defined."
-
+		assert self.engine           is not None, "engine is not defined."
+		assert len(self.engine.urls) > 0        , "No urls found."
+		
 		url = self.engine.urls[0]
 		try:
 			str_processing = "[test][{CRAWLER_NAME}] Processing: {URL}".format(

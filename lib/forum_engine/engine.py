@@ -1,8 +1,8 @@
 from urllib.parse import urlparse
-from lxml import html
-from .backward import Backward
-from . import exceptions
-import tools
+from lxml         import html
+from .backward    import Backward
+from .            import exceptions
+from ..           import tools
 import lxml
 import bson.json_util
 import requests
@@ -11,31 +11,31 @@ import copy
 class Engine(object):
 	def __init__(self):
 		# method options
-		self.BACKWARD = -1
+		self.BACKWARD          = -1
 
-		self.link_to_crawl = None
-		self.domain = None
-		self.name = ""
+		self.link_to_crawl     = None
+		self.domain            = None
+		self.name              = ""
 		
 		# some xpath setting parameters
-		self.thread_xpath = None
+		self.thread_xpath      = None
 		self.thread_link_xpath = None
-		self.last_page_xpath = None
-		self.post_xpath = None
-		self.prev_xpath = None
-		self.method = self.BACKWARD
+		self.last_page_xpath   = None
+		self.post_xpath        = None
+		self.prev_xpath        = None
+		self.method            = self.BACKWARD
 		
 		# fields that required for crawler
-		self.fields = {}
+		self.fields            = {}
 
 		# some variables that maybe used
-		self.current_engine = None
-		self.crawl_callback = None		
+		self.current_engine    = None
+		self.crawl_callback    = None		
 	#end def
 
 	def add_field(self, title=None, xpath=None, single=True, concat=False, data_type=None):
-		assert title is not None, "Title is not defined."
-		assert xpath is not None, "XPATH is not defined."
+		assert title     is not None, "Title is not defined."
+		assert xpath     is not None, "XPATH is not defined."
 		assert data_type is not None, "Data Type is not defined."
 
 		self.fields.update({
@@ -74,7 +74,7 @@ class Engine(object):
 
 	def set_link_to_crawl(self,link_to_crawl):
 		self.link_to_crawl = link_to_crawl
-		self.domain = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.link_to_crawl))
+		self.domain        = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.link_to_crawl))
 	#end def
 
 	def set_method(self, method):
@@ -83,21 +83,21 @@ class Engine(object):
 
 	def get_threads(self):
 		assert self.link_to_crawl is not None, "Link to Crawl is not defined."
-		assert self.thread_xpath is not None, "Thread XPATH is not defined."
+		assert self.thread_xpath  is not None, "Thread XPATH is not defined."
 
-		tree = tools._parse(self.link_to_crawl)
+		tree         = tools._parse(self.link_to_crawl)
 		self.threads = tools._xpath(parent=tree, syntax=self.thread_xpath)
 
 		return self.threads
 	#end def
 
 	def crawl(self, thread=None, callback=None):
-		assert thread is not None, "Thread is not defined."
-		assert type(thread) is lxml.html.HtmlElement, "Wrong Thread type."
-		assert callback is not None, "Callback is not defined."
-		assert hasattr(callback, '__call__'), "Wrong Callback type."
-		assert self.thread_link_xpath is not None, "Thread Link XPATH is not defined."
-		assert self.domain is not None, "Domain is not defined."
+		assert thread                  is not None             , "Thread is not defined."
+		assert type(thread)            is lxml.html.HtmlElement, "Wrong Thread type."
+		assert callback                is not None             , "Callback is not defined."
+		assert hasattr(callback, '__call__')                   , "Wrong Callback type."
+		assert self.thread_link_xpath  is not None             , "Thread Link XPATH is not defined."
+		assert self.domain             is not None             , "Domain is not defined."
 
 		# TODO: if the result is more than one link, you need to produce a warning
 		link = tools._xpath(parent=thread, syntax=self.thread_link_xpath)
@@ -109,15 +109,15 @@ class Engine(object):
 		
 		if self.method == self.BACKWARD:
 			assert self.last_page_xpath is not None, "Last Page XPATH is not defined."
-			assert self.prev_xpath is not None, "Prev XPATH is not defined."
+			assert self.prev_xpath      is not None, "Prev XPATH is not defined."
 
-			backward = Backward(
-				domain=self.domain,
-				thread_link=link, 
-				last_page_xpath=self.last_page_xpath,
-				prev_xpath=self.prev_xpath,
-				post_xpath=self.post_xpath
-			)
+			backward            = Backward(
+									         domain = self.domain,
+									    thread_link = link, 
+									last_page_xpath = self.last_page_xpath,
+									     prev_xpath = self.prev_xpath,
+									     post_xpath = self.post_xpath
+								)
 			self.current_engine = backward
 			self.crawl_callback = callback
 			self._run_crawler()
@@ -133,7 +133,7 @@ class Engine(object):
 		assert self.current_engine is not None, "Please run Crawl() first."
 		assert self.crawl_callback is not None, "Please run Crawl() first."
 
-		posts = self.current_engine.get_posts()
+		posts     = self.current_engine.get_posts()
 		documents = self._crawl_posts(posts=posts)
 		self.crawl_callback(documents=documents)
 	#end def
@@ -153,8 +153,9 @@ class Engine(object):
 					tools._assert(len(result) > 0, exceptions.CannotFindXPATH("Cannot find {} given XPATH.".format(field)))
 				except:
 					result = []
-					from lxml import etree
-					print(etree.tostring(post,pretty_print=True))
+					print("Cannot find {} given XPATH.".format(field))
+					# from lxml import etree
+					# print(etree.tostring(post,pretty_print=True))
 				#end try
 
 				# if the props is not single, but they want to concat, it means force it to single value and concat
@@ -162,7 +163,7 @@ class Engine(object):
 					result = " ".join(result)
 					result = str(result)
 				elif props["single"] and not props["concat"]:
-					result = result[0] if type(result) is list else result
+					result = result[0] if type(result) is list and len(result)>0 else result
 					result = str(result)
 				else:
 					result = list(result)
@@ -172,19 +173,9 @@ class Engine(object):
 
 				# removing some unwanted data such as \xc2\xa0
 				if type(result) is str: 
-					result = result.encode("utf-8").replace(b"\xc2\xa0",b" ").decode("utf-8")
-					result = result.replace(u"\r"," ")
-					result = result.replace(u"\n"," ")
-					result = result.replace(u"\t"," ")
-					result = result.lstrip()
-					result = result.rstrip()
+					result = tools._clean_string(result)
 				elif type(result) is list:
-					result = [r.encode("utf-8").replace(b"\xc2\xa0",b" ").decode("utf-8") for r in result]
-					result = [r.replace(u"\r"," ") for r in result]
-					result = [r.replace(u"\n"," ") for r in result]
-					result = [r.replace(u"\t"," ") for r in result]
-					result = [r.lstrip() for r in result]
-					result = [r.rstrip() for r in result]
+					result = [tools._clean_string(r) for r in result]
 				#end if
 
 				if "date" in props["data_type"]:
@@ -213,16 +204,16 @@ class Engine(object):
 
 	def get_info(self):
 		return{
-			"link_to_crawl": self.link_to_crawl,
-			"domain":self.domain,
-			"name":self.name,
-			"thread_xpath":self.thread_xpath,
-			"thread_link_xpath":self.thread_link_xpath,
-			"last_page_xpath":self.last_page_xpath,
-			"post_xpath":self.post_xpath,
-			"prev_xpath":self.prev_xpath,
-			"method":self.method,
-			"fields":self.fields
+			    "link_to_crawl" : self.link_to_crawl,
+			           "domain" : self.domain,
+			             "name" : self.name,
+			     "thread_xpath" : self.thread_xpath,
+			"thread_link_xpath" : self.thread_link_xpath,
+			  "last_page_xpath" : self.last_page_xpath,
+			       "post_xpath" : self.post_xpath,
+			       "prev_xpath" : self.prev_xpath,
+			           "method" : self.method,
+			           "fields" : self.fields
 		}
 	#end def
 #end class

@@ -1,11 +1,11 @@
 from $ENGINE.engine import Engine
-from $ENGINE import exceptions
-from pymongo import MongoClient
+from $ENGINE        import exceptions
+from pymongo        import MongoClient
+from lib            import tools
 import pymongo
 import arrow
 import bson.json_util
 import json
-import tools
 
 class Crawler(object):
 
@@ -23,7 +23,7 @@ class Crawler(object):
 	#end def
 
 	def crawl_callback(self,documents):
-		documents = [] if len(documents) <=0 else documents
+		assert len(documents) > 0, "No document found."
 
 		document = documents[0]
 		document.update({"_country":self.COUNTRY})
