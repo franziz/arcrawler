@@ -80,10 +80,12 @@ try:
 		db.queue.update_one({"hash":crawler_hash},{"$set":document},upsert=True)
 	#end for
 
+	builder._print_log("Build Success!")
 	# builder.clear_build()
 except exceptions.ConfigNotFound as config_not_found:
 	print(config_not_found.value)
 except:
-	builder._print_log("Build Failed")
+	# builder._print_log("Build Failed")
 	builder.clear_build()
+	raise
 #end try

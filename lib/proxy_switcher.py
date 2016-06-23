@@ -17,7 +17,7 @@ class ProxySwitcher(object):
 			proxies = [doc for doc in db.data.find()]
 			if len(proxies) > 0: 
 				document = proxies[random.randint(0,len(proxies)-1)]
-				success = True
+				success  = True
 			#end if
 		#end while
 		# print({"ip":document["ip"], "country":document["country"], "port": document["port"]})
@@ -43,14 +43,14 @@ class ProxyCrawler(object):
 				proxies = driver.find_elements_by_xpath("//table/tbody//tr")
 
 				for proxy in proxies[0:10]:
-					proxy = proxy.find_elements_by_xpath(".//td")
+					proxy    = proxy.find_elements_by_xpath(".//td")
 					document = dict(
-						ip=proxy[1].text,
-						port=proxy[2].text,
-						country=proxy[3].text,
-						insert_date=arrow.utcnow().datetime,
-						new=True
-					)
+								         ip = proxy[1].text,
+								       port = proxy[2].text,
+								    country = proxy[3].text,
+								insert_date = arrow.utcnow().datetime,
+								        new = True
+							)
 					db.data.insert_one(document)
 				#end for
 				db.data.remove({"new":False})

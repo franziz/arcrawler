@@ -1,4 +1,4 @@
-from forum_engine import Template
+from lib.forum_engine import Template
 
 class Crawler(Template):
 	TEMPLATE          = "crawler.arct"

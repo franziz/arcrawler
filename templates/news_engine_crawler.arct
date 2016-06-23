@@ -1,7 +1,7 @@
-from news_engine.engine import Engine
-from pymongo            import MongoClient
+from lib.news_engine.engine import Engine
+from pymongo                import MongoClient
+from lib                    import tools
 import arrow
-import tools
 import pymongo
 import json
 

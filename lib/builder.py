@@ -1,5 +1,4 @@
-import exceptions
-import tools
+from . import (exceptions, tools)
 import os
 import glob
 import json
@@ -24,9 +23,9 @@ def write_file(location=None, file_name=None, content=None):
 
 	location  = location[:-1] if "/" in location[-1] else location
 	_location = "{location}/{file_name}".format(
-		 location = location,
-		file_name = file_name
-	)
+					 location = location,
+					file_name = file_name
+				)
 
 	try:
 		with open(_location,"w") as f:
@@ -82,13 +81,13 @@ def patch_variables(crawler=None, template=None, variables=None, link_to_crawl=N
 			value        = json.dumps(value) if type(value) is dict or type(value) is list else value
 			replace_var  = "${}".format(variable)
 			replace_to	 = "'{}'".format(value.replace("'","\\'"))
-			template = template.replace(replace_var, replace_to)
+			template     = template.replace(replace_var, replace_to)
 		#end if
 	#end for
 
 	# setting up for LINK_TO_CRAWL variable
 	link         = '"{}"'.format(link_to_crawl)
-	template = template.replace("$LINK_TO_CRAWL",link)
+	template     = template.replace("$LINK_TO_CRAWL",link)
 
 	# setting up assertion that something need to be satisfied
 	if hasattr(crawler,"CONDITIONS"):
@@ -98,7 +97,7 @@ def patch_variables(crawler=None, template=None, variables=None, link_to_crawl=N
 		tabs = tmp.rfind("\n")
 		tabs = tmp[tabs+1:]
 
-		assertion=[]
+		assertion = []
 		for key,value in crawler.CONDITIONS.items():
 			new_assertion = "assert {condition}, {exception}".format(
 				condition = value["condition"],
@@ -237,19 +236,19 @@ def copy_requirement():
 	while not success_to_copy:
 		try:
 			_print_log("Copying forum_engine...")
-			shutil.copytree("./forum_engine","./build/forum_engine")
+			shutil.copytree("./lib/forum_engine","./build/lib/forum_engine")
 
 			_print_log("Copying news_engine...")
-			shutil.copytree("./news_engine","./build/news_engine")
+			shutil.copytree("./lib/news_engine","./build/lib/news_engine")
 
 			_print_log("Copying proxy_switcher...")
-			shutil.copytree("./proxy_switcher","./build/proxy_switcher")
+			shutil.copyfile("./lib/proxy_switcher.py","./build/lib/proxy_switcher.py")
 
 			_print_log("Copying tools...")
-			shutil.copytree("./tools","./build/tools")
+			shutil.copyfile("./lib/tools.py","./build/lib/tools.py")
 
 			_print_log("Copying runners...")
-			shutil.copytree("./runners","./build/runners")
+			shutil.copytree("./lib/runners","./build/runners")
 
 			_print_log("Making crawlers folder...")
 			if not os.path.exists('./build/crawlers'): os.mkdir('./build/crawlers')
@@ -259,11 +258,7 @@ def copy_requirement():
 
 			success_to_copy = True
 		except FileExistsError as file_exists_error:
-			shutil.rmtree("./build/forum_engine")
-			shutil.rmtree("./build/news_engine")
-			shutil.rmtree("./build/proxy_switcher")
-			shutil.rmtree("./build/tools")
-			shutil.rmtree("./build/runners")
+			shutil.rmtree("./build")
 		#end try
 	#end while
 #end def

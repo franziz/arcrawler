@@ -1,4 +1,4 @@
-from forum_engine import Template
+from lib.forum_engine import Template
 
 class Crawler(Template):
 	TEMPLATE          = "crawler.arct"
@@ -17,8 +17,8 @@ class Crawler(Template):
 		{"published_date": {
 			"single": True, 
 			"data_type": "date", 
-			"concat": False, 
-			"xpath": ".//tr[1]//td[1]/text()"
+			"concat": True, 
+			"xpath": "./tbody/tr[1]/td[1]/text()"
 		}},
 		{"permalink": {
 			"single": True, 
@@ -48,7 +48,7 @@ class Crawler(Template):
 			"single":True,
 			"data_type": "string",
 			"concat":False,
-			"xpath":"//td[@class='navbar']/a/strong/text()"
+			"xpath":"//td[@class='navbar']/strong/text()"
 		}}
 	]
 	CONDITIONS = {

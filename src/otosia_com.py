@@ -1,4 +1,4 @@
-from news_engine import Template
+from lib.news_engine import Template
 
 class Crawler(Template):
 	TEMPLATE                = "news_engine_crawler.arct"
