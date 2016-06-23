@@ -76,7 +76,9 @@ def patch_variables(crawler=None, template=None, variables=None, link_to_crawl=N
 
 	# Pathcing variables
 	for variable in variables:
-		if "CONDITIONS" != variable and "LINK_TO_CRAWL" != variable:
+		if  "CONDITIONS" != variable and \
+			"LINK_TO_CRAWL" != variable and \
+			"NETWORK_TOOLS" != variable:
 			value        = getattr(crawler,variable)
 			value        = json.dumps(value) if type(value) is dict or type(value) is list else value
 			replace_var  = "${}".format(variable)
@@ -88,6 +90,24 @@ def patch_variables(crawler=None, template=None, variables=None, link_to_crawl=N
 	# setting up for LINK_TO_CRAWL variable
 	link         = '"{}"'.format(link_to_crawl)
 	template     = template.replace("$LINK_TO_CRAWL",link)
+
+	if hasattr(crawler, "NETWORK_TOOLS") and crawler.NETWORK_TOOLS is not None:
+		class_string     = str(type(crawler.NETWORK_TOOLS))
+		class_string     = class_string[class_string.index("'")+1:]
+		class_string     = class_string[:class_string.index("'")]
+		class_string     = "{class_string}(use_proxy={use_proxy})".format(
+								class_string = class_string,
+								   use_proxy = crawler.NETWORK_TOOLS.use_proxy
+							)
+
+		import_statement = class_string[:class_string.index("(")]
+		import_statement = import_statement.split(".")		
+		import_statement = "from {base} import {main}".format(
+								base = ".".join(import_statement[:-1]),
+								main = import_statement[-1]
+							)
+		template         = template.replace("$IMPORT", import_statement)
+		template         = template.replace("$NETWORK_TOOLS", class_string.split(".")[-1])
 
 	# setting up assertion that something need to be satisfied
 	if hasattr(crawler,"CONDITIONS"):
@@ -243,6 +263,12 @@ def copy_requirement():
 
 			_print_log("Copying proxy_switcher...")
 			shutil.copyfile("./lib/proxy_switcher.py","./build/lib/proxy_switcher.py")
+
+			_print_log("Copying exceptions...")
+			shutil.copyfile("./lib/exceptions.py","./build/lib/exceptions.py")
+
+			_print_log("Copying network_tools...")
+			shutil.copyfile("./lib/network_tools.py","./build/lib/network_tools.py")
 
 			_print_log("Copying tools...")
 			shutil.copyfile("./lib/tools.py","./build/lib/tools.py")
