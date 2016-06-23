@@ -1,7 +1,8 @@
 from $ENGINE.engine import Engine
 from $ENGINE        import exceptions
 from pymongo        import MongoClient
-from lib            import tools
+$IMPORT
+import lib
 import pymongo
 import arrow
 import bson.json_util
@@ -20,6 +21,7 @@ class Crawler(object):
 		self.PREV_XPATH        = $PREV_XPATH
 		self.POST_XPATH        = $POST_XPATH
 		self.FIELDS            = $FIELDS
+		self.NETWORK_TOOLS     = $NETWORK_TOOLS
 	#end def
 
 	def crawl_callback(self,documents):
@@ -62,6 +64,7 @@ class Crawler(object):
 		engine.set_last_page_xpath(self.LAST_PAGE_XPATH)
 		engine.set_prev_xpath(self.PREV_XPATH)
 		engine.set_post_xpath(self.POST_XPATH)
+		engine.set_network_tools(self.NETWORK_TOOLS)
 
 		fields = json.loads(self.FIELDS)
 		for field in fields:

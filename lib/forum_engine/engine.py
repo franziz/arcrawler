@@ -24,6 +24,7 @@ class Engine(object):
 		self.post_xpath        = None
 		self.prev_xpath        = None
 		self.method            = self.BACKWARD
+		self.network_tools     = None
 		
 		# fields that required for crawler
 		self.fields            = {}
@@ -46,6 +47,10 @@ class Engine(object):
 				"data_type":data_type
 			}
 		})
+	#end def
+
+	def set_network_tools(self, network_tools):
+		self.network_tools = network_tools
 	#end def
 
 	def set_name(self, name):
@@ -85,7 +90,7 @@ class Engine(object):
 		assert self.link_to_crawl is not None, "Link to Crawl is not defined."
 		assert self.thread_xpath  is not None, "Thread XPATH is not defined."
 
-		tree         = tools._parse(self.link_to_crawl)
+		tree         = self.network_tools.parse(self.link_to_crawl)
 		self.threads = tools._xpath(parent=tree, syntax=self.thread_xpath)
 
 		return self.threads
@@ -116,7 +121,8 @@ class Engine(object):
 									    thread_link = link, 
 									last_page_xpath = self.last_page_xpath,
 									     prev_xpath = self.prev_xpath,
-									     post_xpath = self.post_xpath
+									     post_xpath = self.post_xpath,
+									  network_tools = self.network_tools
 								)
 			self.current_engine = backward
 			self.crawl_callback = callback

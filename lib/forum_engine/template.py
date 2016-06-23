@@ -1,3 +1,5 @@
+from ..network_tools import NetworkTools
+
 class Template(object):
 	TEMPLATE          = ""
 	TEST_TEMPLATE     = ""
@@ -14,4 +16,5 @@ class Template(object):
 	POST_XPATH        = ""
 	FIELDS            = dict()
 	CONDITIONS        = dict()
+	NETWORK_TOOLS     = NetworkTools()
 #end class

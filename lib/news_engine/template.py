@@ -1,3 +1,5 @@
+from ..network_tools import NetworkTools
+
 class Template(object):
 	TEMPLATE                = ""
 	TEST_TEMPLATE			= ""
@@ -11,4 +13,5 @@ class Template(object):
 	CONTENT_FALLBACK        = list()
 	PUBLISHED_DATE_FALLBACK = list()
 	AUTHOR_NAME_FALLBACK    = list()
+	NETWORK_TOOLS           = NetworkTools()
 #end class
