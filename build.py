@@ -1,9 +1,7 @@
 from pymongo import MongoClient
+from lib     import exceptions, builder, tools
 import pymongo
-import builder
-import exceptions
 import copy
-import tools
 
 try:
 	config = builder.read_config_file()
@@ -47,22 +45,22 @@ try:
 										link_to_crawl = link_to_crawl
 									)
 			document              = builder.generate_monitor_document(
-				      crawler = crawler,
-				 crawler_hash = crawler_hash,
-				 random_index = idx,
-				link_to_crawl = link_to_crawl
-			)
+										      crawler = crawler,
+										 crawler_hash = crawler_hash,
+										 random_index = idx,
+										link_to_crawl = link_to_crawl
+									)
 			new_documents.append(copy.deepcopy(document))
 			builder.write_file(
 				 location = "./build/crawlers",
 				  content = crawler_template,
 				file_name = "{crawler_hash}_{random_index}.py".format(
-					crawler_hash = crawler_hash,
-					random_index = idx
-				)
+								crawler_hash = crawler_hash,
+								random_index = idx
+							)
 			)
 			builder.write_file(
-				location = "./tests",
+				 location = "./tests",
 				  content = crawler_test_template,
 				file_name = "{}.py".format(crawler.CRAWLER_NAME.replace(" ","_"))
 			)
