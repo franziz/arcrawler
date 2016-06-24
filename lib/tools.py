@@ -1,6 +1,6 @@
-from lxml import html
-from proxy_switcher import ProxySwitcher
-from forum_engine import exceptions
+from lxml             import html
+from .proxy_switcher  import ProxySwitcher
+from .forum_engine    import exceptions
 import pymongo
 import dateutil.parser
 import pytz
@@ -9,40 +9,13 @@ import lxml
 import requests
 import arrow
 import socket
+import datetime
 
-def _parse(url=None, parse=True):
-	assert url is not None, "url is not defined."
-	proxy_is_ok = False
-	_html = None
-	while not proxy_is_ok:
-		try:
-			assert url is not None, "URL is not defined."
-			
-			switcher = ProxySwitcher()
-			page = requests.get(url, proxies=switcher.get_proxy(), timeout=60)
-			# page = requests.get(url, timeout=60)
-			_html = html.fromstring(page.content) if parse else page.content
-			proxy_is_ok = True
-		except requests.exceptions.ProxyError as proxy_error:
-			print("Ops! Proxy is not working. Try again...")
-			proxy_is_ok = False
-		except requests.exceptions.RequestException as another_requests_error: 
-			print("Ops! Something wrong. Try again...")
-			proxy_is_ok = False
-		except socket.timeout:
-			print("Ops! Request Time Out")
-			proxy_is_ok = False
-		except:
-			raise
-		#end try
-	#end while
-	return _html
-#end def
 
 def _expand_link(domain=None, link=None):
-	assert domain is not None, "Domain is not defined."
-	assert "http://" in domain or "https://" in domain,"domain should have http"
-	assert link is not None, "Link is not defined." 
+	assert domain    is not None                      , "Domain is not defined."
+	assert "http://" in domain or "https://" in domain, "domain should have http"
+	assert link      is not None                      , "Link is not defined." 
 
 	generated_link = link
 	if "http://" not in link and "https://" not in link:
@@ -57,7 +30,7 @@ def _xpath(parent=None, syntax=None):
 	if "re:test" in syntax:
 		try:
 			regexpNS = "http://exslt.org/regular-expressions"
-			result = parent.xpath(syntax,namespaces={'re':regexpNS})
+			result   = parent.xpath(syntax,namespaces={'re':regexpNS})
 		except lxml.etree.XPathEvalError as invalid_expression:
 			print(syntax)
 			raise
@@ -69,8 +42,8 @@ def _xpath(parent=None, syntax=None):
 #end def
 
 def _date_parser(str_date=None):
-	assert str_date is not None, "str_date is not defined."
-	assert type(str_date) is str, "str_date should in str."	
+	assert str_date       is not None, "str_date is not defined."
+	assert type(str_date) is str     , "str_date should in str."	
 
 	# convert languange to english
 	str_date = str_date.lower().replace("minggu","sunday")
@@ -104,12 +77,13 @@ def _date_parser(str_date=None):
 			result = arrow.utcnow().datetime
 		else:
 			print(str_date)
-			raise
+			result = arrow.utcnow().datetime
 		#end if
 	except:
 		raise
 	#end try
 
+	assert type(result) is datetime.datetime, "result is not datetime."
 	return result
 #end def
 
@@ -120,6 +94,7 @@ def _clean_string(string=None):
 	string = string.replace(u"\r"," ")
 	string = string.replace(u"\n"," ")
 	string = string.replace(u"\t"," ")
+	string = string.replace(u"&#13;"," ")
 	string = string.lstrip()
 	string = string.rstrip()
 	return string
@@ -142,20 +117,20 @@ def _assert(condition=None,  exception=None, message=None):
 #end def
 
 def _force_create_index(db=None, collection=None, field=None):
-	assert db is not None, "db is not defined."
-	assert type(db) is pymongo.database.Database, "db is not pymongo.database.Database."
-	assert collection is not None, "collection is not defined."
-	assert type(collection) is str, "collection is not str."
-	assert field is not None, "field is not defined."
-	assert type(field) is str, "field is not str."
+	assert db               is not None                 , "db is not defined."
+	assert type(db)         is pymongo.database.Database, "db is not pymongo.database.Database."
+	assert collection       is not None                 , "collection is not defined."
+	assert type(collection) is str                      , "collection is not str."
+	assert field            is not None                 , "field is not defined."
+	assert type(field)      is str                      , "field is not str."
 
 	has_database = False
 	while not has_database:
 		try:
 			# check indexes inside database
-			max_try = 10
-			tried = 0
 			has_permalink_index = False
+			max_try             = 10
+			tried               = 0
 			while not has_permalink_index and tried < max_try:
 				tried = tried + 1
 				for index in db[collection].list_indexes():

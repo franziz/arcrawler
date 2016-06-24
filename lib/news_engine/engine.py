@@ -1,6 +1,7 @@
-from news_engine.newspaper import news_pool, Config, Article
-from news_engine           import newspaper
-import tools
+from .newspaper import news_pool, Config, Article
+from .          import newspaper
+from ..         import tools
+import arrow
 
 class Engine(object):
 	def __init__(self):
@@ -19,11 +20,12 @@ class Engine(object):
 		self._url            = None
 
 		# Public variables
-		self.domain = None
-		self.title_fallback = []
-		self.content_fallback = []
+		self.domain                  = None
+		self.title_fallback          = []
+		self.content_fallback        = []
 		self.published_date_fallback = []
-		self.author_name_fallback = []
+		self.author_name_fallback    = []
+		self.network_tools           = None
 	#end def
 
 	@property
@@ -66,10 +68,10 @@ class Engine(object):
 	def urls(self):
 		""" You cannot set the urls variable from outside.
 		"""
-		assert self.domain is not None, "domain is not defined."
-		assert "http://" in self.domain or "https://" in self.domain, "domain is in wrong format"
+		assert self.domain is not None                                , "domain is not defined."
+		assert "http://"   in self.domain or "https://" in self.domain, "domain is in wrong format"
 		
-		domain = newspaper.build(self.domain, config=self.config)
+		domain     = newspaper.build(self.domain, config=self.config)
 		self._urls = list()
 		for article in domain.articles:
 			self._urls.append(article.url)
@@ -78,11 +80,11 @@ class Engine(object):
 	def parse(self,url=None):
 		""" Parse given the URL.
 		"""
-		assert url is not None, "url is not defined."
-		assert type(self.title_fallback) is list, "title_fallback have to be in list"
-		assert type(self.content_fallback) is list, "content_fallback have be in list"
-		assert type(self.published_date_fallback) is list, "published_date_fallback have be in list"
-		assert type(self.author_name_fallback) is list, "author_name_fallback have be in list"
+		assert url                                is not None, "url is not defined."
+		assert type(self.title_fallback)          is list    , "title_fallback have to be in list"
+		assert type(self.content_fallback)        is list    , "content_fallback have be in list"
+		assert type(self.published_date_fallback) is list    , "published_date_fallback have be in list"
+		assert type(self.author_name_fallback)    is list    , "author_name_fallback have be in list"
 
 		article = Article(url, config=self.config)
 		article.download()
@@ -99,9 +101,11 @@ class Engine(object):
 		self._published_date = self._fallback_assigner(variable=self.published_date, fallback=self.published_date_fallback)
 		self._author_name    = self._fallback_assigner(variable=self.author_name, fallback=self.author_name_fallback)
 
-		self._title       = tools._clean_string(string=self.title) if self._title is not None else self.title
-		self._content     = tools._clean_string(string=self.content) if self._content is not None else self.content
-		self._author_name = tools._clean_string(string=self.author_name) if self._author_name is not None else self.author_name
+		self._title          = tools._clean_string(string=self.title) if self._title is not None else self.title
+		self._content        = tools._clean_string(string=self.content) if self._content is not None else self.content
+		self._author_name    = tools._clean_string(string=self.author_name) if self._author_name is not None else self.author_name
+
+		self._published_date = self.published_date if self.published_date is not None else arrow.utcnow().datetime
 
 		if type(self.published_date) is str:
 			self._published_date = tools._clean_string(string=self.published_date)
@@ -109,19 +113,15 @@ class Engine(object):
 	#end def
 
 	def _fallback_assigner(self, variable=None, fallback=None):
-		assert self.url is not None, "url is not defined."
+		assert self.url           is not None, "url is not defined."
+		assert self.network_tools is not None, "network_tools is not defined."
 		
 		result = variable
 		if variable is None:
 			for xpath in fallback:
-				page   = tools._parse(url=self.url)
+				page   = self.network_tools.parse(url=self.url)
 				result = tools._xpath(parent=page, syntax=xpath)
-
-				if "concat" in xpath:
-					result = "".join(result)
-				else:
-					result = " ".join(result) if len(result) > 0 else None
-				#end if
+				result = "".join(result) if "concat" in xpath else " ".join(result) if len(result) > 0 else None		
 
 				if result is not None: break
 			#end for

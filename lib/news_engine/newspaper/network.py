@@ -12,10 +12,10 @@ import logging
 import requests
 import socket
 
-from .configuration import Configuration
-from .mthreading import ThreadPool
-from .settings import cj
-from proxy_switcher import ProxySwitcher
+from .configuration    import Configuration
+from .mthreading       import ThreadPool
+from .settings         import cj
+from ...proxy_switcher import ProxySwitcher
 
 log = logging.getLogger(__name__)
 

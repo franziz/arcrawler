@@ -1,7 +1,8 @@
-from news_engine.engine import Engine
-from pymongo            import MongoClient
+from lib.news_engine.engine import Engine
+from pymongo                import MongoClient
+from lib                    import tools
+$IMPORT
 import arrow
-import tools
 import pymongo
 import json
 
@@ -12,14 +13,15 @@ class Crawler(object):
 		self.country           = $COUNTRY
 
 		self.db = MongoClient("mongodb://{DB_SERVER_ADDRESS}/{DB_SERVER_NAME}".format(
-			DB_SERVER_ADDRESS = $DB_SERVER_ADDRESS,
-			   DB_SERVER_NAME = $DB_SERVER_NAME
-		))
+					DB_SERVER_ADDRESS = $DB_SERVER_ADDRESS,
+					   DB_SERVER_NAME = $DB_SERVER_NAME
+				))
 		self.db = self.db[$DB_SERVER_NAME]
 
 		tools._force_create_index(db=self.db, collection="data", field="url")
 
 		self.engine                         = Engine()
+		self.engine.network_tools           = $NETWORK_TOOLS
 		self.engine.domain                  = $LINK_TO_CRAWL
 		self.engine.title_fallback          = json.loads($TITLE_FALLBACK)
 		self.engine.content_fallback        = json.loads($CONTENT_FALLBACK)
