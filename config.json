@@ -1,7 +1,11 @@
 {
 	"workers":10,
 	"run":{
-		"1":["Detik Forum Crawler"],
-		"2":["Kaskus Crawler"]
+		"1":["Otosia Crawler"],
+		"2":[
+				"Detik Forum Crawler",
+				"Kaskus Crawler",
+				"Tsikot Crawler"
+			]
 	}
 }

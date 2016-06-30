@@ -1,11 +1,15 @@
 from pymongo import MongoClient
 from tqdm    import tqdm
+from ..      import builder
 import multiprocessing
 import importlib
 
 class Runner(object):
 	def __init__(self, crawler_names=[]):
 		self.crawler_names = crawler_names if type(crawler_names) is list else [crawler_names]
+		self.config        = builder.read_config_file()
+
+		assert "workers" in self.config, "workers is not defined."
 
 	def run(self):
 		db = MongoClient("mongodb://mongo:27017/test")
@@ -28,11 +32,12 @@ class Runner(object):
 		for document in documents:
 			documents.set_description("[arcrawler] Fetching queue...")
 			crawlers.append(document)
-		workers = multiprocessing.Pool(10)
+		workers = multiprocessing.Pool(int(self.config["workers"]))
 		workers.map(self._execute_worker, crawlers)
 
 	def _execute_worker(self,crawler=None):
-		assert crawler is not None
+		assert crawler is not None		
+		print(crawler["hash"])
 		crawler_path = "build.crawlers.{}".format(crawler["hash"])
 		crawler      = importlib.import_module(crawler_path)
 		crawler      = crawler.Crawler()

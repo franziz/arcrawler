@@ -67,7 +67,7 @@ class Crawler(Template):
 							"http://forum.detik.com/sepeda-f121.html"
 						]
 	COUNTRY           = "IDN"
-	THREAD_XPATH      = "//tbody[@id='threadbits_forum_80']/tr"
+	THREAD_XPATH      = "//tbody[re:test(@id,'threadbits_forum_*')]/tr"
 	THREAD_LINK_XPATH = ".//a[re:test(@id,'thread_title_*')]/@href"
 	LAST_PAGE_XPATH   = "//a[re:test(@title,'Last Page*')]/@href"
 	PREV_XPATH        = "//a[@rel='prev']/@href"
