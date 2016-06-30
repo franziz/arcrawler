@@ -46,10 +46,11 @@ class Engine(object):
 			db        = db[value["db"]["name"]]
 			documents = [document for document in db.data.find({"$or":[{"converted":None},{"converted":False}]})]
 			documents = tqdm(documents)
-			documents.set_description("[converter_engine] Converting {}".format(key))
 			for document in documents:
+				key = document["permalink"] if "permalink" in document else document["url"] if "url" in document else None
+				documents.set_description("[converter_engine] Converting {}".format(key))
 				new_document                              = MentionTemplate()
-				new_document.MentionId                    = hashlib.sha256(document["permalink"].encode("utf-8")).hexdigest()
+				new_document.MentionId                    = hashlib.sha256(document["permalink"].encode("utf-8")).hexdigest() 
 				new_document.MentionText                  = document["content"]
 				new_document.MentionType                  = "forum_post"
 				new_document.MentionDirectLink            = document["permalink"]
