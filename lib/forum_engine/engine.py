@@ -92,7 +92,6 @@ class Engine(object):
 
 		tree         = self.network_tools.parse(self.link_to_crawl)
 		self.threads = tools._xpath(parent=tree, syntax=self.thread_xpath)
-
 		return self.threads
 	#end def
 

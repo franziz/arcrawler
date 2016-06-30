@@ -1,6 +1,8 @@
-from lib.forum_engine import Template
+from lib.forum_engine  import Template
+from lib.network_tools import NetworkTools
 
 class Crawler(Template):
+	NETWORK_TOOLS     = NetworkTools(use_proxy=False)
 	TEMPLATE          = "crawler.arct"
 	TEST_TEMPLATE     = "crawler_test.arct"
 	DB_SERVER_ADDRESS = "mongo:27017"

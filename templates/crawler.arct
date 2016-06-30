@@ -40,8 +40,6 @@ class Crawler(object):
 				document.update({"_insert_time":arrow.utcnow().datetime})
 				document.update({"_origin":self.LINK_TO_CRAWL})
 				document.update({"_crawled_by":self.CRAWLER_NAME})
-
-				# print(bson.json_util.dumps(document,indent=4, separators=(",",":")))
 				
 				# set some assertion validation
 				$ASSERTION

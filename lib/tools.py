@@ -36,7 +36,10 @@ def _xpath(parent=None, syntax=None):
 			raise
 		#end try
 	else:
-		result = parent.xpath(syntax)
+		try:
+			result = parent.xpath(syntax)
+		except UnicodeDecodeError:
+			result = None
 	#end if
 	return result
 #end def
