@@ -1,3 +1,7 @@
 {
-	"workers":10
+	"workers":10,
+	"run":{
+		"1":["Detik Forum Crawler"],
+		"2":["Kaskus Crawler"]
+	}
 }
