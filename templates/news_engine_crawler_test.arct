@@ -41,7 +41,7 @@ class Crawler(object):
 
 			published_date = self.engine.published_date if self.engine.published_date is not None else arrow.utcnow().datetime
 			document       = {
-								           "url": self.engine.url,
+								     "permalink": self.engine.url,
 								       "content": self.engine.content,
 								         "title": self.engine.title,
 								"published_date": self.engine.published_date,
