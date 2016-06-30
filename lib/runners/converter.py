@@ -14,11 +14,9 @@ import arrow
 
 def mention_converter_callback(source_db=None, mention=None):
 	try:
-		mention_db         = MentionDB()
 		mention_db.mention = mention
 		mention_db.save()
 
-		author_info_db     = AuthorInfoDB()
 		author_info_db.generate_info(mention)
 		author_info_db.save()
 
@@ -28,5 +26,11 @@ def mention_converter_callback(source_db=None, mention=None):
 		print("[arcrawler] Ops! Duplicate mention")	
 
 if __name__ == "__main__":
+	global mention_db
+	global author_info_db
+	mention_db     = MentionDB()
+	author_info_db = AuthorInfoDB()
+
+
 	engine = Engine()
 	engine.convert(callback=mention_converter_callback)
