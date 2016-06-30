@@ -37,7 +37,6 @@ class Runner(object):
 
 	def _execute_worker(self,crawler=None):
 		assert crawler is not None		
-		print(crawler["hash"])
 		crawler_path = "build.crawlers.{}".format(crawler["hash"])
 		crawler      = importlib.import_module(crawler_path)
 		crawler      = crawler.Crawler()

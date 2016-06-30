@@ -5,8 +5,10 @@ import multiprocessing
 
 def execute_worker(name=None):
 	assert name is not None, "name is not defined."
-	runner = Runner(name)
-	runner.run()
+	while True:
+		runner = Runner(name)
+		runner.run()
+		time.sleep(60)
 
 if __name__ == "__main__":
 	config = builder.read_config_file()
