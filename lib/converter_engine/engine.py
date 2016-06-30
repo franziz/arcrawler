@@ -1,5 +1,6 @@
 from pymongo   import MongoClient
 from .template import MentionTemplate
+from tqdm      import tqdm
 import glob
 import importlib
 import hashlib
@@ -13,8 +14,11 @@ class Engine(object):
 		self.files        = dict()
 
 	def _find_sources(self):
-		files = dict()
-		for file in glob.glob("{}/*.py".format(self.source_files)):			
+		files   = dict()
+		sources = glob.glob("{}/*.py".format(self.source_files))
+		sources = tqdm(sources)
+		sources.set_description("[converter_engine] Finding sources...")
+		for file in sources:			
 			file_name = file.split("/")[-1].replace(".py","")
 			files.update({file_name : {"location":file}})
 		return files
@@ -41,7 +45,8 @@ class Engine(object):
 			db        = MongoClient("mongodb://{}".format(value["db"]["address"]))
 			db        = db[value["db"]["name"]]
 			documents = [document for document in db.data.find({"$or":[{"converted":None},{"converted":False}]})]
-
+			documents = tqdm(documents)
+			documents.set_description("[converter_engine] Converting {}".format(key))
 			for document in documents:
 				new_document                              = MentionTemplate()
 				new_document.MentionId                    = hashlib.sha256(document["permalink"].encode("utf-8")).hexdigest()
