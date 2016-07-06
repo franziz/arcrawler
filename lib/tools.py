@@ -20,6 +20,17 @@ def _expand_link(domain=None, link=None):
 	generated_link = link
 	if "http://" not in link and "https://" not in link:
 		generated_link = "{domain}{link}".format(domain=domain, link=link)
+	session_string = "s=" if "s=" in generated_link else "sid=" if "sid=" in generated_link else "s="
+	if session_string in generated_link:
+		session_index = generated_link.index(session_string)
+		begining_link = generated_link[:session_index]
+		try:
+			ending_index = generated_link.index("&")
+			ending_link  = generated_link[ending_index:]
+		except ValueError:
+			ending_index = -1
+			ending_link = ""
+		generated_link = "".join([begining_link, ending_link])
 	return generated_link
 #end def
 
