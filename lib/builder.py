@@ -276,6 +276,9 @@ def copy_requirement():
 			_print_log("Copying network_tools...")
 			shutil.copyfile("./lib/network_tools.py","./build/lib/network_tools.py")
 
+			_print_log("Copying builder...")
+			shutil.copyfile("./lib/builder.py","./build/lib/builder.py")
+
 			_print_log("Copying tools...")
 			shutil.copyfile("./lib/tools.py","./build/lib/tools.py")
 

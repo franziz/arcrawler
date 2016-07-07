@@ -1,6 +1,7 @@
-from pymongo   import MongoClient
-from .template import MentionTemplate
-from tqdm      import tqdm
+from pymongo      import MongoClient
+from .template    import MentionTemplate
+from tqdm         import tqdm
+from urllib.parse import urlparse
 import glob
 import importlib
 import hashlib
@@ -50,6 +51,10 @@ class Engine(object):
 				_id = document["permalink"] if "permalink" in document else document["url"] if "url" in document else None
 				documents.set_description("[converter_engine] Converting {}".format(key))
 				
+				source_name                               = document["permalink"]
+				source_name                               = urlparse(source_name)
+				source_name                               = source_name.netloc
+
 				new_document                              = MentionTemplate()
 				new_document.MentionId                    = hashlib.sha256(_id.encode("utf-8")).hexdigest() 
 				new_document.MentionText                  = document["content"]
@@ -61,7 +66,7 @@ class Engine(object):
 				new_document.AuthorName                   = new_document.AuthorId
 				new_document.AuthorDisplayName            = document["author_name"]
 				new_document.SourceType                   = "Forums"
-				new_document.SourceName                   = document["_crawled_by"]
+				new_document.SourceName                   = source_name
 				new_document.SentFromHost                 = "220.100.163.132"
 				new_document.DateInsertedIntoCrawlerDB    = document["_insert_time"]
 				new_document.DateInsertedIntoCrawlerDBISO = document["_insert_time"]

@@ -8,10 +8,10 @@ class Runner(object):
 	def __init__(self, crawler_names=[]):
 		self.crawler_names = crawler_names if type(crawler_names) is list else [crawler_names]
 		self.config        = builder.read_config_file()
-
 		assert "workers" in self.config, "workers is not defined."
 
-	def run(self):
+
+	def run(self):		
 		db = MongoClient("mongodb://mongo:27017/test")
 		db = db.monitor
 

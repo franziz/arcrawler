@@ -1,9 +1,34 @@
 from pymongo import MongoClient
+from ..      import builder
 import arrow
+
+class ConverterConfig(object):
+	def __init__(self):
+		self.config = builder.read_config_file()
+		assert "converter" in self.config             , "converter is not defined."
+		assert "target"    in self.config["converter"], "target is not defined."
+		self.config = self.config["converter"]["target"] 
+		assert "ip"                     in self.config, "ip is not defined."
+		assert "username"               in self.config, "username is not defined."
+		assert "password"               in self.config, "password is not defined."
+		assert "authenticationDatabase" in self.config, "authenticationDatabase is not defined."
+
+	@property
+	def target_connection_string(self):
+		connection_string = "mongodb://{username}:{password}@{ip}/test?authSource={authenticationDatabase}"
+		connection_string = connection_string.format(
+								              username = self.config["username"],
+								              password = self.config["password"],
+								                    ip = self.config["ip"],
+								authenticationDatabase = self.config["authenticationDatabase"]
+							)
+		return connection_string
+	
 
 class MentionDB(object):
 	def __init__(self):
-		self.db      = MongoClient("mongodb://mongo:27017/test")
+		self.config  = ConverterConfig()
+		self.db      = MongoClient(self.config.target_connection_string)
 		self.db      = self.db.isid
 		self.mention = None
 
@@ -24,7 +49,8 @@ class MentionDB(object):
 
 class AuthorInfoDB(object):
 	def __init__(self):
-		self.db          = MongoClient("mongodb://mongo:27017/test")
+		self.config      = ConverterConfig()
+		self.db          = MongoClient(self.config.target_connection_string)
 		self.db          = self.db.isid
 		self.author_info = None
 
