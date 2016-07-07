@@ -19,11 +19,10 @@ def mention_converter_callback(source_db=None, mention=None):
 
 		author_info_db.generate_info(mention)
 		author_info_db.save()
-
-		mention_db.set_as_converted(source_db=source_db)
-
 	except pymongo.errors.DuplicateKeyError:
 		print("[arcrawler] Ops! Duplicate mention")	
+	finally:
+		mention_db.set_as_converted(source_db=source_db)
 
 if __name__ == "__main__":
 	global mention_db

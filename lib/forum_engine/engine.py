@@ -177,7 +177,7 @@ class Engine(object):
 				assert type(result) is str or type(result) is list
 
 				# removing some unwanted data such as \xc2\xa0
-				if type(result) is str: 
+				if type(result) is str:
 					result = tools._clean_string(result)
 				elif type(result) is list:
 					result = [tools._clean_string(r) for r in result]

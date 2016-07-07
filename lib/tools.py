@@ -2,7 +2,6 @@ from lxml             import html
 from .proxy_switcher  import ProxySwitcher
 from .forum_engine    import exceptions
 import pymongo
-import dateutil.parser
 import pytz
 import tzlocal
 import lxml
@@ -10,6 +9,8 @@ import requests
 import arrow
 import socket
 import datetime
+import dateparser
+import ftfy
 
 
 def _expand_link(domain=None, link=None):
@@ -20,7 +21,15 @@ def _expand_link(domain=None, link=None):
 	generated_link = link
 	if "http://" not in link and "https://" not in link:
 		generated_link = "{domain}{link}".format(domain=domain, link=link)
-	session_string = "s=" if "s=" in generated_link else "sid=" if "sid=" in generated_link else "s="
+	if "s=" in generated_link:
+		session_string = "s="
+	elif "sid=" in generated_link:
+		session_string = "sid="
+	elif "PHPSESSID" in generated_link:
+		session_string = "PHPSESSID"
+	else:
+		session_string = "s="
+
 	if session_string in generated_link:
 		session_index = generated_link.index(session_string)
 		begining_link = generated_link[:session_index]
@@ -60,38 +69,37 @@ def _date_parser(str_date=None):
 	assert type(str_date) is str     , "str_date should in str."	
 
 	# convert languange to english
-	str_date = str_date.lower().replace("minggu","sunday")
-	str_date = str_date.lower().replace("senin","monday")
-	str_date = str_date.lower().replace("selasa","tuesday")
-	str_date = str_date.lower().replace("rabu","wednesday")
-	str_date = str_date.lower().replace("kamis","thursday")
-	str_date = str_date.lower().replace("jumat","friday")
-	str_date = str_date.lower().replace("jum'at","friday")
-	str_date = str_date.lower().replace("sabtu","saturday")
-	str_date = str_date.lower().replace("januari","january")
-	str_date = str_date.lower().replace("februari","february")
-	str_date = str_date.lower().replace("febuari","february")
-	str_date = str_date.lower().replace("maret","march")
-	str_date = str_date.lower().replace("mei","may")
-	str_date = str_date.lower().replace("juni","june")
-	str_date = str_date.lower().replace("juli","july")
-	str_date = str_date.lower().replace("agustus","august")
-	str_date = str_date.lower().replace("oktober","october")
-	str_date = str_date.lower().replace("nopember","november")
-	str_date = str_date.lower().replace("desember","december")
+	# str_date = str_date.lower().replace("minggu","sunday")
+	# str_date = str_date.lower().replace("senin","monday")
+	# str_date = str_date.lower().replace("selasa","tuesday")
+	# str_date = str_date.lower().replace("rabu","wednesday")
+	# str_date = str_date.lower().replace("kamis","thursday")
+	# str_date = str_date.lower().replace("jumat","friday")
+	# str_date = str_date.lower().replace("jum'at","friday")
+	# str_date = str_date.lower().replace("sabtu","saturday")
+	# str_date = str_date.lower().replace("januari","january")
+	# str_date = str_date.lower().replace("februari","february")
+	# str_date = str_date.lower().replace("febuari","february")
+	# str_date = str_date.lower().replace("maret","march")
+	# str_date = str_date.lower().replace("mei","may")
+	# str_date = str_date.lower().replace("juni","june")
+	# str_date = str_date.lower().replace("juli","july")
+	# str_date = str_date.lower().replace("agustus","august")
+	# str_date = str_date.lower().replace("oktober","october")
+	# str_date = str_date.lower().replace("nopember","november")
+	# str_date = str_date.lower().replace("desember","december")
 
 	try:
-		result = dateutil.parser.parse(str_date)
+		# result = dateutil.parser.parse(str_date)
+		result = dateparser.parse(str_date)
 		if result.tzinfo is None: result = tzlocal.get_localzone().localize(result, is_dst=None)
 		result = result.astimezone(pytz.utc)
+	except AttributeError as attr_err:
+		print(str_date.encode("utf-8"))
+		raise
 	except ValueError as value_error:
-		if "yesterday" in str_date.lower():
-			result = arrow.utcnow().replace(days=-1).datetime
-		elif "today" in str_date.lower():
-			result = arrow.utcnow().datetime
-		else:
-			print(str_date)
-			result = arrow.utcnow().datetime
+		print(str_date.encode("utf-8"))
+		raise
 		#end if
 	except:
 		raise
@@ -103,8 +111,8 @@ def _date_parser(str_date=None):
 
 def _clean_string(string=None):
 	assert string is not None, "string is not defined."
-	
-	string = string.encode("utf-8").replace(b"\xc2\xa0",b" ").decode("utf-8")
+	string = ftfy.fix_encoding(string)
+	string = string.encode("utf-8").replace(b"\xc2\xa0",b"").decode("utf-8")
 	string = string.replace(u"\r"," ")
 	string = string.replace(u"\n"," ")
 	string = string.replace(u"\t"," ")
