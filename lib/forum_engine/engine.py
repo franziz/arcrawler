@@ -107,8 +107,8 @@ class Engine(object):
 		link = tools._xpath(parent=thread, syntax=self.thread_link_xpath)
 
 		tools._assert(len(link)>0, exceptions.NoThreadLink("Ops! Cannot find the thread link"))
-
-		link = link[0]
+		link = link[0] if type(link) is list else link
+		# link = link[0]
 		link = tools._expand_link(domain=self.domain, link=link)
 		
 		if self.method == self.BACKWARD:

@@ -25,16 +25,16 @@ def _expand_link(domain=None, link=None):
 		session_string = "s="
 	elif "sid=" in generated_link:
 		session_string = "sid="
-	elif "PHPSESSID" in generated_link:
-		session_string = "PHPSESSID"
+	elif "PHPSESSID=" in generated_link:
+		session_string = "PHPSESSID="
 	else:
 		session_string = "s="
-
 	if session_string in generated_link:
 		session_index = generated_link.index(session_string)
 		begining_link = generated_link[:session_index]
 		try:
-			ending_index = generated_link.index("&")
+			tmp          = generated_link[session_index:]
+			ending_index = tmp.index("&") + session_index
 			ending_link  = generated_link[ending_index:]
 		except ValueError:
 			ending_index = -1
