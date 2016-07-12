@@ -70,17 +70,19 @@ def _date_parser(str_date=None):
 
 	# manual date conversion
 	str_date = str_date.lower().replace("jum'at","jumat")
-
+	
 	try:
 		result = dateparser.parse(str_date)
 		if result.tzinfo is None: result = tzlocal.get_localzone().localize(result, is_dst=None)
 		result = result.astimezone(pytz.utc)
 	except AttributeError as attr_err:
-		print(str_date.encode("utf-8"))
-		print("[tools] DATE ERROR!")
+		print("[error] {}".format(str_date.encode("utf-8")))
+		print("[error] DATE ERROR!")
+		result = arrow.utcnow().datetime
 	except ValueError as value_error:
-		print(str_date.encode("utf-8"))
-		print("[tools] DATE ERROR!")
+		print("[error] {}".format(str_date.encode("utf-8")))
+		print("[error] DATE ERROR!")
+		result = arrow.utcnow().datetime
 		#end if
 	except:
 		raise
