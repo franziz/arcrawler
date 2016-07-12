@@ -77,10 +77,10 @@ def _date_parser(str_date=None):
 		result = result.astimezone(pytz.utc)
 	except AttributeError as attr_err:
 		print(str_date.encode("utf-8"))
-		raise
+		print("[tools] DATE ERROR!")
 	except ValueError as value_error:
 		print(str_date.encode("utf-8"))
-		raise
+		print("[tools] DATE ERROR!")
 		#end if
 	except:
 		raise
