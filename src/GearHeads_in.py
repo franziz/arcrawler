@@ -38,7 +38,7 @@ class Crawler(Template):
                 "http://gearheads.in/forumdisplay.php?172-Baleno",
                 "http://gearheads.in/forumdisplay.php?301-Esteem"
         ]        
-	COUNTRY = "IN"
+	COUNTRY = "IND"
 	THREAD_XPATH = "//ol//li[re:test(@id,'thread*')]"
 	THREAD_LINK_XPATH = ".//a[@class='title']/@href"
 	LAST_PAGE_XPATH = "//span[@class='first_last']/a/@href"

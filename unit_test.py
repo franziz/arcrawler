@@ -3,13 +3,12 @@ from lib.network_tools import NetworkTools
 from lib import tools
 
 net = NetworkTools(use_proxy=False)
-page = net.parse("http://newaccordthailand.com/forum/viewtopic.php?f=11&t=9250")
-posts = tools._xpath(page,"//div[@class='vtouter']")
+page = net.parse("https://www.otosaigon.com/threads/trai-nghiem-dau-phat-cao-cap-pioneer-avh-x8750bt-tai-viet-nam.8682827/page-2")
+posts = tools._xpath(page,"//ol[@id='messageList']//li[re:test(@id,'post-*')]")
 print(len(posts))
 for post in posts:
-	hasil = "".join(tools._xpath(post,"normalize-space(.//span[@class='vtdate']//text())"))
+	hasil = "".join(tools._xpath(post,".//span[@class='DateTime']/@title"))
 	hasil = tools._clean_string(hasil)
-	hasil = hasil.split(" ")
 	print(hasil.encode("utf-8"))
 	print(dateparser.parse(hasil))
 

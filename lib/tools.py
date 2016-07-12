@@ -68,29 +68,10 @@ def _date_parser(str_date=None):
 	assert str_date       is not None, "str_date is not defined."
 	assert type(str_date) is str     , "str_date should in str."	
 
-	# convert languange to english
-	# str_date = str_date.lower().replace("minggu","sunday")
-	# str_date = str_date.lower().replace("senin","monday")
-	# str_date = str_date.lower().replace("selasa","tuesday")
-	# str_date = str_date.lower().replace("rabu","wednesday")
-	# str_date = str_date.lower().replace("kamis","thursday")
-	# str_date = str_date.lower().replace("jumat","friday")
-	# str_date = str_date.lower().replace("jum'at","friday")
-	# str_date = str_date.lower().replace("sabtu","saturday")
-	# str_date = str_date.lower().replace("januari","january")
-	# str_date = str_date.lower().replace("februari","february")
-	# str_date = str_date.lower().replace("febuari","february")
-	# str_date = str_date.lower().replace("maret","march")
-	# str_date = str_date.lower().replace("mei","may")
-	# str_date = str_date.lower().replace("juni","june")
-	# str_date = str_date.lower().replace("juli","july")
-	# str_date = str_date.lower().replace("agustus","august")
-	# str_date = str_date.lower().replace("oktober","october")
-	# str_date = str_date.lower().replace("nopember","november")
-	# str_date = str_date.lower().replace("desember","december")
+	# manual date conversion
+	str_date = str_date.lower().replace("jum'at","jumat")
 
 	try:
-		# result = dateutil.parser.parse(str_date)
 		result = dateparser.parse(str_date)
 		if result.tzinfo is None: result = tzlocal.get_localzone().localize(result, is_dst=None)
 		result = result.astimezone(pytz.utc)
