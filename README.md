@@ -3,19 +3,17 @@ AmouRe Crawler.is an app. It is not a library that can be used universally. In o
 
 # Requirement
 You will need:
-1. Docker
-2. Git
+- Docker
+- Git
 
 # Preparation
 You will need a docker image called arcrawler. In order to download the docker image you need to do this
 ```bash
 docker pull franziz/arcrawler
 docker pull mongo
-docker pull rabbitmq:management
 
 docker run -d --name mongo mongo
-docker run -d --name rabbitmq --hostname rabbitmq -p port_to_web_gui:15672 rabbitmq:management
-docker run -it --name arcrawler -v location_of_arcrawler:/root/app --link mongo:mongo --link rabbitmq:rabbitmq franziz/arcrawler bash
+docker run -it --name arcrawler -v location_of_arcrawler:/root/app --link mongo:mongo franziz/arcrawler bash
 ctrl+p+q
 ```
 
