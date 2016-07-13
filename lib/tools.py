@@ -2,7 +2,6 @@ from lxml             import html
 from .proxy_switcher  import ProxySwitcher
 from .forum_engine    import exceptions
 import pymongo
-import dateutil.parser
 import pytz
 import tzlocal
 import lxml
@@ -10,6 +9,8 @@ import requests
 import arrow
 import socket
 import datetime
+import dateparser
+import ftfy
 
 
 def _expand_link(domain=None, link=None):
@@ -20,6 +21,25 @@ def _expand_link(domain=None, link=None):
 	generated_link = link
 	if "http://" not in link and "https://" not in link:
 		generated_link = "{domain}{link}".format(domain=domain, link=link)
+	if "s=" in generated_link:
+		session_string = "s="
+	elif "sid=" in generated_link:
+		session_string = "sid="
+	elif "PHPSESSID=" in generated_link:
+		session_string = "PHPSESSID="
+	else:
+		session_string = "s="
+	if session_string in generated_link:
+		session_index = generated_link.index(session_string)
+		begining_link = generated_link[:session_index]
+		try:
+			tmp          = generated_link[session_index:]
+			ending_index = tmp.index("&") + session_index
+			ending_link  = generated_link[ending_index:]
+		except ValueError:
+			ending_index = -1
+			ending_link = ""
+		generated_link = "".join([begining_link, ending_link])
 	return generated_link
 #end def
 
@@ -36,7 +56,10 @@ def _xpath(parent=None, syntax=None):
 			raise
 		#end try
 	else:
-		result = parent.xpath(syntax)
+		try:
+			result = parent.xpath(syntax)
+		except UnicodeDecodeError:
+			result = None
 	#end if
 	return result
 #end def
@@ -45,39 +68,21 @@ def _date_parser(str_date=None):
 	assert str_date       is not None, "str_date is not defined."
 	assert type(str_date) is str     , "str_date should in str."	
 
-	# convert languange to english
-	str_date = str_date.lower().replace("minggu","sunday")
-	str_date = str_date.lower().replace("senin","monday")
-	str_date = str_date.lower().replace("selasa","tuesday")
-	str_date = str_date.lower().replace("rabu","wednesday")
-	str_date = str_date.lower().replace("kamis","thursday")
-	str_date = str_date.lower().replace("jumat","friday")
-	str_date = str_date.lower().replace("jum'at","friday")
-	str_date = str_date.lower().replace("sabtu","saturday")
-	str_date = str_date.lower().replace("januari","january")
-	str_date = str_date.lower().replace("februari","february")
-	str_date = str_date.lower().replace("febuari","february")
-	str_date = str_date.lower().replace("maret","march")
-	str_date = str_date.lower().replace("mei","may")
-	str_date = str_date.lower().replace("juni","june")
-	str_date = str_date.lower().replace("juli","july")
-	str_date = str_date.lower().replace("agustus","august")
-	str_date = str_date.lower().replace("oktober","october")
-	str_date = str_date.lower().replace("nopember","november")
-	str_date = str_date.lower().replace("desember","december")
-
+	# manual date conversion
+	str_date = str_date.lower().replace("jum'at","jumat")
+	
 	try:
-		result = dateutil.parser.parse(str_date)
+		result = dateparser.parse(str_date)
 		if result.tzinfo is None: result = tzlocal.get_localzone().localize(result, is_dst=None)
 		result = result.astimezone(pytz.utc)
+	except AttributeError as attr_err:
+		print("[error] {}".format(str_date.encode("utf-8")))
+		print("[error] DATE ERROR!")
+		result = arrow.utcnow().datetime
 	except ValueError as value_error:
-		if "yesterday" in str_date.lower():
-			result = arrow.utcnow().replace(days=-1).datetime
-		elif "today" in str_date.lower():
-			result = arrow.utcnow().datetime
-		else:
-			print(str_date)
-			result = arrow.utcnow().datetime
+		print("[error] {}".format(str_date.encode("utf-8")))
+		print("[error] DATE ERROR!")
+		result = arrow.utcnow().datetime
 		#end if
 	except:
 		raise
@@ -89,8 +94,8 @@ def _date_parser(str_date=None):
 
 def _clean_string(string=None):
 	assert string is not None, "string is not defined."
-	
-	string = string.encode("utf-8").replace(b"\xc2\xa0",b" ").decode("utf-8")
+	string = ftfy.fix_encoding(string)
+	string = string.encode("utf-8").replace(b"\xc2\xa0",b"").decode("utf-8")
 	string = string.replace(u"\r"," ")
 	string = string.replace(u"\n"," ")
 	string = string.replace(u"\t"," ")

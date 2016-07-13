@@ -18,7 +18,7 @@ class Crawler(object):
 				))
 		self.db = self.db[$DB_SERVER_NAME]
 
-		tools._force_create_index(db=self.db, collection="data", field="url")
+		tools._force_create_index(db=self.db, collection="data", field="permalink")
 
 		self.engine                         = Engine()
 		self.engine.network_tools           = $NETWORK_TOOLS
@@ -48,7 +48,7 @@ class Crawler(object):
 
 				published_date = self.engine.published_date if self.engine.published_date is not None else arrow.utcnow().datetime
 				self.db.data.insert_one({
-					           "url": self.engine.url,
+					     "permalink": self.engine.url,
 					       "content": self.engine.content,
 					         "title": self.engine.title,
 					"published_date": self.engine.published_date,

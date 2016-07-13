@@ -25,7 +25,7 @@ class Backward(object):
 			self.current_page      = self.network_tools.parse(last_page_link)
 			self.current_page_link = last_page_link
 		except IndexError as ex:
-			print("Cannot find Last Page Link: {}".format(self.current_page_link))
+			print("Cannot find Last Page Link: {}".format(self.current_page_link.encode("utf-8")))
 		except:
 			raise
 		#end try

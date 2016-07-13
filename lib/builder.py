@@ -255,11 +255,17 @@ def copy_requirement():
 	success_to_copy = False
 	while not success_to_copy:
 		try:
+			_print_log("Copying src...")
+			shutil.copytree("./src","./build/src")
+
 			_print_log("Copying forum_engine...")
 			shutil.copytree("./lib/forum_engine","./build/lib/forum_engine")
 
 			_print_log("Copying news_engine...")
 			shutil.copytree("./lib/news_engine","./build/lib/news_engine")
+
+			_print_log("Copying converter_engine...")
+			shutil.copytree("./lib/converter_engine","./build/lib/converter_engine")
 
 			_print_log("Copying proxy_switcher...")
 			shutil.copyfile("./lib/proxy_switcher.py","./build/lib/proxy_switcher.py")
@@ -269,6 +275,9 @@ def copy_requirement():
 
 			_print_log("Copying network_tools...")
 			shutil.copyfile("./lib/network_tools.py","./build/lib/network_tools.py")
+
+			_print_log("Copying builder...")
+			shutil.copyfile("./lib/builder.py","./build/lib/builder.py")
 
 			_print_log("Copying tools...")
 			shutil.copyfile("./lib/tools.py","./build/lib/tools.py")

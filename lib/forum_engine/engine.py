@@ -92,7 +92,6 @@ class Engine(object):
 
 		tree         = self.network_tools.parse(self.link_to_crawl)
 		self.threads = tools._xpath(parent=tree, syntax=self.thread_xpath)
-
 		return self.threads
 	#end def
 
@@ -108,8 +107,8 @@ class Engine(object):
 		link = tools._xpath(parent=thread, syntax=self.thread_link_xpath)
 
 		tools._assert(len(link)>0, exceptions.NoThreadLink("Ops! Cannot find the thread link"))
-
-		link = link[0]
+		link = link[0] if type(link) is list else link
+		# link = link[0]
 		link = tools._expand_link(domain=self.domain, link=link)
 		
 		if self.method == self.BACKWARD:
@@ -178,7 +177,7 @@ class Engine(object):
 				assert type(result) is str or type(result) is list
 
 				# removing some unwanted data such as \xc2\xa0
-				if type(result) is str: 
+				if type(result) is str:
 					result = tools._clean_string(result)
 				elif type(result) is list:
 					result = [tools._clean_string(r) for r in result]
