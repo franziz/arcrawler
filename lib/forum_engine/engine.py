@@ -108,7 +108,6 @@ class Engine(object):
 
 		tools._assert(len(link)>0, exceptions.NoThreadLink("Ops! Cannot find the thread link"))
 		link = link[0] if type(link) is list else link
-		# link = link[0]
 		link = tools._expand_link(domain=self.domain, link=link)
 		
 		if self.method == self.BACKWARD:
@@ -202,6 +201,7 @@ class Engine(object):
 
 				document.update({field:result})
 			#end for
+			document.update({"_thread_link":self.current_engine.thread_link})
 			documents.append(document)
 		#end for
 		return documents
