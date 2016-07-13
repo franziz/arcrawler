@@ -18,16 +18,12 @@ if __name__ == "__main__":
 	db = MongoClient("mongodb://mongo:27017/test")
 	db = db.monitor
 
-	while True:
-		workers = list()
-		for key, value in config["run"].items():		
-			print(value)
-			# TODO: check if name is in database
-			worker = multiprocessing.Process(target=execute_worker, args=(value,key), daemon=False)
-			workers.append(worker)
 
-		for worker in workers:
-			worker.start()
-
-		for worker in workers:
-			worker.join()
+	workers = list()
+	for key, value in config["run"].items():		
+		print(value)
+		# TODO: check if name is in database
+		worker = multiprocessing.Process(target=execute_worker, args=(value,key), daemon=False)
+		workers.append(worker)
+	for worker in workers:
+		worker.start()
