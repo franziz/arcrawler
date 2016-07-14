@@ -1,11 +1,17 @@
 from .proxy_switcher import ProxySwitcher
 from lxml            import html
+from urllib.parse    import urlparse
 import inspect
 import requests
 
 class NetworkTools(object):
 	def __init__(self, use_proxy=True):
 		self.use_proxy = use_proxy
+
+	def get_domain(self, url=None):
+		assert url is not None, "url is not defined."
+		url = urlparse(url)
+		return '{uri.scheme}://{uri.netloc}/'.format(uri=url)
 
 	def parse(self,url=None, parse=True):
 		assert url is not None, "url is not defined."

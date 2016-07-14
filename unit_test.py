@@ -1,3 +1,20 @@
+from lib.news_engine.engine import Engine
+import bson.json_util
+
+news             = Engine()
+news.country     = "IDN"
+news.source_type = "news"
+news.url         = "http://www.otosia.com/"
+news.parse()
+for article in news.articles:
+	article.title_xpath          = "//h1[@class='OtoDetailT']/text()"
+	article.author_xpath         = "concat('otosia','')"
+	article.content_xpath        = "//div[@class='OtoDetailNews']//p/text()"
+	article.published_date_xpath = "//h1[@class='OtoDetailT']/following-sibling::span[1]/text()"
+	article.extract()	
+print(bson.json_util.dumps(news.articles[0].to_dict(), indent=4, separators=(",",":")))
+
+
 # import dateparser
 # from lib.network_tools import NetworkTools
 # from lib import tools
@@ -12,11 +29,11 @@
 # 	print(hasil.encode("utf-8"))
 # 	print(dateparser.parse(hasil))
 
-import dateparser
-import ftfy
+# import dateparser
+# import ftfy
 
-hasil = ftfy.fix_encoding("sunday, 10 july 2016 12:15")
-print(dateparser.parse(hasil))
+# hasil = ftfy.fix_encoding("sunday, 10 july 2016 12:15")
+# print(dateparser.parse(hasil))
 
 # from lib import tools
 # permalink = "https://www.tsikot.com/forums/racing-off-roading-fun-run-talk-16/drag-racing-greenhills-100896-post2732035/?s=56ebd1ce7f2b93afc88ddeed9e6d73fe#post2732035"
