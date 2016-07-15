@@ -1,7 +1,27 @@
 {
 	"workers":10,
 	"run":{
-		"1":["CNN Indonesia Crawler"]
+		"1":[
+				"CNN Indonesia Crawler",
+				"Kompas News Crawler",
+				"Otosia Crawler"
+			],
+		"2":[
+				"Detik Forum Crawler",
+				"Kaskus Crawler",
+				"Tsikot Crawler",
+				"Cb3thailand Crawler"
+			],
+		"3":[
+				"Accordclubthailand Crawler",
+				"Camry2012club Crawler",
+				"Captiva-club Crawler",
+				"Gearheads Crawler",
+				"Modifikasi Crawler",
+				"Pakwheels Crawler",
+				"Thaialmeraclub Crawler",
+				"Theautomotiveindia Crawler"
+			]
 	},
 	"converter":{
 		"target":{
