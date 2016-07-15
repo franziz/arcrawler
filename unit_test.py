@@ -1,17 +1,44 @@
-from lib.news_engine.engine import Engine
-from lib.network_tools      import NetworkTools
-import bson.json_util
+from lib          import tools
+from pymongo      import MongoClient
+from tqdm         import tqdm
+from urllib.parse import urlparse
+import pymongo
 
-news                      = Engine()
-news.network_tools        = NetworkTools(use_proxy=False)
-news.url                  = "http://www.otosia.com/"
-news.title_xpath          = "//h1[@class='OtoDetailT']/text()"
-news.author_name_xpath    = "concat('otosia','')"
-news.content_xpath        = "//div[@class='OtoDetailNews']//p/text()"
-news.published_date_xpath = "//h1[@class='OtoDetailT']/following-sibling::span[1]/text()"
-news.parse()
-news.extract()
-print(bson.json_util.dumps(news.articles[0].to_dict(), indent=4, separators=(",",":")))
+db   = MongoClient("mongodb://220.100.163.132:27017/test")
+db   = db.tsikot
+pbar = db.data.find()
+for document in pbar:
+	before = document["permalink"]
+	domain = urlparse(before)
+	domain = "{}://{}".format(domain.scheme, domain.netloc)
+	after  = tools._expand_link(domain, before)
+	_id    = document["_id"]
+	try:
+		if after != before:
+			db.data.update_one({"_id":_id},{"$set":{"permalink":after}})
+			print("[{}] Updated!".format(_id))
+		else:
+			print("[{}] Nothing wrong!".format(_id))
+	except pymongo.errors.DuplicateKeyError:
+		db.data.delete_one({"_id":_id})
+		print("[{}] Deleted!".format(_id))
+
+
+
+# from lib.news_engine.engine import Engine
+# from lib.network_tools      import NetworkTools
+# import bson.json_util
+
+# news                      = Engine()
+# news.network_tools        = NetworkTools(use_proxy=False)
+# news.url                  = "http://www.otosia.com/"
+# news.title_xpath          = "//h1[@class='OtoDetailT']/text()"
+# news.author_name_xpath    = "concat('otosia','')"
+# news.content_xpath        = "//div[@class='OtoDetailNews']//p/text()"
+# news.published_date_xpath = "//h1[@class='OtoDetailT']/following-sibling::span[1]/text()"
+# news.parse()
+# news.extract()
+# print(bson.json_util.dumps(news.articles[0].to_dict(), indent=4, separators=(",",":")))
 
 # import dateparser
 # from lib.network_tools import NetworkTools
