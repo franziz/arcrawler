@@ -5,7 +5,10 @@
 	},
 	"converter":{
 		"target":{
-			"ip":"mongo"
+			"ip":"220.100.163.138",
+			"username":"isid",
+			"password":"qwer1234ajfhrjkq$9",
+			"authenticationDatabase":"isid"
 		}
 	}
 }
