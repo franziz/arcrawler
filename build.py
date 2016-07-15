@@ -15,10 +15,6 @@ try:
 	builder.make_init_file("./build")
 
 	templates = builder.read_template()
-	# builder.build_consumer(
-	# 	templates = templates,
-	# 	   config = config
-	# )
 
 	new_documents = list()
 	crawlers      = builder.get_sources("./src")

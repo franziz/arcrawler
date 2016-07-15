@@ -1,22 +1,7 @@
 {
 	"workers":10,
 	"run":{
-		"1":[
-				"Detik Forum Crawler",
-				"Kaskus Crawler",
-				"Tsikot Crawler",
-				"Cb3thailand Crawler"
-			],
-		"2":[
-				"Accordclubthailand Crawler",
-				"Camry2012club Crawler",
-				"Captiva-club Crawler",
-				"Gearheads Crawler",
-				"Modifikasi Crawler",
-				"Pakwheels Crawler",
-				"Thaialmeraclub Crawler",
-				"Theautomotiveindia Crawler"
-			]
+		"1":["CNN Indonesia Crawler"]
 	},
 	"converter":{
 		"target":{
