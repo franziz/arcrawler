@@ -7,24 +7,24 @@ class ConverterConfig(object):
 		self.config = builder.read_config_file()
 		assert "converter" in self.config             , "converter is not defined."
 		assert "target"    in self.config["converter"], "target is not defined."
-		self.config = self.config["converter"]["target"] 
-		assert "ip"                     in self.config, "ip is not defined."
-		assert "username"               in self.config, "username is not defined."
-		assert "password"               in self.config, "password is not defined."
-		assert "authenticationDatabase" in self.config, "authenticationDatabase is not defined."
+		self.config = self.config["converter"]["target"]
 
 	@property
 	def target_connection_string(self):
-		connection_string = "mongodb://{username}:{password}@{ip}/test?authSource={authenticationDatabase}"
-		connection_string = connection_string.format(
-								              username = self.config["username"],
-								              password = self.config["password"],
-								                    ip = self.config["ip"],
-								authenticationDatabase = self.config["authenticationDatabase"]
-							)
-		return connection_string
+		assert "ip" in self.config, "ip is not defined."
+		if "username" in self.config and "password" in self.config and "authenticationDatabase" in self.config:
+			connection_string = "mongodb://{username}:{password}@{ip}/test?authSource={authenticationDatabase}"
+			connection_string = connection_string.format(
+									              username = self.config["username"],
+									              password = self.config["password"],
+									                    ip = self.config["ip"],
+									authenticationDatabase = self.config["authenticationDatabase"]
+								)
+		else:
+			connection_string = "mongodb://{ip}:27017/test"
+			connection_string = connection_string.format(ip=self.config["ip"])
+		return connection_string	
 	
-
 class MentionDB(object):
 	def __init__(self):
 		self.config  = ConverterConfig()
