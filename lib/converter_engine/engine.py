@@ -54,6 +54,8 @@ class Engine(object):
 				source_name                               = document["permalink"]
 				source_name                               = urlparse(source_name)
 				source_name                               = source_name.netloc
+				source_name                               = source_name.lower().replace("www.","")
+				source_name                               = "{}{}".format(source_name[0].upper(), source_name[1:])
 
 				new_document                              = MentionTemplate()
 				new_document.MentionId                    = hashlib.sha256(_id.encode("utf-8")).hexdigest() 
