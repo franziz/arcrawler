@@ -9,7 +9,30 @@ class Crawler(Template):
 	DB_SERVER_NAME = "accordclubthailand"
 	CRAWLER_NAME = "Accordclubthailand Crawler"
 	LINK_TO_CRAWL = [
-		"http://www.accordclubthailand.com/forum_act/index.php?board=1.0"
+		"http://www.accordclubthailand.com/forum_act/index.php?board=17.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=28.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=4.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=1.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=3.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=5.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=29.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=26.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=27.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=21.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=22.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=23.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=24.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=25.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=6.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=7.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=15.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=16.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=36.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=2.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=8.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=9.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=10.0",
+		"http://www.accordclubthailand.com/forum_act/index.php?board=11.0"
 	]
 	COUNTRY = "THA"
 	THREAD_XPATH = "//tr//span[re:test(@id,'msg_*')]"
@@ -22,7 +45,7 @@ class Crawler(Template):
 			"single": True,
 			"data_type": "date",
 			"concat": False,
-			"xpath": "normalize-space(substring-before(.//div[@class='keyinfo']//div[@class='smalltext']//text()[2],'»'))"
+			"xpath": "substring-before(concat(.//div[@class='keyinfo']//div[@class='smalltext']/text()[2],substring-after(.//div[@class='keyinfo']//div[@class='smalltext']/text()[3],'เวลา')),'»')"
 		}},
 		{"permalink": {
 			"single": True,
@@ -41,6 +64,7 @@ class Crawler(Template):
 			"data_type": "string",
 			"concat":True,
 			"xpath":".//div[@class='post']//div[re:test(@id,'msg_*')]//text()"
+			# "xpath":"concat('test',.//div[@class='post']//div[re:test(@id,'msg_*')]//text())"
 		}},
 		{"title":{
 			"single":True,

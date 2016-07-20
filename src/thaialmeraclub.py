@@ -9,14 +9,35 @@ class Crawler(Template):
 	DB_SERVER_NAME = "thaialmeraclub"
 	CRAWLER_NAME = "Thaialmeraclub Crawler"
 	LINK_TO_CRAWL = [
-		"http://www.thaialmeraclub.com/index.php?board=20.0",
-		"http://www.thaialmeraclub.com/index.php?board=13.0",
-		"http://www.thaialmeraclub.com/index.php?board=5.0",
-		"http://www.thaialmeraclub.com/index.php?board=26.0",
-		"http://www.thaialmeraclub.com/index.php?board=28.0",
-		"http://www.thaialmeraclub.com/index.php?board=18.0",
-		"http://www.thaialmeraclub.com/index.php?board=25.0"
-        ]
+		'http://www.thaialmeraclub.com/index.php?board=1.0',
+		'http://www.thaialmeraclub.com/index.php?board=31.0',
+		'http://www.thaialmeraclub.com/index.php?board=2.0',
+		'http://www.thaialmeraclub.com/index.php?board=3.0',
+		'http://www.thaialmeraclub.com/index.php?board=14.0',
+		'http://www.thaialmeraclub.com/index.php?board=19.0',
+		'http://www.thaialmeraclub.com/index.php?board=20.0',
+		'http://www.thaialmeraclub.com/index.php?board=33.0',
+		'http://www.thaialmeraclub.com/index.php?board=4.0',
+		'http://www.thaialmeraclub.com/index.php?board=13.0',
+		'http://www.thaialmeraclub.com/index.php?board=5.0',
+		'http://www.thaialmeraclub.com/index.php?board=15.0',
+		'http://www.thaialmeraclub.com/index.php?board=16.0',
+		'http://www.thaialmeraclub.com/index.php?board=17.0',
+		'http://www.thaialmeraclub.com/index.php?board=26.0',
+		'http://www.thaialmeraclub.com/index.php?board=28.0',
+		'http://www.thaialmeraclub.com/index.php?board=29.0',
+		'http://www.thaialmeraclub.com/index.php?board=30.0',
+		'http://www.thaialmeraclub.com/index.php?board=10.0',
+		'http://www.thaialmeraclub.com/index.php?board=18.0',
+		'http://www.thaialmeraclub.com/index.php?board=6.0',
+		'http://www.thaialmeraclub.com/index.php?board=11.0',
+		'http://www.thaialmeraclub.com/index.php?board=25.0',
+		'http://www.thaialmeraclub.com/index.php?board=21.0',
+		'http://www.thaialmeraclub.com/index.php?board=12.0',
+		'http://www.thaialmeraclub.com/index.php?board=22.0',
+		'http://www.thaialmeraclub.com/index.php?board=23.0',
+		'http://www.thaialmeraclub.com/index.php?board=24.0'
+	]
 	COUNTRY = "THA"
 	THREAD_XPATH = "//span[re:test(@id,'msg_*')]"
 	THREAD_LINK_XPATH = "./a/@href"
@@ -28,7 +49,7 @@ class Crawler(Template):
 			"single": True,
 			"data_type": "date",
 			"concat": False,
-			"xpath": "normalize-space(substring-before(.//td[@width='85%']//td[2]//div[@class='smalltext']/b[last()]/following-sibling::text(),'»'))"
+			"xpath": "substring-before(concat(..//td[@width='85%']//td[2]//div[@class='smalltext']/text()[2],substring-after(..//td[@width='85%']//td[2]//div[@class='smalltext']/text()[3],'เวลา')),'»')"
 		}},
 		{"author_name":{
 			"single":True,

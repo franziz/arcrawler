@@ -37,7 +37,7 @@ class Backward(object):
 
 		posts = tools._xpath(parent=self.current_page, syntax=self.post_xpath)
 		posts = list(reversed(posts))
-
+		
 		return posts
 	#end def
 

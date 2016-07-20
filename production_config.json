@@ -1,0 +1,43 @@
+{
+	"workers":10,
+	"run":{
+		"1":[
+				"Accordclubthailand Crawler",
+				"Aethailand Crawler",
+				"Attrage2 Crawler",
+				"Camry2012club Crawler",
+				"Captiva-club Crawler",
+				"Cb3thailand Crawler",
+				"Club4G Crawler",
+				"Community Headlightmag Crawler",
+				"Gearheads Crawler",
+				"Gensansale Crawler",
+				"Newaltisthailandclub2 Crawler",
+				"Newdmaxclub Crawler",
+				"Otofun Crawler",
+				"Otosaigon Crawler",
+				"Pakwheels Crawler",
+				"Thaialmeraclub Crawler",
+				"Thaisylphyclub2 Crawler",
+				"Theautomotiveindia Crawler",
+				"Toyotalover Crawler",
+				"Yarisclubthailand Crawler"
+			],
+		"2":[
+				"CNN Indonesia Crawler",
+				"Kompas News Crawler",
+				"Otosia Crawler"
+			],
+		"3":[
+				"Detik Forum Crawler",
+				"Kaskus Crawler",
+				"Modifikasi Crawler",
+				"Tsikot Crawler"
+			]
+	},
+	"converter":{
+		"target":{
+			"ip":"mongo"
+		}
+	}
+}

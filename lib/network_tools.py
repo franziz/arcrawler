@@ -3,6 +3,8 @@ from lxml            import html
 from urllib.parse    import urlparse
 import inspect
 import requests
+import socket
+import lxml
 
 class NetworkTools(object):
 	def __init__(self, use_proxy=True):
@@ -41,6 +43,10 @@ class NetworkTools(object):
 			except socket.timeout:
 				print("Ops! Request Time Out")
 				proxy_is_ok = False
+			except lxml.etree.XMLSyntaxError:
+				print("Ops! Something wrong. Leave it~")
+				_html       = html.fromstring("<html></html>")
+				proxy_is_ok = True
 			except:
 				raise
 			#end try
