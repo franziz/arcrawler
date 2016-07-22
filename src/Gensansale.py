@@ -6,7 +6,7 @@ class Crawler(Template):
 	TEMPLATE = "crawler.arct"
 	TEST_TEMPLATE = "crawler_test.arct"
 	DB_SERVER_ADDRESS = "mongo:27017"
-	DB_SERVER_NAME = "Gensansale"
+	DB_SERVER_NAME = "gensansale"
 	CRAWLER_NAME = "Gensansale Crawler"
 	LINK_TO_CRAWL = [
 		"http://www.gensansale.com/forums/100-libre-items.77/",
@@ -72,7 +72,6 @@ class Crawler(Template):
 			"data_type": "date",
 			"concat": False, 
 			"xpath": "concat(.//a[@class='datePermalink']/span//@title,.//a[@class='datePermalink']/abbr//text())"
-			# "xpath": ".//span[@class='DateTime']//text()"
 		}},
 		{"permalink": {
 			"single": True, 

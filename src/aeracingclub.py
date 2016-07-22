@@ -7,7 +7,7 @@ class Crawler(Template):
 	TEST_TEMPLATE = "crawler_test.arct"
 	DB_SERVER_ADDRESS = "mongo:27017"
 	DB_SERVER_NAME = "aeracingclub"
-	CRAWLER_NAME = "aeracingclub crawler"
+	CRAWLER_NAME = "Aeracingclub Crawler"
 	LINK_TO_CRAWL = [
 		"http://www.aeracingclub.net/forums/index.php?board=6.0",
 		"http://www.aeracingclub.net/forums/index.php?board=23.0",
@@ -82,7 +82,7 @@ class Crawler(Template):
 			"single":True,
 			"data_type": "string",
 			"concat":False,
-                        "xpath":"normalize-space(substring-before(substring-after(//tr[@class='catbg3']//td[@id='top_subject']//text(),':'),'('))"
+            "xpath":"normalize-space(substring-before(substring-after(//tr[@class='catbg3']//td[@id='top_subject']//text(),':'),'('))"
 		}}       
 	]
 	CONDITIONS={

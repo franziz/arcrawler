@@ -15,9 +15,6 @@ if __name__ == "__main__":
 	config = builder.read_config_file()
 	assert "run" in config, "run is not defined."	
 
-	db = MongoClient("mongodb://mongo:27017/test")
-	db = db.monitor
-
 	while True:
 		workers = list()
 		for key, value in config["run"].items():		

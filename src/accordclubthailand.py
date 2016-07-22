@@ -64,7 +64,6 @@ class Crawler(Template):
 			"data_type": "string",
 			"concat":True,
 			"xpath":".//div[@class='post']//div[re:test(@id,'msg_*')]//text()"
-			# "xpath":"concat('test',.//div[@class='post']//div[re:test(@id,'msg_*')]//text())"
 		}},
 		{"title":{
 			"single":True,

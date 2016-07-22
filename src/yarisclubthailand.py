@@ -58,7 +58,6 @@ class Crawler(Template):
 			"data_type": "string",
 			"concat":False,
 			"xpath":".//div[@class='postarea']//div[@class='post']//div[re:test(@id,'msg_*')]//text()"
-			# "xpath":"concat('test',.//div[@class='postarea']//div[@class='post']//div[re:test(@id,'msg_*')]//text())"			
 		}},
 		{"permalink": {
 			"single": True,

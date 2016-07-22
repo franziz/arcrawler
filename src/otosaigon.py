@@ -69,7 +69,6 @@ class Crawler(Template):
 			"data_type": "date",
 			"concat": False,
 			"xpath": "translate(.//span[@class='item muted']//a[@class='datePermalink']//text(),'lúc','')"
-			#"xpath": ".//span[@class='item muted']//a[@class='datePermalink']//text()"
 		}},
 		{"author_name":{
 			"single":True,

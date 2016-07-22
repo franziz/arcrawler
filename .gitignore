@@ -1,3 +1,5 @@
+unit_test.py
+production_config.json
 build/
 tests/
 ghostdriver.log

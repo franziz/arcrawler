@@ -2,7 +2,34 @@
 	"workers":10,
 	"run":{
 		"1":[
-				"Aethailand Crawler"
+				"Accordclubthailand Crawler",
+				"Attrage Crawler",
+				"Camry2012club Crawler",
+				"Captiva-club Crawler",
+				"Cb3thailand Crawler",
+				"Club4G Crawler",
+				"Gearheads Crawler",
+				"Gensansale Crawler",
+				"Newdmaxclub Crawler",
+				"Otofun Crawler",
+				"Otosaigon Crawler",
+				"Thaialmeraclub Crawler",
+				"Thaisylphyclub Crawler",
+				"Theautomotiveindia Crawler",
+				"Toyotalover Crawler",
+				"Yarisclubthailand Crawler"
+			],
+		"2":[
+				"CNN Indonesia Crawler",
+				"Kompas News Crawler",
+				"Otosia Crawler"
+			],
+		"2":[
+				"Detik Forum Crawler",
+				"Kaskus Crawler",
+				"Modifikasi Crawler",
+				"Tsikot Crawler",
+				"Livinginindonesiaforum Crawler"
 			]
 	},
 	"converter":{

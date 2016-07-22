@@ -7,7 +7,7 @@ class Crawler(Template):
 	TEST_TEMPLATE = "crawler_test.arct"
 	DB_SERVER_ADDRESS = "mongo:27017"
 	DB_SERVER_NAME = "livinginindonesiaforum"
-	CRAWLER_NAME = "livinginindonesiaforum Crawler"
+	CRAWLER_NAME = "Livinginindonesiaforum Crawler"
 	LINK_TO_CRAWL = [
 		"http://www.livinginindonesiaforum.org/forum/family-corner/family-life-in-indonesia",
 		"http://www.livinginindonesiaforum.org/forum/family-corner/education",

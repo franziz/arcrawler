@@ -44,46 +44,18 @@ import dateparser
 from lib.network_tools import NetworkTools
 from lib import tools
 
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=23033&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=21495&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=16492&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=23223&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=6694&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=13243&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=4156&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=4030&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=23710&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=23630&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=23074&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=23091&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=22915&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=22181&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=22057&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=21848&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=21761&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=21639&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=21505&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=21517&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=15644&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=21462&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=21291&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=64&t=21096&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=20478&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=20077&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=20047&
-# https://www.serayamotor.com/diskusi/./viewtopic.php?f=13&t=19864&
-
 net = NetworkTools(use_proxy=False)
-page = net.parse("https://www.serayamotor.com/diskusi/viewtopic.php?f=13&t=21495&")
-posts = tools._xpath(page,"concat('diskusi/',(//div[@class='pagination']//ul//li[not(contains(@class,'next'))]//a)[last()]//@href)")
-print(posts)
+page = net.parse("http://www.aeracingclub.net/forums/index.php?topic=122028.0")
+from lxml import etree
+print(etree.tostring(page,pretty_print=True))
+# posts = tools._xpath(page,"//form[@id='quickModForm']/table/tbody//tr")
 # for post in posts:
-# 	hasil = "".join(tools._xpath(post,".//strong/a[re:test(@class,'username*')]//text()"))
+# 	hasil = "".join(tools._xpath(post,".//div[re:test(@id,'subject_*')]/following-sibling::div[1]/text()"))
 # 	hasil = tools._clean_string(hasil)
 # 	# print(tools._expand_link("https://www.serayamotor.com/",hasil))
 # 	# print(tools._date_parser(hasil))
 # 	print(hasil.encode("utf-8"))
-# 	# print(dateparser.parse(hasil))
+# 	print(dateparser.parse(hasil))
 
 # import dateparser
 # import ftfy

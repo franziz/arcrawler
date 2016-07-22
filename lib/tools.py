@@ -78,13 +78,13 @@ def _date_parser(str_date=None):
 	except AttributeError as attr_err:
 		print("[error] {}".format(str_date.encode("utf-8")))
 		print("[error] DATE ERROR!")
-		# result = arrow.utcnow().datetime
-		raise
+		result = arrow.utcnow().datetime
+		# raise
 	except ValueError as value_error:
 		print("[error] {}".format(str_date.encode("utf-8")))
 		print("[error] DATE ERROR!")
-		# result = arrow.utcnow().datetime
-		raise
+		result = arrow.utcnow().datetime
+		# raise
 	except:
 		raise
 	#end try

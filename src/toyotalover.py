@@ -60,7 +60,6 @@ class Crawler(Template):
 			"data_type": "string",
 			"concat":True,
 			"xpath":".//div[@class='post']//text()"
-			# "xpath":"concat(.//div[@class='post']//text()[2],.//div[@class='post']//text()[3])"
 		}},
 		{"permalink": {
 			"single": True,

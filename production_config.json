@@ -4,7 +4,7 @@
 		"1":[
 				"Accordclubthailand Crawler",
 				"Aethailand Crawler",
-				"Attrage2 Crawler",
+				"Attrage Crawler",
 				"Camry2012club Crawler",
 				"Captiva-club Crawler",
 				"Cb3thailand Crawler",
@@ -12,7 +12,7 @@
 				"Community Headlightmag Crawler",
 				"Gearheads Crawler",
 				"Gensansale Crawler",
-				"Newaltisthailandclub2 Crawler",
+				"Newaltisthailandclub Crawler",
 				"Newdmaxclub Crawler",
 				"Otofun Crawler",
 				"Otosaigon Crawler",
@@ -32,7 +32,8 @@
 				"Detik Forum Crawler",
 				"Kaskus Crawler",
 				"Modifikasi Crawler",
-				"Tsikot Crawler"
+				"Tsikot Crawler",
+				"Livinginindonesiaforum Crawler"
 			]
 	},
 	"converter":{
