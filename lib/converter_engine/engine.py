@@ -45,7 +45,9 @@ class Engine(object):
 		for key,value in self.files.items():
 			db        = MongoClient("mongodb://{}".format(value["db"]["address"]))
 			db        = db[value["db"]["name"]]
-			documents = [document for document in db.data.find({"$or":[{"converted":None},{"converted":False}]})]
+			documents = [document for document in db.data.find(
+							{"$where": "(this.converted == null || this.converted==false) && this.published_date <= this._insert_time"},
+						)]
 			documents = tqdm(documents)
 			for document in documents:
 				_id = document["permalink"] if "permalink" in document else document["url"] if "url" in document else None
