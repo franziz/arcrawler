@@ -175,28 +175,6 @@ def import_crawler(crawler=None):
 	return crawler
 #end def
 
-def build_consumer(templates=None, config=None):
-	""" This is consumer for running all the crawlers.
-	    Please modify the consumer template if you want to do something with the crawler.
-
-	    Assumption:
-	    - All consumer will run any crawler which has same data structure
-	"""
-	_templates = templates if templates is not None else TEMPLATES
-	_config    = config    if config    is not None else CONFIG
-
-	assert _templates is not None, "templates is not defined."
-	assert _config    is not None, "config is not defined."
-
-	_print_log("Building consumer...")
-	consumer_template = _templates["consumer.arct"]
-	consumer_template = consumer_template.replace("$MAX_THREAD",str(config["workers"]))
-	with open("./build/runners/consumer.py","w") as f:
-		f.write(consumer_template)
-		f.close()
-	#end with
-#end def
-
 def read_template(location="./templates"):
 	_print_log("Reading templates...")
 	

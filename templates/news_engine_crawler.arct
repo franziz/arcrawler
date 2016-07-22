@@ -20,42 +20,46 @@ class Crawler(object):
 
 		tools._force_create_index(db=self.db, collection="data", field="permalink")
 
-		self.engine                         = Engine()
-		self.engine.network_tools           = $NETWORK_TOOLS
-		self.engine.domain                  = $LINK_TO_CRAWL
-		self.engine.title_fallback          = json.loads($TITLE_FALLBACK)
-		self.engine.content_fallback        = json.loads($CONTENT_FALLBACK)
-		self.engine.published_date_fallback = json.loads($PUBLISHED_DATE_FALLBACK)
-		self.engine.author_name_fallback    = json.loads($AUTHOR_NAME_FALLBACK)
+		self.engine                      = Engine()
+		self.engine.network_tools        = $NETWORK_TOOLS
+		self.engine.url                  = $LINK_TO_CRAWL
+		self.engine.title_xpath          = $TITLE_XPATH
+		self.engine.author_name_xpath    = $AUTHOR_NAME_XPATH
+		self.engine.content_xpath        = $CONTENT_XPATH
+		self.engine.published_date_xpath = $PUBLISHED_DATE_XPATH
 	#end def
 
 	def crawl(self):
 		assert self.engine is not None, "engine is not defined."
 		assert self.db is not None, "db is not defined."
 
-		for url in self.engine.urls:
+		self.engine.parse()
+		self.engine.extract()
+		for article in self.engine.articles:
 			try:
 				str_processing = "[{CRAWLER_NAME}] Processing: {URL}".format(
 					CRAWLER_NAME = self.crawler_name,
-					         URL = url
+					         URL = article.url.encode("utf-8")
 				)
-				print(str_processing.encode("utf-8"))
-				self.engine.parse(url=url)
+				print(str_processing)
 
-				assert self.engine.content     is not None, "result has to have content."
-				assert self.engine.title       is not None, "result has to have title."
-				assert self.engine.author_name is not None, "result has to have author_name"
+				assert article.content     is not None, "result has to have content."
+				assert article.content                , "content cannot be empty"
+				assert article.title       is not None, "result has to have title."
+				assert article.title                  , "title cannot be empty"
+				assert article.author_name is not None, "result has to have author_name"
+				assert article.author_name            , "author_name cannot be empty"
 
-				published_date = self.engine.published_date if self.engine.published_date is not None else arrow.utcnow().datetime
 				self.db.data.insert_one({
-					     "permalink": self.engine.url,
-					       "content": self.engine.content,
-					         "title": self.engine.title,
-					"published_date": self.engine.published_date,
-					   "author_name": self.engine.author_name,
+					     "permalink": article.url,
+					       "content": article.content,
+					         "title": article.title,
+					"published_date": article.published_date,
+					   "author_name": article.author_name,
 					  "_insert_time": arrow.utcnow().datetime,
 					      "_country": self.country,
-					   "_crawled_by": self.crawler_name
+					   "_crawled_by": self.crawler_name,
+					  "_source_type": "news"
 				})
 				print("[{}] Inserted one document.".format(self.crawler_name))				
 			except pymongo.errors.DuplicateKeyError as duplicate:

@@ -9,11 +9,43 @@ class Crawler(Template):
 	DB_SERVER_NAME = "theautomotiveindia"
 	CRAWLER_NAME = "Theautomotiveindia Crawler"
 	LINK_TO_CRAWL = [
+                "http://www.theautomotiveindia.com/forums/announcements/",
+                "http://www.theautomotiveindia.com/forums/introductions/",
                 "http://www.theautomotiveindia.com/forums/indian-auto-sector/",
                 "http://www.theautomotiveindia.com/forums/global-auto-sector/",
+                "http://www.theautomotiveindia.com/forums/two-wheelers/",
+                "http://www.theautomotiveindia.com/forums/nostalgic-era/",
                 "http://www.theautomotiveindia.com/forums/automotive-library/",
+                "http://www.theautomotiveindia.com/forums/automotive-reviews/",
+                "http://www.theautomotiveindia.com/forums/official-road-tests/",
                 "http://www.theautomotiveindia.com/forums/test-drive-reviews/",
-                "http://www.theautomotiveindia.com/forums/ownership-reviews/"
+                "http://www.theautomotiveindia.com/forums/ownership-reviews/",
+                "http://www.theautomotiveindia.com/forums/dealership-reviews/",
+                "http://www.theautomotiveindia.com/forums/automotive-answers/",
+                "http://www.theautomotiveindia.com/forums/technical-zone/",
+                "http://www.theautomotiveindia.com/forums/maintaining-my-ride/",
+                "http://www.theautomotiveindia.com/forums/loan-insurance-rto/",
+                "http://www.theautomotiveindia.com/forums/accessories-modifications/",
+                "http://www.theautomotiveindia.com/forums/do-yourself/",
+                "http://www.theautomotiveindia.com/forums/car-entertainment/",
+                "http://www.theautomotiveindia.com/forums/aftermarket-reviews/",
+                "http://www.theautomotiveindia.com/forums/product-reviews/",
+                "http://www.theautomotiveindia.com/forums/services-reviews/",
+                "http://www.theautomotiveindia.com/forums/automotive-shopper/",
+                "http://www.theautomotiveindia.com/forums/car-shopper/",
+                "http://www.theautomotiveindia.com/forums/bike-shopper/",
+                "http://www.theautomotiveindia.com/forums/motorsports-rallies/",
+                "http://www.theautomotiveindia.com/forums/indian-motorsports/",
+                "http://www.theautomotiveindia.com/forums/international-motorsports/",
+                "http://www.theautomotiveindia.com/forums/voyage-junction/",
+                "http://www.theautomotiveindia.com/forums/travel-itinerary/",
+                "http://www.theautomotiveindia.com/forums/road-safety-driving-sense/",
+                "http://www.theautomotiveindia.com/forums/4x4s-off-road-adventures/",
+                "http://www.theautomotiveindia.com/forums/member-s-lounge/",
+                "http://www.theautomotiveindia.com/forums/gadgets-more/",
+                "http://www.theautomotiveindia.com/forums/automotive-meets/",
+                "http://www.theautomotiveindia.com/forums/development-nook/",
+                ##"http://www.theautomotiveindia.com/forums/support-feedback/"	
 	]
 	COUNTRY = "IND"
 	THREAD_XPATH = "//tr//td[re:test(@id,'td_threadtitle_*')]"

@@ -58,6 +58,7 @@ class Engine(object):
 				new_document                              = MentionTemplate()
 				new_document.MentionId                    = hashlib.sha256(_id.encode("utf-8")).hexdigest() 
 				new_document.MentionText                  = document["content"]
+				new_document.MentionMiscInfo			  = document["_thread_link"] if "_thread_link" in document else ""
 				new_document.MentionType                  = "forum_post"
 				new_document.MentionDirectLink            = document["permalink"]
 				new_document.MentionCreatedDate           = document["published_date"]

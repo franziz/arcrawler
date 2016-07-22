@@ -1,7 +1,10 @@
+unit_test.py
+production_config.json
 build/
 tests/
 ghostdriver.log
 unit_tests.py
+config.json
 # Created by https://www.gitignore.io/api/python,git
 
 ### Python ###
