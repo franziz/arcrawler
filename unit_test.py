@@ -29,26 +29,10 @@
 # from lib.network_tools      import NetworkTools
 # import bson.json_util
 
-# news                      = Engine()
-# news.network_tools        = NetworkTools(use_proxy=False)
-# news.url                  = "http://www.otosia.com/"
-# news.title_xpath          = "//h1[@class='OtoDetailT']/text()"
-# news.author_name_xpath    = "concat('otosia','')"
-# news.content_xpath        = "//div[@class='OtoDetailNews']//p/text()"
-# news.published_date_xpath = "//h1[@class='OtoDetailT']/following-sibling::span[1]/text()"
-# news.parse()
-# news.extract()
-# print(bson.json_util.dumps(news.articles[0].to_dict(), indent=4, separators=(",",":")))
-
-import dateparser
-from lib.network_tools import NetworkTools
-from lib import tools
-
-net = NetworkTools(use_proxy=False)
-page = net.parse("http://www.aeracingclub.net/forums/index.php?topic=122028.0")
-from lxml import etree
-print(etree.tostring(page,pretty_print=True))
-# posts = tools._xpath(page,"//form[@id='quickModForm']/table/tbody//tr")
+# net = NetworkTools(use_proxy=False)
+# page = net.parse("http://httpbin.org/get")
+# posts = tools._xpath(page,"//ol[@id='messageList']//li[re:test(@id,'post-*')]")
+# print(len(posts))
 # for post in posts:
 # 	hasil = "".join(tools._xpath(post,".//div[re:test(@id,'subject_*')]/following-sibling::div[1]/text()"))
 # 	hasil = tools._clean_string(hasil)
