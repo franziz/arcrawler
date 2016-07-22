@@ -64,6 +64,7 @@ try:
 	#end for	
 
 	# updating monitor status for queue
+	builder._print_log("Saving to database...")
 	for document in new_documents:
 		crawler_hash = copy.copy(document["hash"])
 		old_data     = [doc for doc in db.queue.find({"hash":crawler_hash})]
