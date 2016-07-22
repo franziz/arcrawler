@@ -9,27 +9,40 @@ class Crawler(Template):
 	DB_SERVER_NAME = "cb3thailand"
 	CRAWLER_NAME = "Cb3thailand Crawler"
 	LINK_TO_CRAWL = [
-		"http://www.cb3thailand.com/index.php?board=11.0",
+                "http://www.cb3thailand.com/index.php?board=20.0",
+                "http://www.cb3thailand.com/index.php?board=2.0",
+                "http://www.cb3thailand.com/index.php?board=5.0",
+                "http://www.cb3thailand.com/index.php?board=8.0",
                 "http://www.cb3thailand.com/index.php?board=6.0",
+                "http://www.cb3thailand.com/index.php?board=23.0",
+                "http://www.cb3thailand.com/index.php?board=9.0",  ## High Frequency ##
+                "http://www.cb3thailand.com/index.php?board=17.0",
+                "http://www.cb3thailand.com/index.php?board=10.0",
+                "http://www.cb3thailand.com/index.php?board=11.0",
+                "http://www.cb3thailand.com/index.php?board=51.0",
+                "http://www.cb3thailand.com/index.php?board=52.0",
+                "http://www.cb3thailand.com/index.php?board=14.0",
+                "http://www.cb3thailand.com/index.php?board=15.0",
+                "http://www.cb3thailand.com/index.php?board=16.0"
         ]
 	COUNTRY = "THA"
 	THREAD_XPATH = "//span[re:test(@id,'msg_*')]"
 	THREAD_LINK_XPATH = "./a/@href"
 	LAST_PAGE_XPATH = "(//div[@class='pagelinks floatleft']//a[@class='navPages'])[last()]/@href"
 	PREV_XPATH = "(//div[@class='pagesection']//div[@class='pagelinks floatleft']//strong)[1]//preceding-sibling::a[@class='navPages'][1]/@href"
-	POST_XPATH = "//form[@id='quickModForm']//div[@class='windowbg']"
+	POST_XPATH = "//form[@id='quickModForm']//div[@class='windowbg' or @class='windowbg2']"
 	FIELDS = [ 
-                {"published_date": {
+		{"published_date": {
 			"single": True,
 			"data_type": "date",
 			"concat": False,
-			"xpath": "normalize-space(substring-before((.//div[@class='postarea']//div[@class='keyinfo']//div[@class='smalltext']//text())[last()],'»'))"
+			"xpath": "substring-before(concat(..//div[@class='postarea']//div[@class='keyinfo']//div[@class='smalltext']/text()[2],..//div[@class='postarea']//div[@class='keyinfo']//div[@class='smalltext']/text()[3]),'»')"
 		}},
 		{"author_name":{
 			"single":True,
 			"data_type": "string",
 			"concat":False,
-                        "xpath": ".//div[@class='poster']//h4//a//text()"
+			"xpath": ".//div[@class='poster']//h4//a//text()"
 		}},
 		{"content":{
 			"single":True,
@@ -47,7 +60,7 @@ class Crawler(Template):
 			"single":True,
 			"data_type": "string",
 			"concat":False,
-                        "xpath":"normalize-space(substring-before(substring-after(//h3[@class='catbg']//text()[3],': '),'('))"
+			"xpath":"normalize-space(substring-before(substring-after(//h3[@class='catbg']//text()[3],': '),'('))"
 		}}       
 	]
 	CONDITIONS={

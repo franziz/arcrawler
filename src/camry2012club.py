@@ -9,7 +9,24 @@ class Crawler(Template):
 	DB_SERVER_NAME = "camry2012club"
 	CRAWLER_NAME = "Camry2012club Crawler"
 	LINK_TO_CRAWL = [
-		"http://camry2012club.com/webboard/index.php?board=3.0"
+		"http://camry2012club.com/webboard/index.php?board=1.0",
+		"http://camry2012club.com/webboard/index.php?board=2.0",
+		"http://camry2012club.com/webboard/index.php?board=3.0",
+		"http://camry2012club.com/webboard/index.php?board=17.0",
+		"http://camry2012club.com/webboard/index.php?board=14.0",
+		"http://camry2012club.com/webboard/index.php?board=5.0",
+		"http://camry2012club.com/webboard/index.php?board=4.0",
+		"http://camry2012club.com/webboard/index.php?board=20.0",
+		"http://camry2012club.com/webboard/index.php?board=18.0",
+		"http://camry2012club.com/webboard/index.php?board=21.0",
+		"http://camry2012club.com/webboard/index.php?board=6.0",
+		"http://camry2012club.com/webboard/index.php?board=9.0",
+		"http://camry2012club.com/webboard/index.php?board=8.0",
+		"http://camry2012club.com/webboard/index.php?board=7.0",
+		"http://camry2012club.com/webboard/index.php?board=10.0",
+		"http://camry2012club.com/webboard/index.php?board=12.0",
+		"http://camry2012club.com/webboard/index.php?board=22.0",
+		"http://camry2012club.com/webboard/index.php?board=11.0"
 	]
 	COUNTRY = "THA"
 	THREAD_XPATH = "//tr//span[re:test(@id,'msg_*')]"
@@ -22,7 +39,7 @@ class Crawler(Template):
 		 	"single": True,
 		 	"data_type": "date",
 		 	"concat": False,
-		 	"xpath": "normalize-space(substring-before(.//div[@class='keyinfo']//div[@class='smalltext']//text()[2],'»'))"
+		 	"xpath": "substring-before(concat(.//div[@class='keyinfo']//div[@class='smalltext']/text()[2],substring-after(.//div[@class='keyinfo']//div[@class='smalltext']/text()[3],'เวลา')),'»')"
 		}},
 		{"permalink": {
 			"single": True,

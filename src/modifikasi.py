@@ -181,7 +181,7 @@ class Crawler(Template):
                "http://www.modifikasi.com/forumdisplay.php/383-Lain-Lainnya"
           ]                         
      COUNTRY = "IDN"
-     THREAD_XPATH = "//ol//li[re:test(@id,'thread*')]"
+     THREAD_XPATH = "//ol[@id='threads']/li[re:test(@class,'threadbit (?!deleted)')]"
      THREAD_LINK_XPATH = ".//h3[@class='threadtitle']//a[@class='title']/@href"
      LAST_PAGE_XPATH = "//span[@class='first_last']/a/@href"
      PREV_XPATH = "//span[@class='prev_next']/a[@rel='prev']/@href"
