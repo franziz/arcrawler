@@ -68,7 +68,7 @@ class Engine(object):
 				new_document.MentionCreatedDate           = document["published_date"]
 				new_document.MentionCreatedDateISO        = document["published_date"]
 				new_document.AuthorId                     = document["author_id"] if "author_id" in document else document["author_name"]
-				new_document.AuthorName                   = new_document.AuthorId
+				new_document.AuthorName                   = document["author_name"]
 				new_document.AuthorDisplayName            = document["author_name"]
 				new_document.SourceType                   = "Forums"
 				new_document.SourceName                   = source_name
