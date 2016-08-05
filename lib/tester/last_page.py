@@ -5,7 +5,7 @@ class LastPageTester(BaseTester):
 		self.source = source
 		pass
 
-	def test(self, object_to_test=None):
+	def test(self, object_to_test=None, link=None):
 		""" The test function of LastPageTester will not throw any exception
 			because of the nature of LastPage. Some of the forum can have 0 last page
 		"""

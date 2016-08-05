@@ -7,7 +7,7 @@ class DateTester(FieldTester):
 	def __init__(self, **kwargs):
 		super(DateTester, self).__init__(**kwargs)
 
-	def test(self, object_to_test=None):
+	def test(self, object_to_test=None, link=None):
 		try:
 			assert object_to_test is not None, "object_to_test is not defined."
 			str_date = copy.copy(object_to_test)

@@ -6,7 +6,7 @@ class Tester(object):
 	def __init__(self):
 		pass
 
-	def test(self, object_to_test=None):
+	def test(self, object_to_test=None, link=None):
 		assert object_to_test is not None, "object_to_test is not defined."
 
 		if len(object_to_test) == 0:

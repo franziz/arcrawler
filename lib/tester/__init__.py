@@ -55,7 +55,7 @@ class Tester(object):
 						children = tools._xpath(parent=parent, syntax=child_xpath)
 						tester.test(children)
 				else:
-					tester.test(parents)
+					tester.test(parents, link=link)
 			# Sometimes preparator.get_links() returns nothing.
 			# As a result, the xpath_test() should return me False or Failed
 			return True if has_link else False
