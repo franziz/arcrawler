@@ -30,5 +30,5 @@ class PostPreparator(BasePreparator):
 				result = copy.copy(link[0]) # Assuming that LAST_PAGE_XPATH will return the same array content.
 			result_links.append(result)
 		if self.last_post_only:
-			return [result_links[-1]]
+			return [result_links[-1]] if len(result_links) > 0 else []
 		return result_links

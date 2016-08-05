@@ -39,7 +39,9 @@ class Tester(object):
 		assert tester		is not None, "test is not defined."
 
 		try:
+			has_link = False
 			for link in preparator.get_links(source):
+				has_link = True
 				print("[test][debug][{}] Link: {}".format(source.CRAWLER_NAME, link))
 				page = source.NETWORK_TOOLS.parse(link, parse=False)				
 
@@ -54,7 +56,9 @@ class Tester(object):
 						tester.test(children)
 				else:
 					tester.test(parents)
-			return True
+			# Sometimes preparator.get_links() returns nothing.
+			# As a result, the xpath_test() should return me False or Failed
+			return True if has_link else False
 		except lxml.etree.XPathEvalError:
 			print(fmtstr("[test][error][{}] XPATH is not valid.".format(source.CRAWLER_NAME), "red"))
 			return False

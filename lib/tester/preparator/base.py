@@ -1,6 +1,7 @@
 from ..exceptions import TestIsNotPassed
 from ...	 	  import tools
 import random
+import math
 
 class Preparator(object):
 	""" This class will help the tester function to prepare the link_to_crawl
@@ -13,7 +14,7 @@ class Preparator(object):
 	def get_links(self, source=None):
 		assert source is not None, "source is not defined."
 
-		sample_link = random.sample(source.LINK_TO_CRAWL, int(len(source.LINK_TO_CRAWL)*0.1))
+		sample_link = random.sample(source.LINK_TO_CRAWL, math.ceil(len(source.LINK_TO_CRAWL)*0.1))
 		return sample_link
 
 		

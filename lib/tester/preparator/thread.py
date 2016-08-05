@@ -1,6 +1,7 @@
 from ..    import tools
 from .base import Preparator as BasePreparator
 import copy
+import math
 
 class ThreadPreparator(BasePreparator):
 	def __init__(self):
@@ -23,13 +24,13 @@ class ThreadPreparator(BasePreparator):
 		for link in sample_link_to_crawl:
 			page    = source.NETWORK_TOOLS.parse(link)
 			threads = tools._xpath(page, source.THREAD_XPATH)
-			threads = threads[:int(len(threads)*0.1)] # Only get top 10% of the data, assuming that 
-													  # all the new post is on top of the list.
-													  # Some questions can be raised from here. For example, 
-													  # Why need to get top list of the thread?
-													  # The answer is simple, I found trouble in parsing a date from
-													  # most recent post. Therefore, the top threads are the most recent
-													  # post.
+			threads = threads[:math.ceil(len(threads)*0.1)] # Only get top 10% of the data, assuming that 
+													  		# all the new post is on top of the list.
+													  		# Some questions can be raised from here. For example, 
+													  		# Why need to get top list of the thread?
+													  		# The answer is simple, I found trouble in parsing a date from
+													  		# most recent post. Therefore, the top threads are the most recent
+													  		# post.
 			for thread in threads:
 				thread_links     = tools._xpath(thread, source.THREAD_LINK_XPATH)
 				all_thread_links = all_thread_links + copy.deepcopy(thread_links)
