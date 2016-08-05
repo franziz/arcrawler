@@ -87,8 +87,9 @@ class Engine(object):
 	#end def
 
 	def get_threads(self):
-		assert self.link_to_crawl is not None, "Link to Crawl is not defined."
-		assert self.thread_xpath  is not None, "Thread XPATH is not defined."
+		assert self.link_to_crawl is not None, "link_to_crawl is not defined."
+		assert self.thread_xpath  is not None, "thread_xpath is not defined."
+		assert self.network_tools is not None, "network_tools is not defined."
 
 		tree         = self.network_tools.parse(self.link_to_crawl)
 		self.threads = tools._xpath(parent=tree, syntax=self.thread_xpath)
