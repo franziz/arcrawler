@@ -1,34 +1,122 @@
-from lib.forum_engine import exceptions
-import glob
-import importlib
+from lib.tester.preparator.thread import ThreadPreparator
+from lib.tester.preparator.post   import PostPreparator
+from lib.tester.last_page         import LastPageTester
+from lib.tester.date 		 	  import DateTester
+from lib.tester.string 		  	  import StringTester
+from lib.tester.url 			  import UrlTester
+from lib.tester 				  import Tester, exceptions
+from lib 						  import tools
+from curtsies					  import fmtstr
+import lxml
+import copy
 
-crawlers = glob.glob("./tests/*.py")
-crawlers = [crawler.replace("./tests/","").replace(".py","") for crawler in crawlers]
+if __name__ == "__main__":
+	tester    = Tester()
+	sources   = tester.get_sources()
+	summaries = []
+	for source in sources:
+		summary = []
 
-assert len(crawlers)>0, "Cannot find test files."
+		# ======================================================================
+		#                            THREAD_XPATH                               
+		# ======================================================================
+		print("[test][debug] Testing THREAD_XPATH")
+		success = tester.xpath_test(
+			      source = source, 
+			parent_xpath = source.THREAD_XPATH
+		)
+		if success:
+			summary.append(("THREAD_XPATH", "SUCCESS"))
+			print(fmtstr("[test][success] THREAD_XPATH test passed!", "green"))
+		else:
+			summary.append(("THREAD_XPATH", fmtstr("FAILED","red")))
 
-print("Which crawler do you want to test?")
-for idx,crawler in enumerate(crawlers):
-	print("{}. {}".format(idx+1, crawler))
-#end for
-print("{}. All".format(len(crawlers)+1))
 
-try:
-	selection = input("Selection: ")
-	selection = int(selection)
-except:
-	raise exceptions.ConversionError("Cannot convert data type")
-#end try
+		# ======================================================================
+		#                            THREAD_LINK_XPATH                               
+		# ======================================================================
+		print("[test][debug] Testing THREAD_LINK_XPATH")
+		success = tester.xpath_test(
+			      source = source,
+			parent_xpath = source.THREAD_XPATH,
+			 child_xpath = source.THREAD_LINK_XPATH
+		)
+		if success:
+			summary.append(("THREAD_LINK_XPATH", "SUCCESS"))
+			print(fmtstr("[test][success] THREAD_LINK_XPATH test passed!", "green"))
+		else:
+			summary.append(("THREAD_LINK_XPATH", fmtstr("FAILED","red")))
 
-assert selection >= 1 and selection <= len(crawlers)+1, "Invalid input."
+		# ======================================================================
+		#                            LAST_PAGE_XPATH                               
+		# ======================================================================
+		print("[test][debug] Testing LAST_PAGE_XPATH")
+		success = tester.xpath_test(
+			      source = source,
+			  preparator = ThreadPreparator(),
+			parent_xpath = source.LAST_PAGE_XPATH,
+			      tester = LastPageTester(source) # Why need LastPageTester()?
+			      								  # Because the testing logic is slightly different from BaseTester, therefore
+		)
+		if success:
+			summary.append(("LAST_PAGE_XPATH", "SUCCESS"))
+			print(fmtstr("[test][success] LAST_PAGE_XPATH test passed!", "green"))
+		else:
+			summary.append(("LAST_PAGE_XPATH", fmtstr("FAILED","red")))
 
-selection = selection - 1
-crawlers  = [crawlers[selection]] if selection != len(crawlers) else crawlers
-for crawler in crawlers:
-	print("Testing: {}".format(crawler))
-	crawler = importlib.import_module(
-		"tests.{}".format(crawler)
-	)
-	crawler = crawler.Crawler()
-	crawler.crawl()
-#end for
+		# ======================================================================
+		#                              POST_XPATH                               
+		# ======================================================================
+		print("[test][debug] Testing POST_XPATH")
+		success = tester.xpath_test(
+				  source = source,
+			  preparator = PostPreparator(),
+			parent_xpath = source.POST_XPATH
+		)
+		if success:
+			summary.append(("POST_XPATH", "SUCCESS"))
+			print(fmtstr("[test][success] POST_XPATH test passed!", "green"))
+		else:
+			summary.append(("POST_XPATH", fmtstr("FAILED","red")))
+
+
+		# ======================================================================
+		#                              FIELDS                               
+		# ======================================================================
+		for field in source.FIELDS:
+			items 			   = list(field.items())[0]
+			field_name, values = items
+
+			print("[test][debug] Testing \"{}\" field".format(field_name))
+			success          = False
+			field_tester     = None
+			field_preparator = PostPreparator()
+			if values["data_type"] == "date":
+				field_tester = DateTester(source=source, concat=values["concat"], single=values["single"])
+			elif values["data_type"] == "string":
+				field_tester = StringTester(source=source, concat=values["concat"], single=values["single"])
+			elif values["data_type"] == "url":
+				field_tester 	 = UrlTester(source=source, concat=values["concat"], single=values["single"])
+				field_preparator = PostPreparator(last_post_only=True)
+			success = tester.xpath_test(
+				      source = source,
+				  preparator = field_preparator,
+				parent_xpath = source.POST_XPATH,
+				 child_xpath = values["xpath"],
+				      tester = field_tester
+			)
+			if success:
+				summary.append((field_name.upper(), "SUCCESS"))
+				print(fmtstr("[test][success] \"{}\" test passed!".format(field_name), "green"))
+			else:
+				summary.append((field_name.upper(), fmtstr("FAILED","red")))
+		summaries.append((source.CRAWLER_NAME, copy.copy(summary)))
+	for summary in summaries:
+		crawler_name, summary = summary
+		print("============================================")
+		print("NAME: {}".format(crawler_name))
+		for result in summary:
+			field, status = result
+			print("{}: {}".format(field.upper(), status.upper()))
+		print("============================================")
+#end if
