@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 from .exceptions  import TestIsNotPassed
 from .base 		  import FieldTester
+from .. 		  import tools
 import lxml
 import copy
 

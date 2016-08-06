@@ -1,5 +1,6 @@
-from ..    import tools
-from .base import Preparator as BasePreparator
+from ..    		  import tools
+from .base 		  import Preparator as BasePreparator
+from urllib.parse import urlparse
 import copy
 import math
 
@@ -22,6 +23,7 @@ class ThreadPreparator(BasePreparator):
 
 		all_thread_links 	 = []
 		for link in sample_link_to_crawl:
+			domain  = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(link))
 			page    = source.NETWORK_TOOLS.parse(link)
 			threads = tools._xpath(page, source.THREAD_XPATH)
 			threads = threads[:math.ceil(len(threads)*0.1)] # Only get top 10% of the data, assuming that 
@@ -32,6 +34,7 @@ class ThreadPreparator(BasePreparator):
 													  		# most recent post. Therefore, the top threads are the most recent
 													  		# post.
 			for thread in threads:
-				thread_links     = tools._xpath(thread, source.THREAD_LINK_XPATH)
-				all_thread_links = all_thread_links + copy.deepcopy(thread_links)
+				thread_links 	 = tools._xpath(thread, source.THREAD_LINK_XPATH)
+				thread_links 	 = [tools._expand_link(domain, l) for l in thread_links]
+				all_thread_links = all_thread_links + thread_links
 		return all_thread_links
