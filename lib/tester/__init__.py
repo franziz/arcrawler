@@ -42,7 +42,7 @@ class Tester(object):
 			has_link = False
 			for link in preparator.get_links(source):
 				has_link = True
-				print("[test][debug][{}] Link: {}".format(source.CRAWLER_NAME, link))
+				print("[test][debug][{}] Link: {}".format(source.CRAWLER_NAME, link.encode("utf-8")))
 				page = source.NETWORK_TOOLS.parse(link, parse=False)				
 
 				if page == "<html></html>":
