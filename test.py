@@ -15,6 +15,7 @@ if __name__ == "__main__":
 	sources   = tester.get_sources()
 	summaries = []
 	for source in sources:
+		print("[test][debug] Testing: {}".format(source.CRAWLER_NAME))
 		summary = []
 
 		# ======================================================================
