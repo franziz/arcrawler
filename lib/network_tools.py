@@ -64,13 +64,13 @@ class NetworkTools(object):
 				proxy_is_ok = False
 			except lxml.etree.XMLSyntaxError:
 				print("Ops! Something wrong. Leave it~")
-				_html       = html.fromstring("<html></html>") if parse else "<html></html>"
+				_html       = html.fromstring("<html><head></head><body></body></html>") if parse else "<html></html>"
 				proxy_is_ok = True
 			except:
 				raise
 		# proxy_is_ok == False only when max_tried exceed.
 		if proxy_is_ok == False:
-			_html = html.fromstring("<html></html>") if parse else "<html></html>"
+			_html = html.fromstring("<<html><head></head><body></body></html>") if parse else "<html></html>"
 		return _html
 	#end def
 #end class

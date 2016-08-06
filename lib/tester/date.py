@@ -2,6 +2,7 @@ from .base 		 import FieldTester
 from .exceptions import TestIsNotPassed
 from .. 		 import tools
 import copy
+import arrow
 
 class DateTester(FieldTester):
 	def __init__(self, **kwargs):
@@ -10,6 +11,8 @@ class DateTester(FieldTester):
 	def test(self, object_to_test=None, link=None):
 		try:
 			assert object_to_test is not None, "object_to_test is not defined."
+			if len(object_to_test) == 0: 
+				raise TestIsNotPassed("No test object.")
 			str_date = copy.copy(object_to_test)
 			str_date = self._prepare_value(str_date)
 

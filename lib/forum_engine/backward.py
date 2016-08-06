@@ -32,8 +32,8 @@ class Backward(object):
 	#end def
 
 	def get_posts(self):
-		assert self.current_page is not None, "Current Page is not defined."
-		assert self.post_xpath is not None, "Post XPATH is not defined."
+		assert self.current_page is not None, "current_page is not defined."
+		assert self.post_xpath is not None, "post_xpath is not defined."
 
 		posts = tools._xpath(parent=self.current_page, syntax=self.post_xpath)
 		posts = list(reversed(posts))
@@ -42,8 +42,8 @@ class Backward(object):
 	#end def
 
 	def next(self):
-		assert self.prev_xpath is not None, "Prev XPATH is not defined."
-		assert self.domain is not None, "Domain is not defined."
+		assert self.prev_xpath is not None, "prev_xpath is not defined."
+		assert self.domain is not None, "domain is not defined."
 
 		prev_link = tools._xpath(parent=self.current_page, syntax=self.prev_xpath)
 

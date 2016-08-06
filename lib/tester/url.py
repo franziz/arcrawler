@@ -16,13 +16,12 @@ class UrlTester(FieldTester):
 			As a result, need to do further check if something goes wrong
 		"""
 		assert object_to_test      is not None, "object_to_test is not defined."
-		assert len(object_to_test) > 0        , "object_to_test cannot be an empty list."
 
-		url    = copy.copy(object_to_test)
-		url    = self._prepare_value(url)
-		domain = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(link))
-		url    = tools._expand_link(domain, url)
+		if len(object_to_test) == 0: 
+				raise TestIsNotPassed("No test object.")
 
+		url     = copy.copy(object_to_test)
+		url     = self._prepare_value(url)				
 		results = []
 		if type(url) is str:
 			results.append(self.validate_url(url))
@@ -35,7 +34,10 @@ class UrlTester(FieldTester):
 		assert url 		   is not None, "url is not defined."
 		assert self.source is not None, "source is not defined."
 
-		html = self.source.NETWORK_TOOLS.parse(url, parse=False)		
+		domain = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.source.LINK_TO_CRAWL[0])) # Using LINK_TO_CRAWL variable will help to make the domain.
+																								   # Assumming that the LINK_TO_CRAWL is a complete URL set.
+		url    = tools._expand_link(domain, url)
+		html   = self.source.NETWORK_TOOLS.parse(url, parse=False)		
 		if html == "<html></html>":
 			return False
 		else:
