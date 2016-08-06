@@ -87,6 +87,14 @@ class Engine(object):
 	#end def
 
 	def get_threads(self):
+		""" As the functionality follows its name, get_threads() function will return you a list of threads
+		 	in the certain category link. This function will only accept if link_to_crawl, thread_xpath, and 
+		 	network_tools variable are set.
+
+		 	The limitation of this function is that the get_threads() function will only get threads
+		 	inside the link_to_crawl. It means only single category level url will be crawled. 
+		 	In order to crawl more than one category level url, you need to call get_threads() several times.
+		"""
 		assert self.link_to_crawl is not None, "link_to_crawl is not defined."
 		assert self.thread_xpath  is not None, "thread_xpath is not defined."
 		assert self.network_tools is not None, "network_tools is not defined."
@@ -97,6 +105,14 @@ class Engine(object):
 	#end def
 
 	def crawl(self, thread=None, callback=None):
+		""" crawl() function accept parameters.
+			- thread   : thread parameter is lxml.html.HtmlElement object. Usually forum has multiple threads.
+			    	 	 However, the function will only accept single thread. In order to accept multi thread
+			    	 	 you need to call the crawl() function several times.
+			- callback : a callback function. The callback function must accept 1 parameter called 'document'.
+						 The callback will be called after finishing one single round of _crawl_posts() function.
+						 So, you will get all the posts in certain page.
+		"""
 		assert thread                  is not None             , "Thread is not defined."
 		assert type(thread)            is lxml.html.HtmlElement, "Wrong Thread type."
 		assert callback                is not None             , "Callback is not defined."
@@ -130,13 +146,21 @@ class Engine(object):
 	#end def
 
 	def crawl_next(self):
+		""" This function is a simple interface that call next() function from the engine method.
+			For example, if you set the engine method is Backward, the crawl_next() function will call
+			next() function inside Backward class. The next() function sometimes can be different 
+			for each engine method.
+		"""
 		self.current_engine.next()
 		self._run_crawler()
 	#end def
 
 	def _run_crawler(self):
-		assert self.current_engine is not None, "Please run Crawl() first."
-		assert self.crawl_callback is not None, "Please run Crawl() first."
+		""" The _run_crawler() function cannot be crawled independently. It should call crawl() function first.
+			Since the crawl() function initialize everything, the _run_crawler() does not need to initialize anything.
+		"""
+		assert self.current_engine is not None, "Please run crawl() first."
+		assert self.crawl_callback is not None, "Please run crawl() first."
 
 		posts     = self.current_engine.get_posts()
 		documents = self._crawl_posts(posts=posts)
@@ -144,6 +168,17 @@ class Engine(object):
 	#end def
 
 	def _crawl_posts(self, posts):
+		""" This function will only crawl from given post. The basic behavior of this function is
+			you give list of posts, and the crawler will crawl the post based on the field set in the
+			src folder.
+
+			The function will return you a list of documents. In normal circumstances, the _crawl_posts() function
+			will return you documents with the same number of the posts that you passed.
+
+			return:
+			- documents : a list of documents. The documents is the result of posts parsing method. It just simply
+						  parse the post in to structured data type.
+		"""
 		documents = []
 		for post in posts:
 
@@ -158,7 +193,7 @@ class Engine(object):
 					tools._assert(len(result) > 0, exceptions.CannotFindXPATH("Cannot find {} given XPATH.".format(field)))
 				except:
 					result = []
-					print("Cannot find {} given XPATH.".format(field))
+					print("[arcrawler][error] Cannot find {} given XPATH.".format(field))
 					# from lxml import etree
 					# print(etree.tostring(post,pretty_print=True))
 				#end try
