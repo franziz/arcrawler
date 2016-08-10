@@ -7,17 +7,20 @@ class StringTester(FieldTester):
 		super(StringTester, self).__init__(**kwargs)
 
 	def test(self, object_to_test=None, link=None):
-		assert object_to_test is not None, "object_to_test is not defined."
-		if len(object_to_test) == 0: 
-				raise TestIsNotPassed("No test object.")
-				
-		string = copy.copy(object_to_test)
-		string = self._prepare_value(string)
+		try:
+			assert object_to_test is not None, "object_to_test is not defined."
+			if len(object_to_test) == 0: 
+					raise TestIsNotPassed("No test object.")
+					
+			string = copy.copy(object_to_test)
+			string = self._prepare_value(string)
 
-		if type(string) is str:
-			if not string:
-				raise TestIsNotPassed("String cannot be empty")
-		elif type(string) is list:
-			if len(string) == 0:
-				raise TestIsNotPassed("String cannot be empty")
-		#end if
+			if type(string) is str:
+				if not string:
+					raise TestIsNotPassed("String cannot be empty")
+			elif type(string) is list:
+				if len(string) == 0:
+					raise TestIsNotPassed("String cannot be empty")
+			#end if
+		except AssertionError:
+			raise TestIsNotPassed("No test object.")

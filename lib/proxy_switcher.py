@@ -60,7 +60,7 @@ class ProxyCrawler(object):
 			except selenium.common.exceptions.TimeoutException as timeout:
 				driver.close()
 				driver.quit()
-				print("Ops! Proxy need to be refreshed!")
+				print("[proxy_switcher][error] Ops! Proxy need to be refreshed!")
 				time.sleep(random.randint(5,60))
 			#end try
 		#end while

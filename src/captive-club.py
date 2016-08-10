@@ -35,6 +35,7 @@ class Crawler(Template):
 			"data_type": "date",
 			"concat": False,
 			"xpath":"concat(./preceding-sibling::div[@class='topbar_post']/div[@class='smalltext']/b/text(),' ',translate((./preceding-sibling::div[@class='topbar_post']/div[@class='smalltext']/text())[last()],' เวลา ',''))"
+			# "xpath":"(.//preceding-sibling::div[@class='topbar_post']//div[@class='smalltext']//text())[last()]"
 		}},
 		{"author_name":{
 			"single":True,
@@ -58,7 +59,7 @@ class Crawler(Template):
 			"single":True,
 			"data_type": "string",
 			"concat":False,
-            "xpath":"normalize-space(substring-before(substring-after(//h3[@class='catbg']//text()[3],': '),'('))"
+                        "xpath":"normalize-space(substring-before(substring-after(//h3[@class='catbg']//text()[3],': '),'('))"
 		}}       
 	]
 	CONDITIONS={

@@ -1,3 +1,24 @@
+from lib 			   import tools
+from lib.network_tools import NetworkTools
+import bson.json_util
+import lxml
+
+if __name__ == "__main__":
+	net = NetworkTools(use_proxy=False)
+	# page = net.parse("http://www.cruisersforum.com/forums/f54/study-hall-for-gearboxes-12599.html", parse=False)
+	# print(page)
+	page  = net.parse("http://www.aeracingclub.net/forums/index.php?&topic=51305.100")
+	posts = tools._xpath(page, "//form[@id='quickModForm']//td[re:test(@class,'windowbg*')]")
+	print(len(posts))
+	for post in posts:
+		str_date = tools._xpath(post, ".//div[@class='post']/text()[1]")
+		if type(str_date) is list:
+			str_date = "".join(str_date)
+		if str_date is None: print(b"")
+		else: print(str_date.encode("utf-8"))
+		# str_date = tools._clean_string(str_date)
+		# str_date = tools._date_parser(str_date)
+		# print(bson.json_util.dumps({"date":str_date}))
 # from lib          import tools
 # from pymongo      import MongoClient
 # from tqdm         import tqdm

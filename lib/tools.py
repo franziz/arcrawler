@@ -54,6 +54,8 @@ def _xpath(parent=None, syntax=None):
 		except lxml.etree.XPathEvalError as invalid_expression:
 			print(syntax)
 			raise
+		except UnicodeDecodeError:
+			result = None
 		#end try
 	else:
 		try:
@@ -76,20 +78,23 @@ def _date_parser(str_date=None):
 		if result.tzinfo is None: result = tzlocal.get_localzone().localize(result, is_dst=None)
 		result = result.astimezone(pytz.utc)
 	except AttributeError as attr_err:
-		print("[error] {}".format(str_date.encode("utf-8")))
-		print("[error] DATE ERROR!")
-		result = arrow.utcnow().datetime
+		print("[arcrawler][error] {}".format(str_date.encode("utf-8")))
+		print("[arcrawler][error] DATE ERROR!")
+		result = None
+		# result = arrow.utcnow().datetime
 		# raise
 	except ValueError as value_error:
-		print("[error] {}".format(str_date.encode("utf-8")))
-		print("[error] DATE ERROR!")
-		result = arrow.utcnow().datetime
+		print("[arcrawler][error] {}".format(str_date.encode("utf-8")))
+		print("[arcrawler][error] DATE ERROR!")
+		result = None
+		# result = arrow.utcnow().datetime
 		# raise
 	except:
 		raise
 	#end try
 
-	assert type(result) is datetime.datetime, "result is not datetime."
+	if result is not None:
+		assert type(result) is datetime.datetime, "result is not datetime."
 	return result
 #end def
 

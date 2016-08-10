@@ -44,26 +44,26 @@ class NetworkTools(object):
 				
 				headers = {"user-agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"}
 				if self.use_proxy:
-					print("[networktools] Using Proxy.")
+					print("[networktools][debug] Using Proxy.")
 					switcher = ProxySwitcher()
 					page     = requests.get(url, proxies=switcher.get_proxy(), timeout=60, headers=headers)
 				else:
-					print("[networktools] Direct Connection.")
+					print("[networktools][debug] Direct Connection.")
 					page = requests.get(url, timeout=60,  headers=headers)
 
 				_html       = html.fromstring(page.content) if parse else page.content
 				proxy_is_ok = True
 			except requests.exceptions.ProxyError as proxy_error:
-				print("Ops! Proxy is not working. Try again...")
+				print("[networktools][error] Ops! Proxy is not working. Try again...")
 				proxy_is_ok = False
 			except requests.exceptions.RequestException as another_requests_error: 
-				print("Ops! Something wrong. Try again...")
+				print("[networktools][error] Ops! Something wrong. Try again...")
 				proxy_is_ok = False
 			except socket.timeout:
-				print("Ops! Request Time Out")
+				print("[networktools][error] Ops! Request Time Out")
 				proxy_is_ok = False
 			except lxml.etree.XMLSyntaxError:
-				print("Ops! Something wrong. Leave it~")
+				print("[networktools][error] Ops! Something wrong. Leave it~")
 				_html       = html.fromstring("<html><head></head><body></body></html>") if parse else "<html></html>"
 				proxy_is_ok = True
 			except:

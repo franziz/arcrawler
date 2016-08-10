@@ -1,3 +1,25 @@
+""" This test function will test every *.py files inside ./src folder.
+	The function, however, will not go in deep to find *.py files. 
+	It means that the function will not perform recursive searching for *.py files.
+
+	Some of the test performed are:
+	- THREAD_XPATH
+	- THREAD_LINK_XPATH
+	- LAST_PAGE_XPATH
+	- POST_XPATH
+	- FIELDS
+
+	In the FIELDS test, the test function is smartly select which one is the best
+	tester() and preparator()
+
+	underlying this function, the test.py uses lib.tester.Tester() class in order to test, 
+	and all preparator() and test() are residented inside the lib.tester pacakage.
+
+	The test function will give you summary after all *.py files test performed.
+	It is a good practice to limit which one you want to test, because if the test
+	fails in the middle, you will be easily see the error and why.
+"""
+
 from lib.tester.preparator.thread import ThreadPreparator
 from lib.tester.preparator.post   import PostPreparator
 from lib.tester.last_page         import LastPageTester

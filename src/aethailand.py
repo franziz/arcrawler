@@ -29,7 +29,7 @@ class Crawler(Template):
 		'http://www.aethailand.com/forum/index.php?board=31.0',
 		'http://www.aethailand.com/forum/index.php?board=4.0',
 		'http://www.aethailand.com/forum/index.php?board=5.0',
-		'http://swww.aethailand.com/forum/index.php?board=6.0',
+		'http://www.aethailand.com/forum/index.php?board=6.0',
 		'http://www.aethailand.com/forum/index.php?board=15.0',
 		'http://www.aethailand.com/forum/index.php?board=17.0',
         ]

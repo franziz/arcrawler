@@ -45,12 +45,12 @@ class Crawler(object):
 				$ASSERTION
 				
 				db.data.insert_one(document)
-				print("[{}] Inserted one document.".format(self.CRAWLER_NAME))
+				print("[arcrawler][debug][{}] Inserted one document.".format(self.CRAWLER_NAME))
 			#end for
 		except pymongo.errors.DuplicateKeyError as duplicate_key:
 			raise exceptions.DuplicateData("Ops! Duplicate Data!")
 		except AssertionError as assertion_error:
-			print("[{}] Assertion is not passed! Data will not be inserted".format(self.CRAWLER_NAME))
+			print("[arcrawler][error][{}] Assertion is not passed! Data will not be inserted".format(self.CRAWLER_NAME))
 			pass
 		#end try
 	#end def
@@ -132,10 +132,10 @@ class Crawler(object):
 				engine.crawl(thread, callback=self.crawl_callback)
 				engine.crawl_next()
 			except exceptions.DuplicateData as duplicate_data:
-				print("[{}] Ops! Duplicate Data!".format(self.CRAWLER_NAME))
+				print("[arcrawler][debug][{}] Ops! Duplicate Data!".format(self.CRAWLER_NAME))
 			except exceptions.NoThreadLink as no_thread_link:
 				# This assume that the crawler will proceed to the next thread if the crawler cannot find thread link.
-				print("[{}] Ops! No Thread Link!".format(self.CRAWLER_NAME))
+				print("[arcrawler][error][{}] Ops! No Thread Link!".format(self.CRAWLER_NAME))
 			except exceptions.NoPrevious as no_prev:
 				pass
 			#end try

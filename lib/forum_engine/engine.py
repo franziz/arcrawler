@@ -193,7 +193,7 @@ class Engine(object):
 					tools._assert(len(result) > 0, exceptions.CannotFindXPATH("Cannot find {} given XPATH.".format(field)))
 				except:
 					result = []
-					print("[arcrawler][error] Cannot find {} given XPATH.".format(field))
+					print("[forum_engine][error] Cannot find {} given XPATH.".format(field))
 					# from lxml import etree
 					# print(etree.tostring(post,pretty_print=True))
 				#end try

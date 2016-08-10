@@ -6,9 +6,10 @@ class Crawler(Template):
 	TEMPLATE = "crawler.arct"
 	TEST_TEMPLATE = "crawler_test.arct"
 	DB_SERVER_ADDRESS = "mongo:27017"
-	DB_SERVER_NAME = "newaltishailandclub"
-	CRAWLER_NAME = "Newaltisthailandclub Crawler"
-	LINK_TO_CRAWL = [	    
+	DB_SERVER_NAME = "newaltishailandclub2"
+	CRAWLER_NAME = "Newaltisthailandclub2 Crawler"
+	LINK_TO_CRAWL = [
+	    "http://www.newaltisthailandclub.com/",
 	    "http://www.newaltisthailandclub.com/index.php/board,1.0.html",
 	    "http://www.newaltisthailandclub.com/index.php/board,3.0.html",
 	    "http://www.newaltisthailandclub.com/index.php/board,7.0.html",
@@ -38,7 +39,8 @@ class Crawler(Template):
     ]
 	COUNTRY = "THA"
 	THREAD_XPATH ="//tr/td[@class='subject windowbg2']"
-	THREAD_LINK_XPATH = ".//a/@href"
+	# THREAD_LINK_XPATH = ".//a/@href"
+	THREAD_LINK_XPATH = ".//span[re:test(@id,'msg_*')]/a/@href"
 	LAST_PAGE_XPATH = "(//div[@class='pagelinks floatleft']/a[@class='navPages'])[last()]/@href"
 	PREV_XPATH = "//div[@class='pagelinks floatleft']/strong/preceding-sibling::a[1]/@href"
 	POST_XPATH = "//form[@id='quickModForm']//div[re:test(@class,'windowbg*')]"

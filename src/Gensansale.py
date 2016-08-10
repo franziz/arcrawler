@@ -6,7 +6,7 @@ class Crawler(Template):
 	TEMPLATE = "crawler.arct"
 	TEST_TEMPLATE = "crawler_test.arct"
 	DB_SERVER_ADDRESS = "mongo:27017"
-	DB_SERVER_NAME = "gensansale"
+	DB_SERVER_NAME = "Gensansale"
 	CRAWLER_NAME = "Gensansale Crawler"
 	LINK_TO_CRAWL = [
 		"http://www.gensansale.com/forums/100-libre-items.77/",
@@ -101,11 +101,11 @@ class Crawler(Template):
 	CONDITIONS={
 		"has_to_have_content":{
 			"condition":'"content" in document',
-			"exception":'"Content is not defined"'
+			"exception":'"content is not defined"'
 		},
 		"content_cannot_be_empty":{
 			"condition":'len(document["content"]) > 0',
-			"exception":'"Content cannot be empty"'
+			"exception":'"content cannot be empty"'
 		}
 	}
 #end class

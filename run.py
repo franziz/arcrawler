@@ -13,17 +13,16 @@ def execute_worker(name=None, pid=None):
 
 if __name__ == "__main__":
 	config = builder.read_config_file()
-	assert "run" in config, "run is not defined."	
+	assert "run" in config, "run is not defined."
 
 	while True:
 		workers = list()
-		for key, value in config["run"].items():		
+		for key, value in config["run"].items():
 			print(value)
 			# TODO: check if name is in database
 			worker = multiprocessing.Process(target=execute_worker, args=(value,key), daemon=False)
 			workers.append(worker)
 		for worker in workers:
 			worker.start()
-
 		for worker in workers:
 			worker.join()

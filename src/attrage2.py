@@ -6,8 +6,8 @@ class Crawler(Template):
 	TEMPLATE = "crawler.arct"
 	TEST_TEMPLATE = "crawler_test.arct"
 	DB_SERVER_ADDRESS = "mongo:27017"
-	DB_SERVER_NAME = "attrage"
-	CRAWLER_NAME = "Attrage Crawler"
+	DB_SERVER_NAME = "attrage2"
+	CRAWLER_NAME = "Attrage2 Crawler"
 	LINK_TO_CRAWL = [
 	    "http://www.attrage-club.com/index.php/board,10.0.html/",
 	    "http://www.attrage-club.com/index.php/board,1.0.html",
@@ -37,7 +37,9 @@ class Crawler(Template):
 	    "http://www.attrage-club.com/index.php/board,30.0.html",
 	    ]
 	COUNTRY = "THA"
+	# THREAD_XPATH = "//td[@class='windowbg2']"
 	THREAD_XPATH = "//span[re:test(@id,'msg*')]"
+	# THREAD_XPATH = "(//span[re:test(@id,'msg*')]) or (//td[@class='windowbg2'])"
 	THREAD_LINK_XPATH = ".//a/@href"
 	LAST_PAGE_XPATH = "(//div[@class='pagelinks floatleft']/a[@class='navPages'])[last()]/@href"
 	PREV_XPATH ="//div[@class='pagelinks floatleft']/strong/preceding-sibling::a[1]/@href"
@@ -66,6 +68,7 @@ class Crawler(Template):
 			"data_type": "string",
 			"concat":True,
 			"xpath":".//div[@class='post']//text()"
+			# "xpath":"concat('test',.//div[@class='post']//text())"
 		}},
 		{"title":{
 			"single":True,

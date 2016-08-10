@@ -30,6 +30,7 @@ class Crawler(Template):
                 "http://www.club4g.com/index.php/board,22.0"
                 ]
 	COUNTRY = "THA"
+	# THREAD_XPATH = "//td[@class='subject windowbg2']/div/span"
 	THREAD_XPATH = "//span[re:test(@id,'msg_*')]"
 	THREAD_LINK_XPATH = "./a/@href"
 	LAST_PAGE_XPATH = "(//div[@class='pagelinks floatleft']//a[@class='navPages'])[last()]/@href"
@@ -41,6 +42,7 @@ class Crawler(Template):
 			"data_type": "date", 
 			"concat": False, 
 			"xpath": "substring-before(concat(.//div[@class='keyinfo']//div[@class='smalltext']/text()[2],substring-after(.//div[@class='keyinfo']//div[@class='smalltext']/text()[3],'เวลา')),'»')"
+			# "xpath": "concat(.//div[@class='keyinfo']//div[@class='smalltext']/text()[2],substring-before(substring-after(.//div[@class='keyinfo']//div[@class='smalltext']/text()[3],'เวลา'),'»'))"
 		}},
 		{"permalink": {
 			"single": True, 
@@ -65,6 +67,7 @@ class Crawler(Template):
 			"data_type": "string",
 			"concat":False,
 			"xpath":"//div[@class='navigate_section']//li[@class='last']//a//text()"
+			# "xpath":"normalize-space(substring-before(substring-after(//div[@class='cat_bar']//h3[@class='catbg']//text()[3],':'),'('))"
 		}}
 	]
 	CONDITIONS={

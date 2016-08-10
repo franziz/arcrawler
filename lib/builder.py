@@ -52,7 +52,7 @@ def generate_monitor_document(crawler=None, crawler_hash=None, link_to_crawl=Non
 		db_name_to_insert = crawler.DB_SERVER_NAME,
 		          country = crawler.COUNTRY,
 		      last_update = arrow.utcnow().datetime,
-		      is_deployed = False
+		      	   status = "idle"
 	)
 	return document
 #end def
@@ -221,9 +221,6 @@ def clear_build():
 	try:
 		_print_log("Clearing build folder...")
 		shutil.rmtree("./build")
-
-		_print_log("Clearing tests folder...")
-		shutil.rmtree("./tests")
 	except FileNotFoundError as file_not_found:
 		pass
 	#end try
@@ -265,9 +262,6 @@ def copy_requirement():
 
 			_print_log("Making crawlers folder...")
 			if not os.path.exists('./build/crawlers'): os.mkdir('./build/crawlers')
-
-			_print_log("Making tests folder...")
-			if not os.path.exists('./tests'): os.mkdir('./tests')
 
 			success_to_copy = True
 		except FileExistsError as file_exists_error:

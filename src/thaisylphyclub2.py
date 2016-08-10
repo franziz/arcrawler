@@ -6,8 +6,8 @@ class Crawler(Template):
 	TEMPLATE = "crawler.arct"
 	TEST_TEMPLATE = "crawler_test.arct"
 	DB_SERVER_ADDRESS = "mongo:27017"
-	DB_SERVER_NAME = "thaisylphyclub"
-	CRAWLER_NAME = "Thaisylphyclub Crawler"
+	DB_SERVER_NAME = "thaisylphyclub2"
+	CRAWLER_NAME = "Thaisylphyclub2 Crawler"
 	LINK_TO_CRAWL = [
 		'http://www.thaisylphyclub.com/index.php?board=1.0',
 		 'http://www.thaisylphyclub.com/index.php?board=27.0',

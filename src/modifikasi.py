@@ -146,7 +146,6 @@ class Crawler(Template):
                "http://www.modifikasi.com/forumdisplay.php/344-Diskusi-Perawatan-Mobil-(Exterior-amp-Interior)",
                "http://www.modifikasi.com/forumdisplay.php/447-Tips-amp-Artikel-Perawatan-Mobil",
                "http://www.modifikasi.com/forumdisplay.php/497-Review-Produk-Perawatan-Mobil",
-               "http://www.modifikasi.com/forumdisplay.php/531-Ceramic-Pro-Indonesia",
                "http://www.modifikasi.com/forumdisplay.php/428-Clean-N-Tidy",
                "http://www.modifikasi.com/forumdisplay.php/522-HD-Car-Care-Indonesia",
                "http://www.modifikasi.com/forumdisplay.php/510-Scuto-Laminating-Mobil",
@@ -181,7 +180,7 @@ class Crawler(Template):
                "http://www.modifikasi.com/forumdisplay.php/383-Lain-Lainnya"
           ]                         
      COUNTRY = "IDN"
-     THREAD_XPATH = "//ol[@id='threads']/li[re:test(@class,'threadbit (?!deleted)')]"
+     THREAD_XPATH = "//ol//li[re:test(@id,'thread*')]"
      THREAD_LINK_XPATH = ".//h3[@class='threadtitle']//a[@class='title']/@href"
      LAST_PAGE_XPATH = "//span[@class='first_last']/a/@href"
      PREV_XPATH = "//span[@class='prev_next']/a[@rel='prev']/@href"

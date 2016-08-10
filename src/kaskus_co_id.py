@@ -244,7 +244,6 @@ class Crawler(Template):
 							"http://www.kaskus.co.id/forum/251/plamo",
 							"http://www.kaskus.co.id/forum/621/film-indonesia",
 							"http://www.kaskus.co.id/forum/619/indie-filmmaker",
-							"http://www.kaskus.co.id/forum/382/kaskus-theater",
 							"http://www.kaskus.co.id/forum/736/series--film-asia",
 							"http://www.kaskus.co.id/forum/88/help-tips-amp-tutorial",
 							"http://www.kaskus.co.id/forum/58/kaskusradiocom",
@@ -287,7 +286,6 @@ class Crawler(Template):
 							"http://www.kaskus.co.id/forum/579/sipil",
 							"http://www.kaskus.co.id/forum/713",
 							"http://www.kaskus.co.id/forum/59/gosip-nyok",
-							"http://www.kaskus.co.id/forum/6/image",
 							"http://www.kaskus.co.id/forum/708/indonesia-pusaka",
 							"http://www.kaskus.co.id/forum/688/kaskus-ramadan",
 							"http://www.kaskus.co.id/forum/186/lounge-pictures",
@@ -311,8 +309,8 @@ class Crawler(Template):
 							"http://www.kaskus.co.id/forum/544/young-on-top-kaskus-community-yotkc"
 						]
 	COUNTRY           = "IDN"
-	THREAD_XPATH      = "//div[@class='post-title']"
-	THREAD_LINK_XPATH = "./a/@href"
+	THREAD_XPATH      = "//tr[re:test(@id,'thread*')]"
+	THREAD_LINK_XPATH = ".//a[re:test(@class,'link_thread_title*')]/@href"
 	LAST_PAGE_XPATH   = "//a[@class='tooltips last-page']/@href"
 	PREV_XPATH        = "//a[@class='tooltips previous-page']/@href"
 	POST_XPATH        = "//div[@class='row nor-post']"

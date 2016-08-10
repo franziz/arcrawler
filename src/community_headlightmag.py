@@ -7,7 +7,7 @@ class Crawler(Template):
 	TEST_TEMPLATE = "crawler_test.arct"
 	DB_SERVER_ADDRESS = "mongo:27017"
 	DB_SERVER_NAME = "community_headlightmag"
-	CRAWLER_NAME = "Community Headlightmag Crawler"
+	CRAWLER_NAME = "Community_Headlightmag Crawler"
 	LINK_TO_CRAWL = [
 		"http://community.headlightmag.com/index.php?board=1.0",
 		"http://community.headlightmag.com/index.php?board=8.0",

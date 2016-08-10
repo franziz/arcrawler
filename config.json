@@ -2,42 +2,83 @@
 	"workers":10,
 	"run":{
 		"1":[
+				"9carthai Crawler",
+				"Abs-cbn Crawler",
 				"Accordclubthailand Crawler",
-				"Attrage Crawler",
+				"Aeracingclub Crawler",
+				"Aethailand Crawler",
+				"Attrage2 Crawler",
 				"Camry2012club Crawler",
 				"Captiva-club Crawler",
 				"Cb3thailand Crawler",
+				"Cherrycredits Crawler",
 				"Club4G Crawler",
-				"Gearheads Crawler",
-				"Gensansale Crawler",
-				"Newdmaxclub Crawler",
-				"Otofun Crawler",
-				"Otosaigon Crawler",
-				"Thaialmeraclub Crawler",
-				"Thaisylphyclub Crawler",
-				"Theautomotiveindia Crawler",
-				"Toyotalover Crawler",
-				"Yarisclubthailand Crawler"
+				"Community_Headlightmag Crawler",
+				"Corolloclubrace Crawler",
+				"Cruisersforum Crawler",
+				"Deeauto Crawler",
+				"Digitalpoint Crawler",
+				"Espiya Crawler",
+				"Forumotomotif Crawler",
+				"Volvomania Crawler",
+				"Xdtalk Crawler"
 			],
 		"2":[
-				"CNN Indonesia Crawler",
-				"Kompas News Crawler",
-				"Otosia Crawler"
-			],
-		"3":[
+				"Kompas Crawler",
 				"Detik Forum Crawler",
 				"Kaskus Crawler",
+				"Merdeka Crawler",
 				"Modifikasi Crawler",
-				"Tsikot Crawler",
-				"Livinginindonesiaforum Crawler"
+				"Tsikot Crawler"
+			],
+		"3":[
+				"Ft86thailand Crawler",
+				"Gearheads Crawler",
+				"Gensansale Crawler",
+				"Hamsiam Crawler",
+				"Hiluxtigerclub Crawler",
+				"Hondanonclub Crawler",
+				"India-Forum Crawler",
+				"Kiaclubthailand Crawler",
+				"Koratnana Crawler",
+				"Koratsound Crawler",
+				"Ligagame Crawler",
+				"Livinginindonesiaforum Crawler",
+				"Tezimandee Crawler",
+				"Thaicarpaint Crawler",
+				"Thaiearntalk Crawler",
+				"Thaihondabrio Crawler",
+				"Thailandtrailblazerclub Crawler",
+				"Theautomotiveindia Crawler",
+				"Tiida-club Crawler",
+				"Yamahat135 Crawler"
+			],
+		"4":[
+				"Lolgarena Crawler",
+				"Newaltisclubthailand Crawler",
+				"Newaltisthailandclub2 Crawler",
+				"Newdmaxclub Crawler",
+				"Nissanclubph Crawler",
+				"Phcorner Crawler",
+				"Pinoyden Crawler",
+				"Pinoylawyer Crawler",
+				"Pprune Crawler",
+				"Santabanta Crawler",
+				"Siamsubaru Crawler",
+				"Teeracingshop Crawler",
+				"Thaispyshot Crawler",
+				"Thaisylphyclub Crawler",
+				"Thaisylphyclub2 Crawler",
+				"Tinhte Crawler",
+				"Toyotalover Crawler"
 			]
 	},
 	"converter":{
 	    "target":{
-	           "ip":"220.100.163.138",
-	           "username":"isid",
-	           "password":"qwer1234ajfhrjkq$9",
-	           "authenticationDatabase":"isid"
+           "ip":"220.100.163.138",
+           "username":"isid",
+           "password":"qwer1234ajfhrjkq$9",
+           "authenticationDatabase":"isid"
 	    }
 	}
 }

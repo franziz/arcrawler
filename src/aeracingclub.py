@@ -57,8 +57,8 @@ class Crawler(Template):
 		{"published_date": {
 			"single": True,
 			"data_type": "date",
-			"concat": True,
-			"xpath": ".//div[re:test(@id,'subject_*')]/following-sibling::div[1]/text()"
+			"concat": False,
+			"xpath": "concat(.//td[@width='85%']//div[@class='smalltext']/text()[2],(.//td[@width='85%']//div[@class='smalltext']/b)[not(contains(text(),':'))]/text(),.//td[@width='85%']//div[@class='smalltext']/text()[3])"
 		}},
 		{"author_name":{
 			"single":True,
@@ -70,7 +70,7 @@ class Crawler(Template):
 			"single":True,
 			"data_type": "string",
 			"concat":True,
-			"xpath":".//div[@class='post']//text()"
+			"xpath":".//div[@class='post']/text()[1]"
 		}},
 		{"permalink": {
 			"single": True,
@@ -82,7 +82,7 @@ class Crawler(Template):
 			"single":True,
 			"data_type": "string",
 			"concat":False,
-            "xpath":"normalize-space(substring-before(substring-after(//tr[@class='catbg3']//td[@id='top_subject']//text(),':'),'('))"
+                        "xpath":"normalize-space(substring-before(substring-after(//tr[@class='catbg3']//td[@id='top_subject']//text(),':'),'('))"
 		}}       
 	]
 	CONDITIONS={

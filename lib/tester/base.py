@@ -7,9 +7,12 @@ class Tester(object):
 		pass
 
 	def test(self, object_to_test=None, link=None):
-		assert object_to_test is not None, "object_to_test is not defined."
+		try:
+			assert object_to_test is not None, "object_to_test is not defined."
 
-		if len(object_to_test) == 0:
+			if len(object_to_test) == 0:
+				raise TestIsNotPassed("No test object.")
+		except:
 			raise TestIsNotPassed("No test object.")
 
 class FieldTester(Tester):

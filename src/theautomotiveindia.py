@@ -45,7 +45,6 @@ class Crawler(Template):
                 "http://www.theautomotiveindia.com/forums/gadgets-more/",
                 "http://www.theautomotiveindia.com/forums/automotive-meets/",
                 "http://www.theautomotiveindia.com/forums/development-nook/",
-                ##"http://www.theautomotiveindia.com/forums/support-feedback/"	
 	]
 	COUNTRY = "IND"
 	THREAD_XPATH = "//tr//td[re:test(@id,'td_threadtitle_*')]"
