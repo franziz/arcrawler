@@ -5,6 +5,8 @@ tests/
 ghostdriver.log
 unit_tests.py
 config.json
+isid
+
 # Created by https://www.gitignore.io/api/python,git
 
 ### Python ###
