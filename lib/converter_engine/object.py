@@ -62,7 +62,7 @@ class AuthorInfoDB(object):
 		assert "AuthorLocation"    in mention, "AuthorLocation is not defined."
 
 		update_time      = arrow.utcnow().to("Asia/Singapore").format("YYYY-MM-DD HH:mm:ss")
-		update_time_iso  = arrow.utcnow().format("YYYY-MM-DD HH:mm:sss")
+		update_time_iso  = arrow.utcnow().format("YYYY-MM-DD HH:mm:ss")
 		self.author_info = {
 			                "AuthorType" : mention["SourceName"],
 			                  "AuthorId" : mention["AuthorId"],
@@ -97,7 +97,7 @@ class AuthorInfoDB(object):
 				{
 					"$inc":{"AuthorTotalMentionsCrawled":1},
 					"$set":{
-						    "LastUpdateDate":self.author_info["LastUpdatedDate"], 
+						   "LastUpdatedDate":self.author_info["LastUpdatedDate"], 
 						"LastUpdatedDateISO":self.author_info["LastUpdatedDateISO"]
 					}
 				}
