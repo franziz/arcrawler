@@ -6,6 +6,7 @@ ghostdriver.log
 unit_tests.py
 config.json
 isid
+*.openssh
 
 # Created by https://www.gitignore.io/api/python,git
 
