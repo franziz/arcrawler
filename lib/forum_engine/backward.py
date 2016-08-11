@@ -6,7 +6,7 @@ class Backward(object):
 	def __init__(self, domain=None, thread_link=None, last_page_xpath=None, prev_xpath=None, post_xpath=None, network_tools=None):
 		assert domain          is not None, "domain is not defined."
 		assert thread_link     is not None, "thread Link is not defined."
-		assert last_page_xpath is not None, "last_page XPATH is not defined."
+		assert last_page_xpath is not None, "last_page_xpath is not defined."
 		assert prev_xpath      is not None, "prev_xpath is not defined."
 		assert network_tools   is not None, "network_tools is not defined."
 			
@@ -20,7 +20,13 @@ class Backward(object):
 		self.current_page_link = copy.deepcopy(self.thread_link)
 
 		try:
-			last_page_link         = tools._xpath(parent=self.current_page, syntax=last_page_xpath)[0]
+			last_page_link = tools._xpath(parent=self.current_page, syntax=last_page_xpath)
+			# TODO: Make get_last_page_link function in order to PostPreparator() class can make use of the function
+			if len(last_page_link) == 0:
+				raise IndexError
+			if not type(last_page_link) is list:
+				last_page_link = [last_page_link]
+			last_page_link 		   = last_page_link[0]
 			last_page_link         = tools._expand_link(domain=domain, link=last_page_link)
 			self.current_page      = self.network_tools.parse(last_page_link)
 			self.current_page_link = last_page_link

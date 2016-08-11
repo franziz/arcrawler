@@ -34,7 +34,8 @@ class ThreadPreparator(BasePreparator):
 													  		# most recent post. Therefore, the top threads are the most recent
 													  		# post.			
 			for thread in threads:				
-				thread_links 	 = tools._xpath(thread, source.THREAD_LINK_XPATH)
-				thread_links 	 = [tools._expand_link(domain, l) for l in thread_links]				
-				all_thread_links = all_thread_links + thread_links
+				thread_link = tools._xpath(thread, source.THREAD_LINK_XPATH)
+				thread_link = thread_link[0] if type(thread_link) is list else thread_link				
+				thread_link = tools._expand_link(domain, thread_link)
+				all_thread_links.append(thread_link)
 		return all_thread_links

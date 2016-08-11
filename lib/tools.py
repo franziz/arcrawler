@@ -1,6 +1,7 @@
 from lxml             import html
 from .proxy_switcher  import ProxySwitcher
 from .forum_engine    import exceptions
+import bson.json_util
 import pymongo
 import pytz
 import tzlocal
@@ -78,13 +79,15 @@ def _date_parser(str_date=None):
 		if result.tzinfo is None: result = tzlocal.get_localzone().localize(result, is_dst=None)
 		result = result.astimezone(pytz.utc)
 	except AttributeError as attr_err:
-		print("[arcrawler][error] {}".format(str_date.encode("utf-8")))
+		str_date = bson.json_util.dumps({"date":str_date})
+		print("[arcrawler][error] {}".format(str_date))
 		print("[arcrawler][error] DATE ERROR!")
 		result = None
 		# result = arrow.utcnow().datetime
 		# raise
 	except ValueError as value_error:
-		print("[arcrawler][error] {}".format(str_date.encode("utf-8")))
+		str_date = bson.json_util.dumps({"date":str_date})
+		print("[arcrawler][error] {}".format(str_date))
 		print("[arcrawler][error] DATE ERROR!")
 		result = None
 		# result = arrow.utcnow().datetime

@@ -31,6 +31,8 @@ class PostPreparator(BasePreparator):
 			if len(link) == 0:
 				result = copy.copy(thread)
 			else:
+				if not type(link) is list:
+					link = [link]
 				result = copy.copy(link[0]) # Assuming that LAST_PAGE_XPATH will return the same array content.
 			result_links.append(result)
 		result_links = [tools._expand_link(domain, l) for l in result_links]

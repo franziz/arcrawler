@@ -121,8 +121,8 @@ class Engine(object):
 		assert self.domain             is not None             , "Domain is not defined."
 
 		# TODO: if the result is more than one link, you need to produce a warning
-		link = tools._xpath(parent=thread, syntax=self.thread_link_xpath)
-
+		# TODO: make a function such as get_thread_link, so thread_preparator class can make use of it
+		link = tools._xpath(parent=thread, syntax=self.thread_link_xpath)		
 		tools._assert(len(link)>0, exceptions.NoThreadLink("Ops! Cannot find the thread link"))
 		link = link[0] if type(link) is list else link
 		link = tools._expand_link(domain=self.domain, link=link)

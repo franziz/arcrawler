@@ -18,8 +18,10 @@ class DateTester(FieldTester):
 
 			if type(str_date) is str:
 				str_date = tools._date_parser(str_date)
+				if str_date is None: raise TestIsNotPassed("Cannot parse date.")
 			elif type(str_date) is list:
 				str_date = [tools._date_parser(r) for r in str_date]
+				if None in str_date: raise TestIsNotPassed("Cannot parse date.")
 			print("[test][debug][{}] Data: {}".format(self.source.CRAWLER_NAME, str_date))
 		except AssertionError:
 			raise TestIsNotPassed("Assertion is not satisfied.")

@@ -20,7 +20,7 @@ class NetworkTools(object):
 			After getting the source code, the function will later decide wheter it will parse to
 			HTML Object or leave it as a string. 
 
-			Parse function will automatically failed if face errors for more than 10 errors. 
+			Parse function will automatically failed if face errors for more than 5 errors. 
 			Even if the parse failed, the function will return a HTML Object.
 			However, the HTML Object will be blank.
 
@@ -36,7 +36,7 @@ class NetworkTools(object):
 		proxy_is_ok = False
 		_html       = None
 		tried  		= 0
-		max_try 	= 10
+		max_try 	= 5
 		while not proxy_is_ok and tried < max_try:
 			try:
 				assert url is not None, "URL is not defined."
