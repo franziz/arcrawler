@@ -1,6 +1,6 @@
-from ..    		  import tools
-from .base 		  import Preparator as BasePreparator
-from urllib.parse import urlparse
+from ..    		 	   import tools
+from .base 		 	   import Preparator as BasePreparator
+from lib.network_tools import NetworkTools
 import copy
 import math
 
@@ -23,7 +23,7 @@ class ThreadPreparator(BasePreparator):
 
 		all_thread_links 	 = []
 		for link in sample_link_to_crawl:
-			domain  = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(link))
+			domain  = NetworkTools.get_domain(link)
 			page    = source.NETWORK_TOOLS.parse(link)
 			threads = tools._xpath(page, source.THREAD_XPATH)			
 			threads = threads[:math.ceil(len(threads)*0.1)] # Only get top 10% of the data, assuming that 

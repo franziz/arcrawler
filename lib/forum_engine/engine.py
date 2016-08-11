@@ -1,8 +1,9 @@
-from urllib.parse import urlparse
-from lxml         import html
-from .backward    import Backward
-from .            import exceptions
-from ..           import tools
+from urllib.parse 		  import urlparse
+from lxml         		  import html
+from .tools.field_factory import FieldFactory
+from .backward    		  import Backward
+from .            		  import exceptions
+from ..           		  import tools
 import lxml
 import bson.json_util
 import requests
@@ -99,10 +100,49 @@ class Engine(object):
 		assert self.thread_xpath  is not None, "thread_xpath is not defined."
 		assert self.network_tools is not None, "network_tools is not defined."
 
-		tree         = self.network_tools.parse(self.link_to_crawl)
-		self.threads = tools._xpath(parent=tree, syntax=self.thread_xpath)
+		parser = FieldFactory.get_parser(FieldFactory.THREAD)
+		self.threads = parser.parse(
+					        network_tools = self.network_tools,
+					                 link = self.link_to_crawl,
+					         thread_xpath = self.thread_xpath
+					   )
 		return self.threads
 	#end def
+
+	def get_thread_link(self, thread=None):
+		""" This function will get thread link based on the passed thread parameters
+			
+			parameters:
+				- thread<lxml.html.HtmlElement> : thread element. Usually, you can get thread element from 
+												  get_threads() function.
+
+			return:
+				- link<str> : a string of url from specific thread
+		"""		
+		parser = FieldFactory.get_parser(FieldFactory.THREAD_LINK)
+		link   = parser.parse(
+					            domain = self.domain,
+				                thread = thread,
+				     thread_link_xpath = self.thread_link_xpath
+				 )
+		return link
+
+	def _make_engine(self, link=None):
+		assert self.method is not None, "method is not defined."
+		assert link        is not None, "link is not defined."
+		if self.method == self.BACKWARD:
+			assert self.last_page_xpath is not None, "last_page_xpath is not defined."
+			assert self.prev_xpath      is not None, "prev_xpath is not defined."
+
+			engine = Backward(
+						         domain = self.domain,
+						    thread_link = link, 
+						last_page_xpath = self.last_page_xpath,
+						     prev_xpath = self.prev_xpath,
+					 	     post_xpath = self.post_xpath,
+					 	  network_tools = self.network_tools
+					 )
+		return engine
 
 	def crawl(self, thread=None, callback=None):
 		""" crawl() function accept parameters.
@@ -120,28 +160,11 @@ class Engine(object):
 		assert self.thread_link_xpath  is not None             , "Thread Link XPATH is not defined."
 		assert self.domain             is not None             , "Domain is not defined."
 
-		# TODO: if the result is more than one link, you need to produce a warning
-		# TODO: make a function such as get_thread_link, so thread_preparator class can make use of it
-		link = tools._xpath(parent=thread, syntax=self.thread_link_xpath)		
-		tools._assert(len(link)>0, exceptions.NoThreadLink("Ops! Cannot find the thread link"))
-		link = link[0] if type(link) is list else link
-		link = tools._expand_link(domain=self.domain, link=link)
-		
-		if self.method == self.BACKWARD:
-			assert self.last_page_xpath is not None, "Last Page XPATH is not defined."
-			assert self.prev_xpath      is not None, "Prev XPATH is not defined."
-
-			backward            = Backward(
-									         domain = self.domain,
-									    thread_link = link, 
-									last_page_xpath = self.last_page_xpath,
-									     prev_xpath = self.prev_xpath,
-									     post_xpath = self.post_xpath,
-									  network_tools = self.network_tools
-								)
-			self.current_engine = backward
-			self.crawl_callback = callback
-			self._run_crawler()
+		# TODO: if the result is more than one link, you need to produce a warning	
+		link                = self.get_thread_link(thread)
+		self.current_engine = self._make_engine(link=link)
+		self.crawl_callback = callback
+		self._run_crawler()
 		#end if
 	#end def
 
@@ -181,60 +204,27 @@ class Engine(object):
 		"""
 		documents = []
 		for post in posts:
-
-			# permalink is a must properties
-			assert "permalink" in self.fields
+			assert "permalink"         in self.fields, "permalink is not defined."
+			assert self.current_engine is not None   , "current_engine is not defined."
 
 			document = {}
+			fields_parser = FieldFactory.get_parser(FieldFactory.FIELDS)
+			date_parser   = FieldFactory.get_parser(FieldFactory.DATE)
+			url_parser    = FieldFactory.get_parser(FieldFactory.URL)
 			for field,props in self.fields.items():
-				result = tools._xpath(parent=post, syntax=props["xpath"])
-				
-				try:
-					tools._assert(len(result) > 0, exceptions.CannotFindXPATH("Cannot find {} given XPATH.".format(field)))
-				except:
-					result = []
-					print("[forum_engine][error] Cannot find {} given XPATH.".format(field))
-					# from lxml import etree
-					# print(etree.tostring(post,pretty_print=True))
-				#end try
-
-				# if the props is not single, but they want to concat, it means force it to single value and concat
-				if (props["single"] and props["concat"]) or (not props["single"] and props["concat"]):
-					result = " ".join(result)
-					result = str(result)
-				elif props["single"] and not props["concat"]:
-					result = result[0] if type(result) is list and len(result)>0 else result
-					result = str(result)
-				else:
-					result = list(result)
-				#end if
-				
-				assert type(result) is str or type(result) is list
-
-				# removing some unwanted data such as \xc2\xa0
-				if type(result) is str:
-					result = tools._clean_string(result)
-				elif type(result) is list:
-					result = [tools._clean_string(r) for r in result]
-				#end if
+				result = fields_parser.parse(
+					 	      post = post, 
+					 	     xpath = props["xpath"],
+					 	     props = props,
+					 	     field = field
+						 )
 
 				if "date" in props["data_type"]:
 					# as a date format. it should convert the date to utc date time
 					# if the date do not have timezone specific information, it will assume the the date is local system timezone
-					if type(result) is str:
-						result = tools._date_parser(result)
-					elif type(result) is list:
-						result = [tools._date_parser(r) for r in result]
-					#end if
+					result = date_parser.parse(result)
 				elif "url" in props["data_type"]:
-					if type(result) is str:
-						result = tools._expand_link(domain=self.domain, link=result)
-						#end if
-					elif type(result) is list:
-						result = [tools._expand_link(domain=self.domain, link=r) for r in result if "http://" not in r]
-					#end if
-				#end if
-
+					result = url_parser.parse(value=result, domain=self.domain)
 				document.update({field:result})
 			#end for
 			document.update({"_thread_link":self.current_engine.thread_link})

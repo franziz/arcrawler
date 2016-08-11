@@ -1,3 +1,35 @@
+# from lib.tester.factory import TesterFactory
+
+# if __name__ == "__main__":
+# 	factory = TesterFactory()
+
+# 	for source in factory.get_sources():
+# 		fields = {}
+# 		for field in source.FIELDS:
+# 			for key,value in field.items():
+# 				fields.update({key:value})
+
+# 		# thread_tester      = factory.get_tester(TesterFactory.THREAD)
+# 		# thread_link_tester = factory.get_tester(TesterFactory.THREAD_LINK)
+# 		# last_page_link_tester = factory.get_tester(TesterFactory.LAST_PAGE_LINK)
+# 		# prev_link_tester = factory.get_tester(TesterFactory.PREV_LINK)
+# 		# post_tester = factory.get_tester(TesterFactory.POST)
+# 		# date_tester = factory.get_tester(TesterFactory.DATE)
+# 		url_tester = factory.get
+			
+# 		# thread_success  	= thread_tester.test(source)
+# 		# thread_link_success = thread_link_tester.test(source)
+# 		# last_page_link_success = last_page_link_tester.test(source)
+# 		# prev_link_success = prev_link_tester.test(source)
+# 		# post_success = post_tester.test(source)
+# 		# date_success = date_tester.test(
+# 		# 			       source = source,
+# 		# 			        props = fields["published_date"],
+# 		# 			        field = "published_date"
+# 		# 			   )
+# 		print(date_success)
+		
+
 """ This test function will test every *.py files inside ./src folder.
 	The function, however, will not go in deep to find *.py files. 
 	It means that the function will not perform recursive searching for *.py files.

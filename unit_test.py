@@ -5,13 +5,13 @@ import lxml
 
 if __name__ == "__main__":
 	net = NetworkTools(use_proxy=False)
-	# page = net.parse("http://www.cruisersforum.com/forums/f54/study-hall-for-gearboxes-12599.html", parse=False)
+	# page = net.parse("http://www.hondajazz-club.com/smf/index.php?&topic=328531.0", parse=False)
 	# print(page)
-	page  = net.parse("http://www.aeracingclub.net/forums/index.php?&topic=51305.100")
-	posts = tools._xpath(page, "//form[@id='quickModForm']//td[re:test(@class,'windowbg*')]")
+	page  = net.parse("https://www.otofun.net/forums/xe-dop.216/")
+	posts = tools._xpath(page, "//ol[@class='discussionListItems']//li")
 	print(len(posts))
-	for post in posts:
-		str_date = tools._xpath(post, ".//div[@class='post']/text()[1]")
+	for post in posts:		
+		str_date = tools._xpath(post, ".//div[@class='titleText']//h3[@class='title']//a[@class='PreviewTooltip']/@href")
 		if type(str_date) is list:
 			str_date = "".join(str_date)
 		if str_date is None: print(b"")

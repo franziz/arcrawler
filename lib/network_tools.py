@@ -10,6 +10,7 @@ class NetworkTools(object):
 	def __init__(self, use_proxy=True):
 		self.use_proxy = use_proxy
 
+	@classmethod
 	def get_domain(self, url=None):
 		assert url is not None, "url is not defined."
 		url = urlparse(url)
