@@ -55,6 +55,6 @@ class Runner(object):
 
 		self._connect_to_monitor()
 		db.queue.update_one({"hash" : document["hash"]},{"$set":{
-			     "status" : "processed",
+			     "status" : "idle",
 			"last_update" : arrow.utcnow().datetime
 		}})
