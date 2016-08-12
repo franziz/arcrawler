@@ -19,11 +19,13 @@ class Backward(object):
 		self.last_page_xpath   = last_page_xpath
 		self.current_page_link = self.get_last_page_link()
 		self.current_page 	   = self.network_tools.parse(self.current_page_link)
+		self.has_last_page     = True
 
 		# Print out debug that cannot find last page link
 		if self.current_page_link == self.thread_link:
-			print("[forum_engine][error] Cannot find Last Page Link: {}".format(self.current_page_link.encode("utf-8")))
-	#end def
+			self.has_last_page = False
+			print("[backward_engine][warning] Cannot find Last Page Link: {}".format(self.current_page_link.encode("utf-8")))		
+	#end def	
 
 	def get_last_page_link(self):
 		parser 		   = FieldFactory.get_parser(FieldFactory.LAST_PAGE_LINK)
@@ -37,7 +39,7 @@ class Backward(object):
 
 	def get_prev_link(self):
 		assert self.prev_xpath is not None, "prev_xpath is not defined."
-		assert self.domain is not None, "domain is not defined."
+		assert self.domain     is not None, "domain is not defined."
 
 		parser = FieldFactory.get_parser(FieldFactory.PREV_LINK)
 		prev_link = parser.parse(
@@ -49,13 +51,14 @@ class Backward(object):
 
 
 	def get_posts(self, post_xpath=None):
+		print("[backward_engine][debug] Current Page Link: %s" % self.current_page_link)
 		post_xpath = self.post_xpath if post_xpath is None else post_xpath
-		parser = FieldFactory.get_parser(FieldFactory.POST)
-		posts  = parser.parse(
-			               page = self.current_page,
-			         post_xpath = post_xpath
-				 )
-		posts = list(reversed(posts))
+		parser     = FieldFactory.get_parser(FieldFactory.POST)
+		posts      = parser.parse(
+				               page = self.current_page,
+				         post_xpath = post_xpath
+					 )
+		posts      = list(reversed(posts))
 		
 		return posts
 	#end def
@@ -70,8 +73,8 @@ class Backward(object):
 
 		# prev_link = prev_link[0]
 		# prev_link = tools._expand_link(domain=self.domain, link=prev_link)
-		prev_link         = self.get_prev_link()
-		self.current_page = self.network_tools.parse(prev_link)
+		prev_link              = self.get_prev_link()
+		self.current_page      = self.network_tools.parse(prev_link)
 		self.current_page_link = prev_link
 	#end def
 #end class

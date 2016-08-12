@@ -7,15 +7,15 @@ if __name__ == "__main__":
 	net = NetworkTools(use_proxy=False)
 	# page = net.parse("http://www.hondajazz-club.com/smf/index.php?&topic=328531.0", parse=False)
 	# print(page)
-	page  = net.parse("https://www.otofun.net/forums/xe-dop.216/")
-	posts = tools._xpath(page, "//ol[@class='discussionListItems']//li")
+	page  = net.parse("https://www.serayamotor.com/diskusi/./viewtopic.php?f=54&t=10128&")
+	posts = tools._xpath(page, "//div[@class='pagination']//ul//li//a[@rel='prev']//@href")
 	print(len(posts))
-	for post in posts:		
-		str_date = tools._xpath(post, ".//div[@class='titleText']//h3[@class='title']//a[@class='PreviewTooltip']/@href")
-		if type(str_date) is list:
-			str_date = "".join(str_date)
-		if str_date is None: print(b"")
-		else: print(str_date.encode("utf-8"))
+	# for post in posts:		
+	# 	str_date = tools._xpath(post, ".//div[@class='titleText']//h3[@class='title']//a[@class='PreviewTooltip']/@href")
+	# 	if type(str_date) is list:
+	# 		str_date = "".join(str_date)
+	# 	if str_date is None: print(b"")
+	# 	else: print(str_date.encode("utf-8"))
 		# str_date = tools._clean_string(str_date)
 		# str_date = tools._date_parser(str_date)
 		# print(bson.json_util.dumps({"date":str_date}))

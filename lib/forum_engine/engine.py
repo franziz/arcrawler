@@ -118,7 +118,7 @@ class Engine(object):
 
 			return:
 				- link<str> : a string of url from specific thread
-		"""		
+		"""			
 		parser = FieldFactory.get_parser(FieldFactory.THREAD_LINK)
 		link   = parser.parse(
 					            domain = self.domain,

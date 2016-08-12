@@ -12,7 +12,6 @@ class ThreadLink(Parser):
 		assert type(thread)      is lxml.html.HtmlElement, "incorrect thread data type."
 		assert thread_link_xpath is not None             , "thread_link_xpath is not defined."
 		assert domain 			 is not None 			 , "domain is not defined."
-		
 		link = tools._xpath(thread, thread_link_xpath)
 		
 		if len(link) == 0:

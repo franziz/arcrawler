@@ -4,6 +4,8 @@ from .last_page_link import LastPageLink as LastPageLinkTester
 from .prev_link  	 import PrevLink 	 as PrevLinkTester
 from .post 			 import Post  		 as PostTester
 from .date   		 import Date 		 as DateTester
+from .url 			 import URL 		 as URLTester
+from .content   	 import Content    	 as ContentTester
 import glob
 import importlib
 
@@ -14,6 +16,8 @@ class TesterFactory:
 	PREV_LINK      = 3
 	POST           = 4
 	DATE           = 5
+	URL 		   = 6
+	CONTENT  	   = 7
 
 	def __init__(self):
 		pass
@@ -31,6 +35,10 @@ class TesterFactory:
 			return PostTester()
 		if tester_name == TesterFactory.DATE:
 			return DateTester()
+		if tester_name == TesterFactory.URL:
+			return URLTester()
+		if tester_name == TesterFactory.CONTENT:
+			return ContentTester()
 
 	def get_sources(self):
 		sources 	 = []
