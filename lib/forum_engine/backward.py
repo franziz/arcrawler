@@ -51,7 +51,6 @@ class Backward(object):
 
 
 	def get_posts(self, post_xpath=None):
-		print("[backward_engine][debug] Current Page Link: %s" % self.current_page_link)
 		post_xpath = self.post_xpath if post_xpath is None else post_xpath
 		parser     = FieldFactory.get_parser(FieldFactory.POST)
 		posts      = parser.parse(

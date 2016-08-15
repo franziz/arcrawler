@@ -33,13 +33,22 @@ def _expand_link(domain=None, link=None):
 	if session_string in generated_link:
 		session_index = generated_link.index(session_string)
 		begining_link = generated_link[:session_index]
-		try:
-			tmp          = generated_link[session_index:]
-			ending_index = tmp.index("&") + session_index
+		tmp           = generated_link[session_index:]
+		amp_index     = tmp.index("&") if "&" in tmp else None
+		pagar_index   = tmp.index("#") if "#" in tmp else None
+		if amp_index is not None and pagar_index is not None:
+			ending_index = amp_index if amp_index < pagar_index else pagar_index
+			ending_index = ending_index + session_index
 			ending_link  = generated_link[ending_index:]
-		except ValueError:
+		elif amp_index is not None and pagar_index is None:
+			ending_index = amp_index + session_index
+			ending_link  = generated_link[ending_index:]
+		elif amp_index is None and pagar_index is not None:
+			ending_index = pagar_index + session_index
+			ending_link  = generated_link[ending_index:]
+		else:
 			ending_index = -1
-			ending_link = ""
+			ending_link  = ""
 		generated_link = "".join([begining_link, ending_link])
 	return generated_link
 #end def
@@ -47,7 +56,7 @@ def _expand_link(domain=None, link=None):
 def _xpath(parent=None, syntax=None):
 	assert parent is not None, "Parent is not defined."
 	assert syntax is not None, "Syantax is not defined."
-
+	
 	if "re:test" in syntax:
 		try:
 			regexpNS = "http://exslt.org/regular-expressions"

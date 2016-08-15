@@ -9,7 +9,6 @@ class Crawler(Template):
         DB_SERVER_NAME = "serayamotor"
         CRAWLER_NAME = "Serayamotor Crawler"
         LINK_TO_CRAWL = [
-                "https://www.serayamotor.com/diskusi/portal",
                 "https://www.serayamotor.com/diskusi/viewforum.php?f=27",
                 "https://www.serayamotor.com/diskusi/viewforum.php?f=4",
                 "https://www.serayamotor.com/diskusi/viewforum.php?f=25",
@@ -68,8 +67,8 @@ class Crawler(Template):
         COUNTRY = "IDN"
         THREAD_XPATH ="//ul[@class='topiclist topics']//li[re:test(@class,'row bg*')]//a[@class='topictitle']"
         THREAD_LINK_XPATH ="concat('diskusi/',./@href)"
-        LAST_PAGE_XPATH ="(//div[@class='pagination']//ul//li[not(contains(@class,'next'))]//a)[last()]//@href"
-        PREV_XPATH ="//div[@class='pagination']//ul//li//a[@rel='prev']//@href"
+        LAST_PAGE_XPATH ="concat(substring(concat('diskusi/',(//div[@class='pagination']//ul//li[not(contains(@class,'next'))]//a)[last()]//@href),1 div contains((//div[@class='pagination']//ul//li[not(contains(@class,'next'))]//a)[last()]//@href,'./viewtopic')),substring('',1 div not(contains((//div[@class='pagination']//ul//li[not(contains(@class,'next'))]//a)[last()]//@href,'./viewtopic'))))"
+        PREV_XPATH ="concat(substring(concat('diskusi/',//div[@class='pagination']//ul//li//a[@rel='prev']//@href),1 div contains(//div[@class='pagination']//ul//li//a[@rel='prev']//@href,'./viewtopic')),substring('',1 div not(contains(//div[@class='pagination']//ul//li//a[@rel='prev']//@href,'./viewtopic'))))"
         POST_XPATH ="//div[re:test(@id,'p*') and re:test(@class,'post has-profile bg*')]"
         FIELDS = [
 		{"published_date": {
@@ -82,7 +81,7 @@ class Crawler(Template):
 			"single": True, 
 			"data_type": "url", 
 			"concat": False, 
-                        "xpath":".//h3/a/@href"
+                        "xpath":"concat('diskusi/',//h2[@class='topic-title']/a/@href,.//h3/a/@href)"
 		}},
 		{"author_name":{
 			"single":True,

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from . import (exceptions, tools)
 import os
 import glob
@@ -28,7 +30,7 @@ def write_file(location=None, file_name=None, content=None):
 				)
 
 	try:
-		with open(_location,"w") as f:
+		with open(_location,"w",encoding='utf-8') as f:
 			f.write(content)
 			f.close()
 		#end with

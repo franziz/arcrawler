@@ -52,9 +52,13 @@ class NetworkTools(object):
 				else:
 					# print("[networktools][debug] Direct Connection.")
 					page = requests.get(url, timeout=60,  headers=headers)
-				if page.status_code == 404 or "404 Not Found" in str(page.content):
-					raise PageNotFound("404 Not Found")
-				_html       = html.fromstring(page.content) if parse else page.content
+				if "404 Not Found" in str(page.content):
+					raise PageNotFound("404 Not Found (content).")
+				# Cannot trust status_code because some of the forum return wrong status code
+				# if page.status_code == 404:					
+				# 	raise PageNotFound("404 Not Found (status).")
+				data        = page.content.decode(page.encoding, "ignore")
+				_html       = html.fromstring(data) if parse else data
 				proxy_is_ok = True
 			except requests.exceptions.ProxyError as proxy_error:
 				print("[networktools][error] Ops! Proxy is not working. Try again...")
