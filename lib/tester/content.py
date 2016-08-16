@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from ..forum_engine.tools.field_factory import FieldFactory
-from ..forum_engine.exceptions 			import NoThreadLink
+from ..forum_engine.exceptions 			import NoThreadLink, NoPostFound, NoThreadFound
 from ..validator.factory  				import ValidatorFactory
 from ..exceptions 					    import CannotOpenURL
 from . 				   	   			    import Tester
@@ -29,7 +29,8 @@ class Content(Tester):
 			engine.set_link_to_crawl(link)
 			print("[content_tester][debug] Link %s" % link.encode("utf-8"))
 
-			threads     = engine.get_threads()
+			threads = engine.get_threads()
+			if len(threads) == 0: raise NoThreadFound("No thread(s) were found.")
 			thread      = random.sample(threads, 1)[0]
 			thread_link = engine.get_thread_link(thread)
 			print("[content_tester][debug] Thread: %s" % thread_link.encode("utf-8"))
@@ -38,7 +39,9 @@ class Content(Tester):
 			engine.current_engine = engine._make_engine(thread_link)
 			print("[content_tester][debug] Current Page: %s" % engine.current_engine.current_page_link.encode("utf-8"))
 
-			posts  = engine.current_engine.get_posts(source.POST_XPATH)			
+			posts = engine.current_engine.get_posts(source.POST_XPATH)
+			if len(posts) == 0: raise NoPostFound("No post(s) were found.")
+
 			post   = random.sample(posts,1)[0]
 			result = fields_parser.parse(
 				 	      post = post,
@@ -52,6 +55,9 @@ class Content(Tester):
 			success = True if sample else False
 			if not success:
 				print(fmtstr("[content_tester][error] Content is empty.","red"))
+		except NoPostFound as no_post_found:
+			print(fmtstr("[content_tester][error] %s" % no_post_found,"red"))
+			success = False
 		except NoThreadLink as no_thread_link:
 			print(fmtstr("[content_tester][error] %s" % no_thread_link,"red"))
 			success = False

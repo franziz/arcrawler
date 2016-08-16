@@ -18,6 +18,16 @@ class NoThreadLink(Exception):
 	#end def
 #end class
 
+class NoPostFound(Exception):
+	def __init__(self,value):
+		self.value = value
+	#end def
+
+	def __str__(self):
+		return repr(self.value)
+	#end def
+#end class
+
 class NoThreadFound(BaseException):
 	def __init__(self,value):
 		self.value = value

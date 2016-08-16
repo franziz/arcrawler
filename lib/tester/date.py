@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from ..forum_engine.tools.field_factory import FieldFactory
-from ..forum_engine.exceptions		    import NoThreadLink, NoThreadFound
+from ..forum_engine.exceptions		    import NoThreadLink, NoThreadFound, NoPostFound
 from ..validator  						import Validator
 from ..validator.factory 			    import ValidatorFactory
 from ..exceptions  					    import CannotOpenURL, FutureDateError, InvalidDateFormat
@@ -47,6 +47,7 @@ class Date(Tester):
 
 					url_validator.validate(engine.current_engine.current_page_link) # Will throw CannotOpenURL Exception
 					posts = engine.current_engine.get_posts(source.POST_XPATH)
+					if len(posts) == 0: raise NoPostFound("No post(s) were found.")
 					for post in posts:
 						result = fields_parser.parse(
 							          post = post,
@@ -64,6 +65,9 @@ class Date(Tester):
 						for r in result:
 							print("[date_tester][debug] Data: %s" % r)
 			success = True # If everything never been raisen, means the test is success
+		except NoPostFound as no_post_found:
+			print(fmtstr("[date_tester][error] %s" % no_post_found,"red"))
+			success = False
 		except FutureDateError as future_date:
 			print(fmtstr("[date_tester][error] %s" % future_date,"red"))
 			success = False

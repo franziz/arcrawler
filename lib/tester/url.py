@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from ..forum_engine.tools.field_factory import FieldFactory
-from ..forum_engine.exceptions 			import NoThreadLink
+from ..forum_engine.exceptions 			import NoThreadLink, NoThreadFound, NoPostFound
 from ..network_tools 					import NetworkTools
 from ..validator.factory   			    import ValidatorFactory
 from ..exceptions 					    import CannotOpenURL
@@ -31,7 +31,9 @@ class URL(Tester):
 			engine  = self.prepare_engine()
 			engine.set_link_to_crawl(link)
 
-			threads     = engine.get_threads()
+			threads = engine.get_threads()
+			if len(threads) == 0: raise NoThreadFound("No thread(s) were found.")
+
 			thread      = random.sample(threads, 1)[0]		
 			thread_link = engine.get_thread_link(thread)
 			print("[url_tester][debug] Thread: %s" % thread_link.encode("utf-8"))
@@ -39,7 +41,9 @@ class URL(Tester):
 			engine.current_engine = engine._make_engine(thread_link)
 			print("[url_tester][debug] Current Page: %s" % engine.current_engine.current_page_link.encode("utf-8"))
 
-			posts  = engine.current_engine.get_posts(source.POST_XPATH)		
+			posts = engine.current_engine.get_posts(source.POST_XPATH)
+			if len(posts) == 0: raise NoPostFound("No post(s) were found.")
+
 			post   = random.sample(posts,1)[0] # assuming has post
 			result = fields_parser.parse(
 				 	      post = post,
@@ -57,6 +61,12 @@ class URL(Tester):
 
 			url_validator.validate(sample) # Will throw CannotOpenURL exception
 			success = True # If the code hits this line, it means success
+		except NoPostFound as no_post:
+			print(fmtstr("[url_tester][error] %s" % no_post, "red"))
+			success = False
+		except NoThreadFound as no_thread:
+			print(fmtstr("[url_tester][error] %s" % no_thread, "red"))
+			success = False
 		except ValueError as value_error:
 			print(fmtstr("[url_tester][error] %s" % value_error,"red"))
 			success = False
