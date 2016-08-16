@@ -55,6 +55,9 @@ class Content(Tester):
 			success = True if sample else False
 			if not success:
 				print(fmtstr("[content_tester][error] Content is empty.","red"))
+		except NoThreadFound as no_thread:
+			print(fmtstr("[content_tester][error] %s" % no_thread,"red"))
+			success = False
 		except NoPostFound as no_post_found:
 			print(fmtstr("[content_tester][error] %s" % no_post_found,"red"))
 			success = False
