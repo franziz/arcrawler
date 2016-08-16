@@ -54,6 +54,8 @@ class NetworkTools(object):
 					page = requests.get(url, timeout=60,  headers=headers)
 				if "404 Not Found" in str(page.content):
 					raise PageNotFound("404 Not Found (content).")
+				if "Location: 404" in str(page.content):
+					raise PageNotFound("404 Not Found (content).")
 				# Cannot trust status_code because some of the forum return wrong status code
 				# if page.status_code == 404:					
 				# 	raise PageNotFound("404 Not Found (status).")
