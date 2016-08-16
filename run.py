@@ -24,5 +24,5 @@ if __name__ == "__main__":
 			workers.append(worker)
 		for worker in workers:
 			worker.start()
-		# for worker in workers:
-		# 	worker.join()
+		for worker in workers:
+		 	worker.join()
