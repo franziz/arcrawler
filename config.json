@@ -2,6 +2,7 @@
 	"workers":10,
 	"run":{
 		"1":[
+			"Kaskus Crawler",
 			"Accordclubthailand Crawler",
 			"Aeracingclub Crawler",
 			"Aethailand Crawler",
@@ -25,7 +26,6 @@
 			"Detik Forum Crawler",
 			"Gearheads Crawler",
 			"Gensansale Crawler",
-			"Kaskus Crawler",
 			"Livinginindonesiaforum Crawler",
 			"Modifikasi Crawler",
 			"Yarisclubthailand Crawler"
