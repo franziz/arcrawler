@@ -19,7 +19,8 @@ if __name__ == "__main__":
     print("[remote_deployment][debug] Connecting...")
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect("203.125.16.21", username="isid", port=8661, key_filename="./isid.openssh")
+    # ssh.connect("203.125.16.21", username="isid", port=8661, key_filename="./isid.openssh")
+    ssh.connect("192.168.1.14", username="isid", port=8661, key_filename="./isid.openssh")
     print("[remote_deployment][debug] Connected!")
     
     print("[remote_deployment][debug] Cleanning the files.")
