@@ -5,6 +5,6 @@
 	},
 	"source" : {
 		"git" : "http://github.com/isidsea/engine_sources.git",
-		"branch" : "high_priority"
+		"branch" : "low_priority"
 	}
 }
