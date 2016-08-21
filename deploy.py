@@ -11,7 +11,8 @@ if __name__ == "__main__":
 		# This method will deploy the source file.
 		# Deploying changes for engine is a complicated way and cannot be done in a short time
 		os.chdir("/root/app/src")
-		Shell.run_command("git checkout %s" % route_config.get("source")["branch"])
+		Shell.run_command("git checkout -b %s" % route_config.get("source")["branch"], ignore_error=True)
+		Shell.run_command("git pull origin %s" % route_config.get("source")["branch"])
 		Shell.run_command("git add --all .")
 		Shell.run_command(["git", "commit", "-m" ,"'Automated commit from deploy.py'"])
 		Shell.run_command("git push")
