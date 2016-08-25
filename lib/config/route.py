@@ -1,5 +1,6 @@
 from . import Config
+import os
 
 class RouteConfig(Config):
 	def __init__(self):
-		Config.__init__(self, "/root/app/config/route.json")
+		Config.__init__(self, os.path.join(".","config","route.json"))

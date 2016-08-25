@@ -4,7 +4,7 @@ build/
 tests/
 ghostdriver.log
 unit_tests.py
-config.json
+*.json
 isid
 *.openssh
 src/

@@ -6,9 +6,10 @@ if __name__ == "__main__":
 	source_name = input("Source Name: ")
 	
 	print("[switch_source][debug] Removing source folder...")
-	shutil.rmtree("/root/app/src")
+	if os.path.isdir("/root/app/src"):
+		shutil.rmtree("/root/app/src")
 
-	print("[switch_source][debug] Making new source folder...")
+	print("[switch_source][debug] Making new source folder...")	
 	os.mkdir("/root/app/src")
 	os.chdir("/root/app/src")
 

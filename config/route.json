@@ -1,10 +1,7 @@
 {
-	"engine" : {
-		"git" : "http://github.com/isidsea/arcrawler.git",
-		"branch" : "master"
-	},
-	"source" : {
-		"git" : "http://github.com/isidsea/engine_sources.git",
-		"branch" : "low_priority"
-	}
+	"cd_server":{
+		   "ip" : "172.17.0.4",
+		 "port" : 8301,
+		"route" : "low_priority"
+	}	
 }
