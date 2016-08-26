@@ -1,7 +1,7 @@
 {
 	"cd_server":{
-		   "ip" : "172.17.0.4",
+		   "ip" : "220.100.163.132",
 		 "port" : 8301,
-		"route" : "low_priority"
+		"route" : "high_priority"
 	}	
 }

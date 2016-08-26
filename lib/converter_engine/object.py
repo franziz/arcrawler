@@ -1,13 +1,11 @@
-from pymongo import MongoClient
-from ..      import builder
+from pymongo          import MongoClient
+from ..config.factory import ConfigFactory
 import arrow
 
 class ConverterConfig(object):
 	def __init__(self):
-		self.config = builder.read_config_file()
-		assert "converter" in self.config             , "converter is not defined."
-		assert "target"    in self.config["converter"], "target is not defined."
-		self.config = self.config["converter"]["target"]
+		self.config = ConfigFactory.get(ConfigFactory.CONVERTER)
+		self.config = self.config.get("converter")["target"]
 
 	@property
 	def target_connection_string(self):

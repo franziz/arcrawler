@@ -9,6 +9,7 @@ import importlib
 import shutil
 import copy
 import codecs
+import json
 
 class Builder:
 
@@ -59,7 +60,20 @@ class Builder:
 		shutil.copyfile(os.path.join(".","lib","tools.py"),os.path.join(Builder.BUILD_FOLDER,"lib","tools.py"))
 
 		self._print_log(self, "Copying runners...")
+		shutil.copytree(os.path.join(".","lib","runners"),os.path.join(Builder.BUILD_FOLDER,"runners"))
 		shutil.copytree(os.path.join(".","lib","runners"),os.path.join(Builder.BUILD_FOLDER,"lib","runners"))
+
+	def _get_sources(self):
+		source_folder = os.path.join(".","src")
+		sources       = {}
+		if not os.path.isdir(source_folder): raise CannotFindFolder("Cannot find %s folder" % source_folder)
+		for file_name in glob.iglob(os.path.join(source_folder,"*.py")):
+			crawler_object = file_name.replace("%s/" % source_folder, "").replace(".py","")
+			crawler_object = importlib.import_module("src.%s" % crawler_object)
+			crawler_object = crawler_object.Crawler()
+			crawler_name   = crawler_object.CRAWLER_NAME
+			sources.update({crawler_name.title():crawler_object})
+		return sources
 
 	@classmethod
 	def build(self):		
@@ -79,15 +93,7 @@ class Builder:
 		# Make a dictionary of {crawler_name : crawler_object}
 		# for easy use of and calling the crawler
 		self._print_log(self, "Reading %s folder" % os.path.join(".","src"))
-		source_folder = os.path.join(".","src")
-		sources       = {}
-		if not os.path.isdir(source_folder): raise CannotFindFolder("Cannot find %s folder" % source_folder)
-		for file_name in glob.iglob(os.path.join(source_folder,"*.py")):
-			crawler_object = file_name.replace("%s/" % source_folder, "").replace(".py","")
-			crawler_object = importlib.import_module("src.%s" % crawler_object)
-			crawler_object = crawler_object.Crawler()
-			crawler_name   = crawler_object.CRAWLER_NAME
-			sources.update({crawler_name.title():crawler_object})
+		sources = self._get_sources(self)
 
 		# Need to verify the crawler config from run.json
 		# If the crawler config cannot find the specific crawler
@@ -103,7 +109,14 @@ class Builder:
 
 		self._print_log(self, "Patching every single links to the template...")
 		patched_crawlers = []
+		converter_config = {}
 		for index, crawler in enumerate(crawlers):
+			converter_config.update({
+				crawler.CRAWLER_NAME.lower():{
+					"db_address" : crawler.DB_SERVER_ADDRESS,
+					   "db_name" : crawler.DB_SERVER_NAME
+				}
+			})
 			for link in crawler.LINK_TO_CRAWL:
 				single_link_crawler               = copy.deepcopy(crawler)
 				single_link_crawler.LINK_TO_CRAWL = copy.deepcopy(link)
@@ -128,3 +141,18 @@ class Builder:
 			crawler_file.write(patched_template)
 			crawler_file.flush()
 			crawler_file.close()
+
+		# Reading old converter_config file, 
+		# and apply that to new converter_config.
+		self._print_log(self, "Making converter config...")
+		converter_path = os.path.join(Builder.BUILD_FOLDER, "config")
+		if not os.path.isdir(converter_path): raise CannotFindFolder("Cannot find %s folder" % converter_path)		
+		old_converter = open(os.path.join(converter_path, "converter.json"), "r")
+		old_converter = json.load(old_converter)
+		new_converter = copy.deepcopy(old_converter)
+		new_converter.update(dict(crawlers=converter_config))
+		new_converter = json.dumps(new_converter, indent=4, separators=(",",":"))
+		file = open(os.path.join(converter_path,"converter.json"), "w")
+		file.write(new_converter)
+		file.flush()
+		file.close()
