@@ -1,7 +1,8 @@
-from pymongo      import MongoClient
-from .template    import MentionTemplate
-from tqdm         import tqdm
-from urllib.parse import urlparse
+from pymongo          import MongoClient
+from .template        import MentionTemplate
+from tqdm             import tqdm
+from urllib.parse     import urlparse
+from ..config.factory import ConfigFactory
 import glob
 import importlib
 import hashlib
@@ -11,40 +12,20 @@ import pycountry
 class Engine(object):
 
 	def __init__(self):
-		self.source_files = "/root/app/src"		
-		self.files        = dict()
-
-	def _find_sources(self):
-		files   = dict()
-		sources = glob.glob("{}/*.py".format(self.source_files))
-		sources = tqdm(sources)
-		sources.set_description("[converter_engine] Finding sources...")
-		for file in sources:			
-			file_name = file.split("/")[-1].replace(".py","")
-			files.update({file_name : {"location":file}})
-		return files
-	#end def
+		self.config_file = ConfigFactory.get(ConfigFactory.CONVERTER)
 
 	def convert(self, callback=None):
-		assert callback is not None, "callback is not defined."
-
-		self.files = self._find_sources()
-		for key, value in self.files.items():
-			source = importlib.import_module("src.{}".format(key))
-			source = source.Crawler()
-			self.files[key].update(dict(
-				db = dict(
-						address = source.DB_SERVER_ADDRESS,
-						   name = source.DB_SERVER_NAME
-				   )
-			))
+		assert callback         is not None, "callback is not defined."
+		assert self.config_file is not None, "config_file is not defined."
 
 		# iterate through all files
 		# assume that all files already have db_address and db_name
 		# then connecto to db_address and db_name in order to get the data
-		for key,value in self.files.items():
-			db        = MongoClient("mongodb://{}".format(value["db"]["address"]))
-			db        = db[value["db"]["name"]]
+		# for key,value in self.files.items():
+		crawlers = self.config_file.get("crawlers")
+		for key,value in crawlers.items():
+			db        = MongoClient("mongodb://{}".format(value["db_address"]))
+			db        = db[value["db_name"]]
 			documents = [document for document in db.data.find(
 							{"$where": "(this.converted == null || this.converted==false) && this.published_date <= this._insert_time"},
 						)]

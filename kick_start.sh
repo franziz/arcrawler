@@ -1,1 +1,1 @@
-cd /root/app && python3 build.py && python3 run.py
+cd /root/app && python3 run.py

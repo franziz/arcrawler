@@ -5,21 +5,21 @@ import lxml
 
 if __name__ == "__main__":
 	net = NetworkTools(use_proxy=False)
-	# page = net.parse("http://forums.9carthai.com/index.php?board=2.0", parse=False)
-	# print(u"%s" % page.encode("utf-8"))
-	page  = net.parse("https://www.otofun.net/threads/tiep-tuc-do-1-em-m3.395948/page-10")
-	posts = tools._xpath(page, "//li[re:test(@id,'post-*')]")
-	print(len(posts))
-	# print(posts)
-	for post in posts:		
-		str_date = tools._xpath(post, "concat(concat('20',substring-before(substring-after(substring-after(translate(.//div[@class='messageHead']//text(),'lúc',''),'/'),'/'),' ')),'/',substring-before(substring-after(translate(.//div[@class='messageHead']//text(),'lúc',''),'/'),'/'),'/',substring-before(translate(.//div[@class='messageHead']//text(),'lúc',''),'/'),' ',	substring-after(substring-after(substring-after(translate(.//div[@class='messageHead']//text(),'lúc',''),'/'),'/'),' '))")
-		if type(str_date) is list:
-			str_date = "".join(str_date)
-		if str_date is None: print(b"")
-		else: print(str_date.encode("utf-8"))
-		str_date = tools._clean_string(str_date)
-		str_date = tools._date_parser(str_date)
-		print(bson.json_util.dumps({"date":str_date}))
+	page = net.parse("http://www.autos.ca/forum/index.php?board=67.0", parse=False)
+	print(u"%s" % page.encode("utf-8"))
+	# page  = net.parse("https://www.otofun.net/threads/tiep-tuc-do-1-em-m3.395948/page-10")
+	# posts = tools._xpath(page, "//li[re:test(@id,'post-*')]")
+	# print(len(posts))
+	# # print(posts)
+	# for post in posts:		
+	# 	str_date = tools._xpath(post, "concat(concat('20',substring-before(substring-after(substring-after(translate(.//div[@class='messageHead']//text(),'lúc',''),'/'),'/'),' ')),'/',substring-before(substring-after(translate(.//div[@class='messageHead']//text(),'lúc',''),'/'),'/'),'/',substring-before(translate(.//div[@class='messageHead']//text(),'lúc',''),'/'),' ',	substring-after(substring-after(substring-after(translate(.//div[@class='messageHead']//text(),'lúc',''),'/'),'/'),' '))")
+	# 	if type(str_date) is list:
+	# 		str_date = "".join(str_date)
+	# 	if str_date is None: print(b"")
+	# 	else: print(str_date.encode("utf-8"))
+	# 	str_date = tools._clean_string(str_date)
+	# 	str_date = tools._date_parser(str_date)
+	# 	print(bson.json_util.dumps({"date":str_date}))
 # from lib          import tools
 # from pymongo      import MongoClient
 # from tqdm         import tqdm

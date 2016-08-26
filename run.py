@@ -1,6 +1,5 @@
-from lib.runners import Runner
-from lib         import builder
-from pymongo     import MongoClient
+from lib.runners        import Runner
+from lib.config.factory import ConfigFactory
 import multiprocessing
 import time
 
@@ -12,14 +11,11 @@ def execute_worker(name=None, pid=None):
 	runner.run()
 
 if __name__ == "__main__":
-	config = builder.read_config_file()
-	assert "run" in config, "run is not defined."
+	run_config = ConfigFactory.get(ConfigFactory.RUN)
 
 	while True:
 		workers = list()
-		for key, value in config["run"].items():
-			print(value)
-			# TODO: check if name is in database
+		for key, value in run_config.get("run").items():			
 			worker = multiprocessing.Process(target=execute_worker, args=(value,key), daemon=False)
 			workers.append(worker)
 		for worker in workers:

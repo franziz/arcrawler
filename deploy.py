@@ -1,43 +1,53 @@
-from lib.exceptions     import CommandError
 from lib.config.factory import ConfigFactory
-from curtsies           import fmtstr
-import subprocess
 import os
+import zipfile
+import requests
 
-def run_command(command=None):
-	assert command is not None, "command is not defined."
-	command = command.split(" ") if not type(command) is list else command
-	proc    = subprocess.Popen(command, stdout=subprocess.PIPE)
-	success = False
-	for line in proc.stdout:
-		line = line.decode("utf-8")
-		if "nothing to commit" in line:
-			success = True
-	proc.wait()
+def zipdir(path, ziph):    
+	for root, dirs, files in os.walk(path):
+		for file in files:			
+			ziph.write(os.path.join(root, file))
 
-	exit_code = proc.returncode
-	if exit_code != 0 and not success: raise CommandError("Exit: %s" % exit_code)
-	return proc.returncode
+if __name__ == '__main__':
+    print("[deploy][debug] Zipping build folder...")
+    zipf = zipfile.ZipFile('build.zip', 'w', zipfile.ZIP_DEFLATED)
+    os.chdir(os.path.join(".","build"))
+    zipdir(".", zipf)
+    zipf.close()
+    os.chdir(os.path.join(".."))
 
-if __name__ == "__main__":
-	try:
-		route_config = ConfigFactory.get(ConfigFactory.ROUTE)
+    print("[deploy][debug] Reading config...")
+    route_config = ConfigFactory.get(ConfigFactory.ROUTE)
+    cd_server    = route_config.get("cd_server")
 
-		# This method will deploy the source file.
-		# Deploying changes for engine is a complicated way and cannot be done in a short time
-		os.chdir("/root/app/src")
-		run_command("git checkout %s" % route_config.get("source")["branch"])
-		run_command("git add --all .")
-		run_command(["git", "commit", "-m" ,"'Automated commit from deploy.py'"])
-		run_command("git push")
-		print(fmtstr("[deploy][success] Success!", "green"))
-	except CommandError as command_error:
-		print(fmtstr("[deploy][error] %s" % command_error, "red"))
+    print("[deploy][debug] Sending the zip...")
+    url  = "http://%s:%s/deploy?route=%s" % (cd_server["ip"], cd_server["port"], cd_server["route"])
+    file = {"file":open("build.zip", "rb")}
+    requests.post(url,files=file)
 
+    print("[deploy][debug] Deleting the zip...")
+    os.remove("build.zip")
+
+
+
+# from lib.shell          import Shell
+# from lib.config.factory import ConfigFactory
+# from curtsies           import fmtstr
 # import subprocess
-# cmd = ['/run/myscript', '--arg', 'value']
-# p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-# for line in p.stdout:
-#     print line
-# p.wait()
-# print p.returncode	
+# import os
+
+# if __name__ == "__main__":
+# 	try:
+# 		route_config = ConfigFactory.get(ConfigFactory.ROUTE)
+
+# 		# This method will deploy the source file.
+# 		# Deploying changes for engine is a complicated way and cannot be done in a short time
+# 		os.chdir("/root/app/src")
+# 		Shell.run_command("git checkout -b %s" % route_config.get("source")["branch"], ignore_error=True)
+# 		Shell.run_command("git pull origin %s" % route_config.get("source")["branch"])
+# 		Shell.run_command("git add --all .")
+# 		Shell.run_command(["git", "commit", "-m" ,"'Automated commit from deploy.py'"])
+# 		Shell.run_command("git push")
+# 		print(fmtstr("[deploy][success] Success!", "green"))
+# 	except CommandError as command_error:
+# 		print(fmtstr("[deploy][error] %s" % command_error, "red"))
