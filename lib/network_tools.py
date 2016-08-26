@@ -38,7 +38,7 @@ class NetworkTools(object):
 		proxy_is_ok = False
 		_html       = None
 		tried  		= 0
-		max_try 	= 5
+		max_try 	= 2
 		while not proxy_is_ok and tried < max_try:
 			try:
 				assert url is not None, "URL is not defined."
