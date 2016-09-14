@@ -46,11 +46,11 @@ class NetworkTools(object):
 				
 				headers = {"user-agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"}
 				if self.use_proxy:
-					# print("[networktools][debug] Using Proxy.")
+					print("[networktools][debug] Using Proxy.")
 					switcher = ProxySwitcher()
 					page     = requests.get(url, proxies=switcher.get_proxy(), timeout=60, headers=headers)
 				else:
-					# print("[networktools][debug] Direct Connection.")
+					print("[networktools][debug] Direct Connection.")
 					page = requests.get(url, timeout=60,  headers=headers)
 				if "404 Not Found" in str(page.content):
 					raise PageNotFound("404 Not Found (content).")
@@ -59,7 +59,12 @@ class NetworkTools(object):
 				# Cannot trust status_code because some of the forum return wrong status code
 				# if page.status_code == 404:					
 				# 	raise PageNotFound("404 Not Found (status).")
-				data        = page.content.decode(page.encoding, "ignore")
+				try:
+					data = page.content.decode(page.encoding, "ignore")
+				except LookupError:
+					data = page.content
+				except TypeError:
+					data = page.content
 				_html       = html.fromstring(data) if parse else data
 				proxy_is_ok = True
 			except requests.exceptions.ProxyError as proxy_error:
@@ -77,6 +82,10 @@ class NetworkTools(object):
 				proxy_is_ok = True
 			except PageNotFound as page_not_found:
 				print("[networktools][error] %s" % page_not_found)
+				_html       = html.fromstring("<html><head></head><body></body></html>") if parse else "<html></html>"
+				proxy_is_ok = True 
+			except ValueError as ex:
+				print("[networktools][error] %s" % ex)
 				_html       = html.fromstring("<html><head></head><body></body></html>") if parse else "<html></html>"
 				proxy_is_ok = True 
 			except:

@@ -1,68 +1,66 @@
-from pymongo          import MongoClient
-from .template        import MentionTemplate
-from tqdm             import tqdm
-from urllib.parse     import urlparse
 from ..config.factory import ConfigFactory
-import glob
-import importlib
-import hashlib
+from ..monitor 		  import Monitor
+from ..database       import Database
+from .object 		  import MentionDB, AuthorInfoDB
+from .template        import MentionTemplate
+from curtsies 		  import fmtstr
+import pymongo
 import arrow
-import pycountry
+import tomorrow
 
 class Engine(object):
 
 	def __init__(self):
 		self.config_file = ConfigFactory.get(ConfigFactory.CONVERTER)
 
-	def convert(self, callback=None):
-		assert callback         is not None, "callback is not defined."
+	def get_crawlers(self):
 		assert self.config_file is not None, "config_file is not defined."
-
-		# iterate through all files
-		# assume that all files already have db_address and db_name
-		# then connecto to db_address and db_name in order to get the data
-		# for key,value in self.files.items():
 		crawlers = self.config_file.get("crawlers")
-		for key,value in crawlers.items():
-			db        = MongoClient("mongodb://{}".format(value["db_address"]))
-			db        = db[value["db_name"]]
-			documents = [document for document in db.data.find(
-							{"$where": "(this.converted == null || this.converted==false) && this.published_date <= this._insert_time"},
-						)]
-			documents = tqdm(documents)
-			for document in documents:
-				_id = document["permalink"] if "permalink" in document else document["url"] if "url" in document else None
-				documents.set_description("[converter_engine] Converting {}".format(key))
-				
-				source_name                               = document["permalink"]
-				source_name                               = urlparse(source_name)
-				source_name                               = source_name.netloc
-				source_name                               = source_name.lower().replace("www.","")
-				source_name                               = "{}{}".format(source_name[0].upper(), source_name[1:])
+		return crawlers
 
-				new_document                              = MentionTemplate()
-				new_document.MentionId                    = hashlib.sha256(_id.encode("utf-8")).hexdigest() 
-				new_document.MentionText                  = document["content"]
-				new_document.MentionMiscInfo			  = document["_thread_link"] if "_thread_link" in document else ""
-				new_document.MentionType                  = "forum_post"
-				new_document.MentionDirectLink            = document["permalink"]
-				new_document.MentionCreatedDate           = document["published_date"]
-				new_document.MentionCreatedDateISO        = document["published_date"]
-				new_document.AuthorId                     = document["author_id"] if "author_id" in document else document["author_name"]
-				new_document.AuthorName                   = document["author_name"]
-				new_document.AuthorDisplayName            = document["author_name"]
-				new_document.SourceType                   = "Forums"
-				new_document.SourceName                   = source_name
-				new_document.SentFromHost                 = "220.100.163.132"
-				new_document.DateInsertedIntoCrawlerDB    = document["_insert_time"]
-				new_document.DateInsertedIntoCrawlerDBISO = document["_insert_time"]
-				new_document.DateInsertedIntoCentralDB    = arrow.utcnow().datetime
-				new_document.DateInsertedIntoCentralDBISO = arrow.utcnow().datetime
-				new_document.Country                      = document["_country"]
-				
-				callback(source_db=db, mention=new_document.to_dict())
-			#end for
+	def get_db(self, db_address=None, db_name=None):
+		assert db_address is not None, "db_address is not defined."
+		assert db_name    is not None, "db_name is not defined."
+		db = pymongo.MongoClient("mongodb://%s" % db_address)
+		return db[db_name]
 
-		#end for
-	#end def
-#end class
+
+	def get_documents(self, db=None):
+		assert db is not None, "db is not defined."
+		return [document for document in db.data.find(
+			{"$where": "(this.converted == null || this.converted==false)"},
+		)]
+
+	@tomorrow.threads(10)
+	def save(self, source_db=None, mention=None):
+		mention_db     = MentionDB()
+		author_info_db = AuthorInfoDB()
+		try:
+			mention_db.mention = mention
+			mention_db.save()
+
+			author_info_db.generate_info(mention)
+			author_info_db.save()
+			print("[converter_engine][debug] Converted one document!")
+		except pymongo.errors.DuplicateKeyError:
+			print(fmtstr("[converter_engine][error] Ops! Duplicate mention"))
+		finally:
+			mention_db.set_as_converted(source_db=source_db)
+		return True
+
+	def convert(self):
+		crawlers = self.get_crawlers()
+		for crawler_name, config in crawlers.items():
+			assert "db_address" in config, "db_address is not defined."
+			assert "db_name"    in config, "db_name is not defined."
+
+			print("[converter_engine][debug] Converting %s" % crawler_name)
+			db         = self.get_db(db_address=config["db_address"], db_name=config["db_name"])
+			template   = MentionTemplate()
+			documents  = self.get_documents(db=db)
+			monitor_id = Monitor.start_converter(crawler_name=crawler_name.title(), number_of_document=len(documents))
+			documents  = [template.patch(document).to_dict() for document in documents]
+			print("[converter_engine][debug] Found %s document(s)" % len(documents))
+			
+			documents = [self.save(db, document) for document in documents]
+			Monitor.stop_converter(document_id=monitor_id)

@@ -1,5 +1,7 @@
+from urllib.parse import urlparse
 import pycountry
 import arrow
+import hashlib
 
 class MentionTemplate(object):
 
@@ -33,7 +35,38 @@ class MentionTemplate(object):
 		self.date_inserted_into_central_db_iso = ""
 		self.tenant_dbs_forwarded              = ""
 		self.country                           = ""
+		self.ttl                               = arrow.utcnow().datetime
 
+
+	def patch(self, document=None):
+		assert document is not None, "document is not defined."
+		_id = document["permalink"] if "permalink" in document else document["url"] if "url" in document else None
+		
+		source_name = document["permalink"]
+		source_name = urlparse(source_name)
+		source_name = source_name.netloc
+		source_name = source_name.lower().replace("www.","")
+		source_name = "{}{}".format(source_name[0].upper(), source_name[1:])
+
+		self.MentionId                    = hashlib.sha256(_id.encode("utf-8")).hexdigest() 
+		self.MentionText                  = document["content"]
+		self.MentionMiscInfo			  = document["_thread_link"] if "_thread_link" in document else ""
+		self.MentionType                  = "forum_post"
+		self.MentionDirectLink            = document["permalink"]
+		self.MentionCreatedDate           = document["published_date"]
+		self.MentionCreatedDateISO        = document["published_date"]
+		self.AuthorId                     = document["author_id"] if "author_id" in document else document["author_name"]
+		self.AuthorName                   = document["author_name"]
+		self.AuthorDisplayName            = document["author_name"]
+		self.SourceType                   = "Forums"
+		self.SourceName                   = source_name
+		self.SentFromHost                 = "220.100.163.132"
+		self.DateInsertedIntoCrawlerDB    = document["_insert_time"]
+		self.DateInsertedIntoCrawlerDBISO = document["_insert_time"]
+		self.DateInsertedIntoCentralDB    = arrow.utcnow().datetime
+		self.DateInsertedIntoCentralDBISO = arrow.utcnow().datetime
+		self.Country                      = document["_country"]
+		return self
 
 	def to_dict(self):
 		""" 
@@ -256,6 +289,7 @@ class MentionTemplate(object):
 	@DateInsertedIntoCrawlerDBISO.setter
 	def DateInsertedIntoCrawlerDBISO(self, value):
 		date                                   = arrow.get(value)
+		date 								   = date.to("Asia/Singapore")
 		date                                   = date.format("YYYY-MM-DDTHH:mm:ss")
 		date                                   = date  + "Z"
 		self.date_inserted_into_crawler_db_iso = date
@@ -278,6 +312,7 @@ class MentionTemplate(object):
 	@DateInsertedIntoCentralDBISO.setter
 	def DateInsertedIntoCentralDBISO(self, value):
 		date                                   = arrow.get(value)
+		date 								   = date.to("Asia/Singapore")
 		date                                   = date.format("YYYY-MM-DDTHH:mm:ss")
 		date                                   = date  + "Z"
 		self.date_inserted_into_central_db_iso = date	
@@ -298,5 +333,10 @@ class MentionTemplate(object):
 	def Country(self, value):		
 		country      = pycountry.countries.get(alpha3=value)
 		country      = country.name.upper()
+		country 	 = country.replace(" ","_")
+
+		if country == "VIET_NAM":
+			country = "VIETNAM"
+
 		self.country = country
 	

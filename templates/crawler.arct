@@ -1,8 +1,11 @@
-from $ENGINE.engine import Engine
-from $ENGINE        import exceptions
-from pymongo        import MongoClient
-from lib            import tools
-$IMPORT
+# -*- coding: utf-8 -*-
+
+from lib.forum_engine.engine import Engine
+from lib.forum_engine        import exceptions
+from lib.network_tools       import NetworkTools
+from lib.monitor 			 import Monitor
+from pymongo        		 import MongoClient
+from lib            		 import tools
 import pymongo
 import arrow
 import bson.json_util
@@ -12,92 +15,78 @@ class Crawler(object):
 
 	def __init__(self):
 		# initialize variables
-		self.DB_SERVER_ADDRESS = $DB_SERVER_ADDRESS
-		self.DB_SERVER_NAME    = $DB_SERVER_NAME
-		self.CRAWLER_NAME      = $CRAWLER_NAME
-		self.LINK_TO_CRAWL     = $LINK_TO_CRAWL
-		self.COUNTRY           = $COUNTRY
-		self.THREAD_XPATH      = $THREAD_XPATH
-		self.THREAD_LINK_XPATH = $THREAD_LINK_XPATH
-		self.LAST_PAGE_XPATH   = $LAST_PAGE_XPATH
-		self.PREV_XPATH        = $PREV_XPATH
-		self.POST_XPATH        = $POST_XPATH
-		self.FIELDS            = $FIELDS
-		self.NETWORK_TOOLS     = $NETWORK_TOOLS
+		self.DB_SERVER_ADDRESS = "{{template.DB_SERVER_ADDRESS}}"
+		self.DB_SERVER_NAME    = "{{template.DB_SERVER_NAME}}"
+		self.CRAWLER_NAME      = "{{template.CRAWLER_NAME}}"
+		self.LINK_TO_CRAWL     = "{{template.LINK_TO_CRAWL}}"
+		self.COUNTRY           = "{{template.COUNTRY}}"
+		self.THREAD_XPATH      = "{{template.THREAD_XPATH}}"
+		self.THREAD_LINK_XPATH = "{{template.THREAD_LINK_XPATH}}"
+		self.LAST_PAGE_XPATH   = "{{template.LAST_PAGE_XPATH}}"
+		self.PREV_XPATH        = "{{template.PREV_XPATH}}"
+		self.POST_XPATH        = "{{template.POST_XPATH}}"
+		self.FIELDS            = {{template.FIELDS}}
+		self.NETWORK_TOOLS     = NetworkTools(use_proxy={{template.NETWORK_TOOLS.use_proxy}})
 	#end def
 
 	def crawl_callback(self,documents):
-		db = MongoClient("mongodb://{DB_SERVER_ADDRESS}/{DB_SERVER_NAME}".format(
-				DB_SERVER_ADDRESS = self.DB_SERVER_ADDRESS,
-				   DB_SERVER_NAME = self.DB_SERVER_NAME
-			))
+		db = MongoClient("mongodb://%s/%s" % (
+			self.DB_SERVER_ADDRESS,
+			self.DB_SERVER_NAME
+		))
 		db = db[self.DB_SERVER_NAME]
 
 		try:
 			for document in documents:
 				# preparing additional data in order to complete insertion
-				document.update({"_country":self.COUNTRY})
-				document.update({"_insert_time":arrow.utcnow().datetime})
-				document.update({"_origin":self.LINK_TO_CRAWL})
-				document.update({"_crawled_by":self.CRAWLER_NAME})
+				document.update(dict(_country=self.COUNTRY))
+				document.update(dict(_insert_time=arrow.utcnow().datetime))
+				document.update(dict(_origin=self.LINK_TO_CRAWL))
+				document.update(dict(_crawled_by=self.CRAWLER_NAME))
+				document.update(dict(converted=False))
+				document.update(dict(TTL=arrow.utcnow().datetime))
 				
 				# set some assertion validation
-				$ASSERTION
-				
-				db.data.insert_one(document)
-				print("[arcrawler][debug][{}] Inserted one document.".format(self.CRAWLER_NAME))
+				assert "content"                in document, "content is not defined."
+				assert len(document["content"]) > 0        , "content cannot be empty."
+				assert "permalink"              in document, "permalink is not defined."
+				assert len(document["permalink"]) > 0      , "permalink cannot be empty."
+							
+				result = db.data.insert_one(document) # This will return DuplicateKeyError
+				Monitor.inserted_document(
+					crawler_name = self.CRAWLER_NAME,
+					   permalink = document["permalink"],
+					 document_id = result.inserted_id
+				)
+				print("[arcrawler][debug][%s] Inserted one document." % self.CRAWLER_NAME)
 			#end for
 		except pymongo.errors.DuplicateKeyError as duplicate_key:
 			raise exceptions.DuplicateData("Ops! Duplicate Data!")
 		except AssertionError as assertion_error:
-			print("[arcrawler][error][{}] Assertion is not passed! Data will not be inserted".format(self.CRAWLER_NAME))
+			print("[arcrawler][error][%s] Assertion is not passed! Data will not be inserted" % self.CRAWLER_NAME)
 			pass
 		#end try
 	#end def
 
 	def preflight_check(self):
-		db = MongoClient("mongodb://{DB_SERVER_ADDRESS}/{DB_SERVER_NAME}".format(
-				DB_SERVER_ADDRESS = self.DB_SERVER_ADDRESS,
-				   DB_SERVER_NAME = self.DB_SERVER_NAME
-			))
+		db = MongoClient("mongodb://%s/%s" % (
+			self.DB_SERVER_ADDRESS,
+			self.DB_SERVER_NAME
+		))
 		db = db[self.DB_SERVER_NAME]
+		db.data.create_index([("permalink", pymongo.ASCENDING)], unique=True)
+		db.data.create_index("TTL",expireAfterSeconds=2592000)
 
-		tried        = 0
-		max_try      = 10
-		has_database = False
-
-		while not has_database:
-			try:
-				has_permalink_index = False
-				tools._force_create_index(
-					        db = db,
-					collection = "data",
-					     field = "permalink"
-				)
-				has_permalink_index = True
-
-				# check if has permalink field, because it is really critical
-				fields              = json.loads(self.FIELDS)
-				has_permalink_field = False
-				for field in fields:
-					for key, value in field.items():
-						if "permalink" in key: has_permalink_field = True
-
-				# set the flag has_database = True
-				# here! Because, if all operation above is OK! it means the database is OK also
-				has_database = True
-			except pymongo.errors.OperationFailure as no_db:
-				db.data.insert({"_dummy":1})
-				db.data.remove({"_dummy":1})
-				tried = tried + 1
-			#end try
-		#end while
-
-		return has_permalink_index and has_permalink_field and has_database
-	#end def
+		# Check if has permalink field
+		has_permalink_field = False
+		for field in self.FIELDS:
+			has_permalink = "permalink" in field.keys()
+			if has_permalink: break
+		return has_permalink
 
 	def crawl(self):
 		# check database indexes
+		print("[%s][debug] Prefligh-check" % self.CRAWLER_NAME)
 		assert self.preflight_check()==True, "Pre-Flight is not satisfied."
 
 		global engine
@@ -112,10 +101,10 @@ class Crawler(object):
 		engine.set_post_xpath(self.POST_XPATH)
 		engine.set_network_tools(self.NETWORK_TOOLS)
 
-		fields = json.loads(self.FIELDS)
-		for field in fields:
+		for field in self.FIELDS:
+			assert type(field) is dict, "incorrect field data type."
 			for key,value in field.items():
-				assert type(value) is dict, "Value inside the field's title should be in dict type"
+				assert type(value) is dict, "incorrect value data type."
 				engine.add_field(
 					    title = key,
 					    xpath = value["xpath"],
@@ -123,8 +112,6 @@ class Crawler(object):
 					   concat = value["concat"],
 					data_type = value["data_type"]
 				)
-			#end for
-		#end for
 
 		threads = engine.get_threads()
 		for thread in threads:
@@ -132,10 +119,10 @@ class Crawler(object):
 				engine.crawl(thread, callback=self.crawl_callback)
 				engine.crawl_next()
 			except exceptions.DuplicateData as duplicate_data:
-				print("[arcrawler][debug][{}] Ops! Duplicate Data!".format(self.CRAWLER_NAME))
+				print("[arcrawler][debug][%s] Ops! Duplicate Data!" % self.CRAWLER_NAME)
 			except exceptions.NoThreadLink as no_thread_link:
 				# This assume that the crawler will proceed to the next thread if the crawler cannot find thread link.
-				print("[arcrawler][error][{}] Ops! No Thread Link!".format(self.CRAWLER_NAME))
+				print("[arcrawler][error][%s] Ops! No Thread Link!" % self.CRAWLER_NAME)
 			except exceptions.NoPrevious as no_prev:
 				pass
 			#end try

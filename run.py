@@ -1,24 +1,45 @@
-from lib.runners        import Runner
 from lib.config.factory import ConfigFactory
-import multiprocessing
+from lib.monitor        import Monitor
+from curtsies 			import fmtstr
+from multiprocessing    import Pool
 import time
+import glob
+import os
+import importlib
+import random
 
-def execute_worker(name=None, pid=None):
-	assert name is not None, "name is not defined."
-	assert pid  is not None, "pid is not defined."
-	
-	runner = Runner(name)
-	runner.run()
+def execute_worker(crawler_name=None):
+	assert crawler_name is not None, "crawler_name is not defined."
+	module  = importlib.import_module("crawlers.%s" % crawler_name)
+	crawler = module.Crawler()
+	crawler.crawl()
 
 if __name__ == "__main__":
-	run_config = ConfigFactory.get(ConfigFactory.RUN)
-
 	while True:
-		workers = list()
-		for key, value in run_config.get("run").items():			
-			worker = multiprocessing.Process(target=execute_worker, args=(value,key), daemon=False)
-			workers.append(worker)
-		for worker in workers:
-			worker.start()
-		for worker in workers:
-		 	worker.join()
+		run_config    = ConfigFactory.get(ConfigFactory.RUN)
+		crawler_names = run_config.get("run")
+		section_name  = run_config.get("section")
+		section_id    = Monitor.section_start(name=section_name)
+		for crawler_name in crawler_names:
+			process_id = Monitor.crawler_start(crawler_name.title())
+			name 	   = crawler_name.replace(" ","_")
+			name       = name.lower()
+			crawlers   = []
+			print("[run][debug] Preparing %s" % name)
+			for file_name in glob.iglob(os.path.join(os.getcwd(),"crawlers","%s_*.py" % name)):
+				file_name = file_name.replace(os.getcwd(),"")
+				file_name = file_name.replace("crawlers","")
+				file_name = file_name.replace(".py","")
+				file_name = file_name.replace("/","")
+				crawlers.append(file_name)
+			print("[run][debug] Crawling...")
+			run_config = ConfigFactory.get(ConfigFactory.RUN)
+			workers    = run_config.get("workers")
+			with Pool(workers) as pool:
+				pool.map(execute_worker, crawlers)
+			Monitor.crawler_stop(process_id)
+		Monitor.section_stop(id=section_id)
+
+		rnd = random.randint(60,360)
+		print(fmtstr("[run][debug] Sleeping %s seconds" % rnd, "yellow"))
+		time.sleep(rnd)

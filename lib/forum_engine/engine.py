@@ -1,5 +1,6 @@
 from urllib.parse 		  import urlparse
 from lxml         		  import html
+from ..network_tools 	  import NetworkTools
 from .tools.field_factory import FieldFactory
 from .backward    		  import Backward
 from .            		  import exceptions
@@ -80,8 +81,7 @@ class Engine(object):
 
 	def set_link_to_crawl(self,link_to_crawl):
 		self.link_to_crawl = link_to_crawl
-		self.domain        = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.link_to_crawl))
-	#end def
+		self.domain        = NetworkTools.get_domain(self.link_to_crawl)
 
 	def set_method(self, method):
 		self.method = method
@@ -226,12 +226,9 @@ class Engine(object):
 				elif "url" in props["data_type"]:
 					result = url_parser.parse(value=result, domain=self.domain)
 				document.update({field:result})
-			#end for
 			document.update({"_thread_link":self.current_engine.thread_link})
 			documents.append(document)
-		#end for
 		return documents
-	#end def
 
 	def get_info(self):
 		return{

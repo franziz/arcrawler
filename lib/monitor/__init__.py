@@ -1,88 +1,87 @@
-from pymongo import MongoClient
+from ..database import Database
 import arrow
 
-class Monitor(object):
+class Monitor:
 	def __init__(self):
 		pass
 
-	def _connect_to_database(self):
-		db = MongoClient("mongodb://mongo:27017/test")
-		db = db.monitor
-		return db
+	@classmethod
+	def section_start(self, name=None):
+		assert name is not None, "name is not defined."
+		db = Database.get_db(Database.MONITOR)
+		db.section.delete_many({"$and":[{"section_name":name},{"end_time":None}]})
 
-	def current_queue(self):
-		db     = self._connect_to_database()
-		queue  = db.queue.find()
-		result = []
-		for document in queue:
-			new_document = Document()
-			new_document.from_dict(document)
-			result.append(new_document)
-		return result
+		document = {
+			"_insert_time" : arrow.utcnow().datetime,
+			"section_name" : name,
+			  "start_time" : arrow.utcnow().datetime,
+			    "end_time" : None
+		}
+		result = db.section.insert_one(document)
+		return result.inserted_id
 
-	def renew_queue(self, new_documents=[]):
-		""" This function will renew monitor.queue database by removing the documents
-			that are not inside new_documents parameter. 
+	@classmethod
+	def section_stop(self, id=None):
+		assert id is not None, "id is not defined."
+		db = Database.get_db(Database.MONITOR)
+		db.section.update({"_id":id},{"$set":{"end_time":arrow.utcnow().datetime}})
 
-			Example:
-			old_documents = [{1:"abc"}, {2:"def"}, {3:"ghi"}]
-			new_documents = [{1:"aaa"}, {4:"axz"}]
-			result        = [{1:"aaa"}, {4:"axz"}]
-		"""
-		for new_document in new_documents:
-			
+	@classmethod
+	def start_converter(self, crawler_name=None, number_of_document=None):
+		assert crawler_name 			is not None, "crawler_name is not defined."
+		assert number_of_document       is not None, "number_of_document is not defined."
+		assert type(number_of_document) is int 	   , "incorrect number_of_document data type."
 
-	def _set_status(self, crawler=None, status=None):
-		assert status        is not None, "status is not defined."
-		assert crawler       is not None, "crawler is not defined."
-		assert type(crawler) is Document, "incorrect crawler data type."
+		document = {
+				  "_insert_time" : arrow.utcnow().datetime,
+			 	  "crawler_name" : crawler_name,
+			 	 	"start_time" : arrow.utcnow().datetime,
+			          "end_time" : None,
+			"number_of_document" : number_of_document
+		}
+		db     = Database.get_db(Database.MONITOR)
+		result = db.converter.insert_one(document)
+		return result.inserted_id
+		
+	@classmethod
+	def stop_converter(self, document_id=None):
+		assert document_id is not None, "document_id is not defined."
+		db = Database.get_db(Database.MONITOR)
+		db.converter.update({"_id":document_id},{"$set":{"end_time":arrow.utcnow().datetime}})
 
-		db = self._connect_to_database()
-		current_time = arrow.utcnow().datetime
-		db.queue.update_one({"hash":crawler.HASH}, {"$set":{
-			"last_update" : current_time,
-				 "status" : status
-		}})
-		crawler.LAST_UPDATE = current_time
-		crawler.STATUS      = status
-		return crawler
+	@classmethod
+	def inserted_document(self, crawler_name=None, document_id=None, permalink=None):
+		assert crawler_name is not None, "crawler_name is not defined."
+		assert document_id  is not None, "document_id is  not defined."
+		assert permalink    is not None, "permalink is not defined."
 
-	def set_as_idle(self, crawler=None):
-		assert crawler       is not None, "crawler is not defined."
-		assert type(crawler) is Document, "incorrect crawler data type."
-		self._set_status(crawler, status.IDLE)
+		document = {
+			"_insert_time" : arrow.utcnow().datetime,
+			"crawler_name" : crawler_name.title(),
+			 "document_id" : document_id,
+			   "permalink" : permalink
+		}
+		db = Database.get_db(Database.MONITOR)
+		db.inserted_document.insert_one(document)
 
-	def set_as_processing(self, crawler=None):
-		assert crawler       is not None, "crawler is not defined."
-		assert type(crawler) is Document, "incorrect crawler data type."
-		self._set_status(crawler, status.PROCESSING)
+	@classmethod
+	def crawler_start(self, crawler_name=None):
+		assert crawler_name is not None, "crawler_name is not defined."
 
-	def set_as_processed(self, crawler=None):
-		assert crawler 		 is not None, "crawler is not defined."
-		assert type(crawler) is Document, "incorrect crawler data type."
-		self._set_status(crawler, status.PROCESSED)
+		db = Database.get_db(Database.MONITOR)
+		db.data.delete_many({"$and":[{"crawler_name":crawler_name.title()},{"end_time":None}]})
 
-class Status(object):
-	IDLE       = "idle"
-	PROCESSING = "processing"
-	PROCESSED  = "processed"
+		document = {
+			"_insert_time" : arrow.utcnow().datetime,
+			"crawler_name" : crawler_name.title(),
+			"start_time" : arrow.utcnow().datetime,
+			"end_time" : None
+		}
+		result = db.data.insert_one(document)
+		return result.inserted_id
 
-class Document(object):
-	def __init__(self):
-		self.HASH              = None
-		self.LINK              = None
-		self.NAME              = None
-		self.DB_TO_INSERT      = None
-		self.DB_NAME_TO_INSERT = None
-		self.COUNTRY           = None
-		self.LAST_UPDATE       = None
-		self.STATUS            = None
-
-	def from_dict(self, source=None):
-		self.HASH              = source["hash"]
-		self.LINK              = source["link"]
-		self.DB_TO_INSERT      = source["db_to_insert"]
-		self.DB_NAME_TO_INSERT = source["db_name_to_insert"]
-		self.COUNTRY           = source["country"]
-		self.LAST_UPDATE       = source["last_update"]
-		self.STATUS            = source["status"]
+	@classmethod
+	def crawler_stop(self, process_id=None):
+		assert process_id is not None, "process_id is not defined."
+		db = Database.get_db(Database.MONITOR)
+		db.data.update({"_id":process_id},{"$set":{"end_time":arrow.utcnow().datetime}})

@@ -63,15 +63,6 @@ class Backward(object):
 	#end def
 
 	def next(self):
-		# assert self.prev_xpath is not None, "prev_xpath is not defined."
-		# assert self.domain is not None, "domain is not defined."
-
-		# prev_link = tools._xpath(parent=self.current_page, syntax=self.prev_xpath)
-
-		# tools._assert(len(prev_link)>0, exceptions.NoPrevious("Ops! No more previous link."))
-
-		# prev_link = prev_link[0]
-		# prev_link = tools._expand_link(domain=self.domain, link=prev_link)
 		prev_link              = self.get_prev_link()
 		self.current_page      = self.network_tools.parse(prev_link)
 		self.current_page_link = prev_link

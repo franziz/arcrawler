@@ -34,7 +34,8 @@ class MentionDB(object):
 		assert self.db      is not None, "db is not defined."
 		assert self.mention is not None, "mention is not defined."
 
-		self.db.mention.insert_one(self.mention)
+		result = self.db.mention.insert_one(self.mention)
+		return result.inserted_id
 
 	def set_as_converted(self, source_db=None):
 		assert self.mention is not None, "mention is not defined."
@@ -44,6 +45,15 @@ class MentionDB(object):
 			{"permalink":self.mention["MentionDirectLink"]},
 			{"$set":{"converted":True}}
 		)
+
+	def delete_source(self, source_db=None):
+		assert self.mention is not None, "mention is not defined."
+		assert source_db    is not None, "source_db is not defined."
+		
+		source_db.data.remove({
+			"permalink":self.mention["MentionDirectLink"]
+		})
+
 
 class AuthorInfoDB(object):
 	def __init__(self):
