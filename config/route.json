@@ -1,7 +1,7 @@
 {
     "cd_server": {
-        "route": "section_8",
         "ip": "220.100.163.132",
-        "port": 8301
+        "port": 8301,
+        "route": "section_8"
     }
 }

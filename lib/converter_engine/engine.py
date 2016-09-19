@@ -4,12 +4,11 @@ from ..database       import Database
 from .object 		  import MentionDB, AuthorInfoDB
 from .template        import MentionTemplate
 from curtsies 		  import fmtstr
+from multiprocessing  import Pool
 import pymongo
 import arrow
-import tomorrow
 
 class Engine(object):
-
 	def __init__(self):
 		self.config_file = ConfigFactory.get(ConfigFactory.CONVERTER)
 
@@ -27,15 +26,18 @@ class Engine(object):
 
 	def get_documents(self, db=None):
 		assert db is not None, "db is not defined."
-		return [document for document in db.data.find(
+		return db.data.find(
 			{"$where": "(this.converted == null || this.converted==false)"},
-		)]
+		)
 
-	@tomorrow.threads(10)
-	def save(self, source_db=None, mention=None):
+	def save(self, args=None):
+		source_address, source_name, mention = args
+		
+		template       = MentionTemplate()
 		mention_db     = MentionDB()
 		author_info_db = AuthorInfoDB()
 		try:
+			mention            = template.patch(mention).to_dict()
 			mention_db.mention = mention
 			mention_db.save()
 
@@ -43,9 +45,12 @@ class Engine(object):
 			author_info_db.save()
 			print("[converter_engine][debug] Converted one document!")
 		except pymongo.errors.DuplicateKeyError:
-			print(fmtstr("[converter_engine][error] Ops! Duplicate mention"))
+			print(fmtstr("[converter_engine][error] Ops! Duplicate mention","red"))
+		except pymongo.errors.NetworkTimeout:
+			print(fmtstr("[converter_engine][error] Network Timeout","red"))
 		finally:
-			mention_db.set_as_converted(source_db=source_db)
+			db = self.get_db(db_address=source_address, db_name=source_name)
+			mention_db.set_as_converted(source_db=db)
 		return True
 
 	def convert(self):
@@ -56,11 +61,11 @@ class Engine(object):
 
 			print("[converter_engine][debug] Converting %s" % crawler_name)
 			db         = self.get_db(db_address=config["db_address"], db_name=config["db_name"])
-			template   = MentionTemplate()
 			documents  = self.get_documents(db=db)
-			monitor_id = Monitor.start_converter(crawler_name=crawler_name.title(), number_of_document=len(documents))
-			documents  = [template.patch(document).to_dict() for document in documents]
-			print("[converter_engine][debug] Found %s document(s)" % len(documents))
-			
-			documents = [self.save(db, document) for document in documents]
+			monitor_id = Monitor.start_converter(crawler_name=crawler_name.title(), number_of_document=documents.count())
+			print("[converter_engine][debug] Found %s document(s)" % documents.count())
+
+			documents = [(config["db_address"], config["db_name"], document) for document in documents]
+			with Pool(3) as pool:
+				pool.map(self.save, documents)
 			Monitor.stop_converter(document_id=monitor_id)

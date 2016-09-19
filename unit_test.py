@@ -1,35 +1,58 @@
-from lib.config.factory import ConfigFactory
-import pymongo
-import glob
-import os
-import importlib
+import time
+import requests
+
+from tomorrow import threads
+
+@threads(5)
+def download(url):
+	return requests.get(url)
 
 if __name__ == "__main__":
-	target = "section_8"
-	source_files = []
-	crawlers     = {}
-	for file_name in glob.iglob(os.path.join(os.getcwd(), "src", "*.py")):
-		file_name = file_name.replace(os.getcwd(),"")
-		file_name = file_name.replace("src","")
-		file_name = file_name.replace(".py","")
-		file_name = file_name.replace("/","")
-		module    = importlib.import_module("src.%s" % file_name)
-		crawler   = module.Crawler()
-		crawlers.update({crawler.CRAWLER_NAME:crawler})
+	urls = [
+	    'http://google.com',
+	    'http://facebook.com',
+	    'http://youtube.com',
+	    'http://baidu.com',
+	    'http://yahoo.com',
+	]
+	start = time.time()
+	responses = [download(url) for url in urls]
+	html = [response.text for response in responses]
+	end = time.time()
+	print("Time: %f seconds" % (end - start))
 
-	run_config = ConfigFactory.get(ConfigFactory.RUN)
-	sections   = run_config.get("sections")
-	for crawler_name in sections[target]:
-		print("Dropping %s" % crawler_name.title())
-		db = pymongo.MongoClient("mongodb://220.100.163.132")
-		db = db[crawlers[crawler_name].DB_SERVER_NAME]
-		db.data.drop()
+# from lib.config.factory import ConfigFactory
+# import pymongo
+# import glob
+# import os
+# import importlib
 
-	db = pymongo.MongoClient("mongodb://220.100.163.132")
-	db = db["monitor"]
-	for crawler_name in sections[target]:
-		result = db.inserted_document.delete_many({"crawler_name":crawler_name.title()})
-		print("Removed %s document(s) from %s" % (result.deleted_count, crawler_name.title()))
+# if __name__ == "__main__":
+# 	target = "section_8"
+# 	source_files = []
+# 	crawlers     = {}
+# 	for file_name in glob.iglob(os.path.join(os.getcwd(), "src", "*.py")):
+# 		file_name = file_name.replace(os.getcwd(),"")
+# 		file_name = file_name.replace("src","")
+# 		file_name = file_name.replace(".py","")
+# 		file_name = file_name.replace("/","")
+# 		module    = importlib.import_module("src.%s" % file_name)
+# 		crawler   = module.Crawler()
+# 		crawlers.update({crawler.CRAWLER_NAME:crawler})
+
+# 	run_config = ConfigFactory.get(ConfigFactory.RUN)
+# 	sections   = run_config.get("sections")
+# 	for crawler_name in sections[target]:
+# 		print("Dropping %s" % crawler_name.title())
+# 		db = pymongo.MongoClient("mongodb://220.100.163.132")
+# 		db = db[crawlers[crawler_name].DB_SERVER_NAME]
+# 		db.data.drop()
+
+# 	db = pymongo.MongoClient("mongodb://220.100.163.132")
+# 	db = db["monitor"]
+# 	for crawler_name in sections[target]:
+# 		result = db.inserted_document.delete_many({"crawler_name":crawler_name.title()})
+# 		print("Removed %s document(s) from %s" % (result.deleted_count, crawler_name.title()))
 
 # from lib.builder import Builder
 
