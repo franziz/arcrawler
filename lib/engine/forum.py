@@ -54,7 +54,7 @@ class ForumEngine:
 				while has_prev:
 					# This will get all the post. For any details about how the function get posts
 					# you can refer to extractor.post section
-					print("[%s][debug] Extracting post(s) for %s" % (self.name, thread.last_page))
+					print("[%s][debug] Extracting post(s) for %s" % (self.name, thread.last_page.encode("utf8")))
 					extractor = ExtractorFactory.get_extractor(ExtractorFactory.POST)
 					posts     = extractor.extract(
 						   	   thread = thread,
@@ -88,6 +88,6 @@ class ForumEngine:
 					has_prev = prev_page is not None
 					if has_prev:
 						thread.last_page = copy.copy(prev_page)
-				print(fmtstr("[%s][warning] No Previous Page for %s" % (self.name, thread.last_page),"yellow"))
+				print(fmtstr("[%s][warning] No Previous Page for %s" % (self.name, thread.last_page.encode("utf-8")),"yellow"))
 			except DuplicateKeyError as ex:
 				print(fmtstr("[%s][error] %s" % (self.name, ex),"red"))
