@@ -13,14 +13,10 @@ class ProxySwitcher(object):
 
 		success = False
 		while not success:
-			# wait until proxy crawler is running
 			proxies = [doc for doc in db.data.find()]
 			if len(proxies) > 0: 
 				document = proxies[random.randint(0,len(proxies)-1)]
 				success  = True
-			#end if
-		#end while
-		# print({"ip":document["ip"], "country":document["country"], "port": document["port"]})
 		return {"http":"http://{}:{}".format(document["ip"], document["port"])}		
 	#end def
 #end class

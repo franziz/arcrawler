@@ -1,25 +1,141 @@
-import time
-import requests
-
-from tomorrow import threads
-
-@threads(5)
-def download(url):
-	return requests.get(url)
+import os
+import glob
 
 if __name__ == "__main__":
-	urls = [
-	    'http://google.com',
-	    'http://facebook.com',
-	    'http://youtube.com',
-	    'http://baidu.com',
-	    'http://yahoo.com',
-	]
-	start = time.time()
-	responses = [download(url) for url in urls]
-	html = [response.text for response in responses]
-	end = time.time()
-	print("Time: %f seconds" % (end - start))
+	src_path = os.path.join(os.getcwd(),"src")
+	sources   = glob.iglob(os.path.join(src_path,"*.py"))
+
+	for source in sources:
+		with open(source,"r") as file:
+			lines = file.readlines()
+			print(len(lines))
+		exit(1)
+
+
+# from lib.engine.converter import ConverterEngine
+
+# if __name__ == "__main__":
+# 	engine = ConverterEngine()
+# 	engine.convert(crawlers={
+# 		"Kaskus Crawler": {
+#             "db_name": "kaskus",
+#             "db_address": "mongo:27017"
+#      	}
+#      })
+# from lib.builder         import Builder
+# from lib.builder.section import Section
+
+# def callback(message=None):
+# 	print(message)
+
+# if __name__ == "__main__":
+# 	section = Section(
+# 		name = "high_priority_section_1",
+# 		items = ["Kaskus Crawler"],
+# 		workers = 13
+# 	)
+# 	Builder.build(section,callback)
+
+# from lib.network_tools import NetworkTools
+# from lib.engine.forum  import ForumEngine
+# from lib.factory.saver import SaverFactory
+
+# class Crawler:
+# 	def __init__(self):
+# 		pass
+
+# 	def crawl(self):
+# 		saver            = SaverFactory.get_saver(SaverFactory.POST)
+# 		saver.db_address = "mongo:27017"
+# 		saver.db_name    = "kaskus"
+		
+# 		engine = ForumEngine(
+# 			             name = "Kaskus Crawler",
+# 			    network_tools = NetworkTools(use_proxy=True),
+# 			    link_to_crawl = "http://www.kaskus.co.id/forum/136/feedback-amp-testimonial",
+# 			          country = "IDN",
+# 			     thread_xpath = "//tr[re:test(@id,'thread*')]",
+# 			thread_link_xpath = ".//a[re:test(@class,'link_thread_title*')]/@href",
+# 			  last_page_xpath = "//a[@class='tooltips last-page']/@href",
+# 			       prev_xpath = "//a[@class='tooltips previous-page']/@href",
+# 			       post_xpath = "//div[@class='row nor-post']",
+# 			           fields = [{'published_date': {'xpath': ".//time[@class='entry-date']/@datetime", 'concat': False, 'data_type': 'date', 'single': True}}, {'permalink': {'xpath': ".//div[@class='permalink']/a/@href", 'concat': False, 'data_type': 'url', 'single': True}}, {'author_name': {'xpath': ".//span[@itemprop='name']//text()", 'concat': False, 'data_type': 'string', 'single': True}}, {'author_id': {'xpath': ".//div[@class='user-name']/@data-userid", 'concat': False, 'data_type': 'string', 'single': True}}, {'content': {'xpath': ".//div[@class='entry']//text()", 'concat': True, 'data_type': 'string', 'single': True}}, {'title': {'xpath': "//div[@class='current']/text()", 'concat': False, 'data_type': 'string', 'single': True}}]
+# 		)
+# 		engine.crawl(saver=saver)
+
+# if __name__ == "__main__":
+# 	crawler = Crawler()
+# 	crawler.crawl()
+
+# from lib.factory.parser import ParserFactory
+
+# if __name__ == "__main__":
+# 	parser  = ParserFactory.get_parser(ParserFactory.THREAD_XPATH)
+# 	threads = parser.parse(
+# 		 link = "http://www.kaskus.co.id/forum/21/?ref=postlist-21&med=header_link",
+# 		xpath = "//tr[re:test(@id,'thread*')]"
+# 	)
+# 	print(len(threads))
+
+
+# from lib.factory.parser import ParserFactory
+
+# if __name__ == "__main__":
+# 	parser = ParserFactory.get_parser(ParserFactory.DATE)
+# 	date   = parser.parse("2016-09-10 12:12:00")
+# 	print("%s" % date)
+
+# import pymongo
+# import arrow
+# import tomorrow
+# from tqdm import tqdm
+
+# @tomorrow.threads(10)
+# def convert(document):
+#     mention_created_date = arrow.get(document["MentionCreatedDateISO"])
+#     mention_created_date = mention_created_date.replace(hours=8)
+#     document.update({"MentionCreatedDate":mention_created_date.format("YYYY-MM-DD HH:mm:ss")})
+#     document.update({"MentionCreatedDateISO":"%sZ" % mention_created_date.format("YYYY-MM-DDTHH:mm:ss")})
+#     print("Converted %s" % document["_id"])
+#     db.mention.update({"_id":document["_id"]},{"$set":{"MentionCreatedDateISO":document["MentionCreatedDateISO"],"MentionCreatedDate":document["MentionCreatedDate"]}})
+#     print("Saved %s" % document["_id"])
+
+# if __name__ == "__main__":
+# 	global db
+# 	db = pymongo.MongoClient("mongodb://alex:07081984@220.100.163.138/isid?authSource=admin")
+# 	db = db["isid"]
+
+# 	thr = arrow.now().replace(days=-1)
+# 	thr = thr.format("YYYY-MM-DDTHH:mm:ss")
+# 	thr = "%sZ" % thr
+# 	documents = db.mention.find({"SourceName":"Kaskus.co.id","DateInsertedIntoCrawlerDBISO":{"$gte":thr}})
+# 	print(documents.count())
+# 	documents = [convert(document) for document in documents]
+	
+
+
+# import time
+# import requests
+
+# from tomorrow import threads
+
+# @threads(5)
+# def download(url):
+# 	return requests.get(url)
+
+# if __name__ == "__main__":
+# 	urls = [
+# 	    'http://google.com',
+# 	    'http://facebook.com',
+# 	    'http://youtube.com',
+# 	    'http://baidu.com',
+# 	    'http://yahoo.com',
+# 	]
+# 	start = time.time()
+# 	responses = [download(url) for url in urls]
+# 	html = [response.text for response in responses]
+# 	end = time.time()
+# 	print("Time: %f seconds" % (end - start))
 
 # from lib.config.factory import ConfigFactory
 # import pymongo

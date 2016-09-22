@@ -1,4 +1,4 @@
-from lib.config.factory import ConfigFactory
+from lib.factory.config import ConfigFactory
 import os
 import zipfile
 import requests
@@ -17,9 +17,10 @@ if __name__ == '__main__':
     os.chdir(os.path.join(".."))
 
     print("[deploy][debug] Reading config...")
-    route_config = ConfigFactory.get(ConfigFactory.ROUTE)
-    cd_server    = route_config.get("cd_server")
-
+    route_config = ConfigFactory.get_config(ConfigFactory.ROUTE)
+    route_config.reload(os.path.join(os.getcwd(),"build","config","route.json"))
+    cd_server = route_config.get("cd_server")
+    
     print("[deploy][debug] Sending the zip...")
     url  = "http://%s:%s/deploy?route=%s" % (cd_server["ip"], cd_server["port"], cd_server["route"])
     file = {"file":open("build.zip", "rb")}

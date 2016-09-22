@@ -20,3 +20,9 @@ class Config:
 		file = open(self.file_name,"w")
 		file.write(json.dumps(config, indent=4))
 		file.close()
+
+	def reload(self, new_location=None):
+		assert new_location is not None, "new_location is not defined."
+		with open(new_location,"r") as file:
+			self.file_name = new_location
+			self.config    = json.load(file)

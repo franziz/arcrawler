@@ -1,94 +1,53 @@
-class ConfigNotFound(Exception):
-	def __init__(self,value):
+class DuplicateKeyError(Exception):
+	def __init__(self, value):
 		self.value = value
-	#end def
-
 	def __str__(self):
 		return repr(self.value)
-	#end def
-#end class
+
+class PageNotFound(Exception):
+	def __init__(self, value):
+		self.value = value
+	def __str__(self):
+		return repr(self.value)
+		
+class IncorrectXPATHSyntax(Exception):
+	def __init__(self, value):
+		self.value = value
+	def __str__(self):
+		return repr(self.value)
+
+class NotSupported(Exception):
+	def __init__(self, value):
+		self.value = value
+	def __str__(self):
+		return repr(self.value)
+
+class ParseError(Exception):
+	def __init__(self, value):
+		self.value = value
+	def __str__(self):
+		return repr(self.value)
+
+class CannotFindThreadLink(Exception):
+	def __init__(self, value):
+		self.value = value
+	def __str__(self):
+		return repr(self.value)
 
 class CannotFindField(Exception):
-	def __init__(self,value):
-		self.value = value
-	def __str__(self):
-		return repr(self.value)
-
-class CannotFindTemplate(Exception):
-	def __init__(self,value):
-		self.value = value
-	def __str__(self):
-		return repr(self.value)
-
-class CannotFindFolder(Exception):
-	def __init__(self,value):
+	def __init__(self, value):
 		self.value = value
 	def __str__(self):
 		return repr(self.value)
 
 class CannotFindCrawler(Exception):
-	def __init__(self,value):
+	def __init__(self, value):
 		self.value = value
 	def __str__(self):
 		return repr(self.value)
 
-
-class CommandError(Exception):
-	def __init__(self,value):
+class CannotSetValue(Exception):
+	def __init__(self, value):
 		self.value = value
-	#end def
-
 	def __str__(self):
 		return repr(self.value)
-	#end def
-#end class
-
-class InvalidConfigFormat(Exception):
-	def __init__(self,value):
-		self.value = value
-	#end def
-
-	def __str__(self):
-		return repr(self.value)
-	#end def
-#end class
-
-class InvalidDateFormat(BaseException):
-	def __init__(self,value):
-		self.value = value
-	#end def
-
-	def __str__(self):
-		return repr(self.value)
-	#end def
-#end class
-
-class FutureDateError(BaseException):
-	def __init__(self,value):
-		self.value = value
-	#end def
-
-	def __str__(self):
-		return repr(self.value)
-	#end def
-#end class
-
-class CannotOpenURL(BaseException):
-	def __init__(self,value):
-		self.value = value
-	#end def
-
-	def __str__(self):
-		return repr(self.value)
-	#end def
-#end class
-
-class PageNotFound(Exception):
-	def __init__(self,value):
-		self.value = value
-	#end def
-
-	def __str__(self):
-		return repr(self.value)
-	#end def
-#end class
