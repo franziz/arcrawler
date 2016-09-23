@@ -1,17 +1,14 @@
-import os
-import glob
+import pymongo
+import bson.json_util
+import arrow
 
 if __name__ == "__main__":
-	src_path = os.path.join(os.getcwd(),"src")
-	sources   = glob.iglob(os.path.join(src_path,"*.py"))
+	db = pymongo.MongoClient("mongodb://220.100.163.132")
+	db = db["kaskus"]
+	documents = db.data.find({}).sort([("$natural",-1)]).limit(1)
 
-	for source in sources:
-		with open(source,"r") as file:
-			lines = file.readlines()
-			print(len(lines))
-		exit(1)
-
-
+	for document in documents:
+		print(bson.json_util.dumps(document, indent=4))
 # from lib.engine.converter import ConverterEngine
 
 # if __name__ == "__main__":

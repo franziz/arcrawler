@@ -17,20 +17,17 @@ class DateParser:
 			str_date = str_date.lower().replace("jum'at","jumat")
 		
 		try:
-			result = dateparser.parse(str_date)
-			if result is None:
+			try:
+				# Arrow is timezone aware, it is first priority
 				result = arrow.get(str_date).datetime
+			except arrow.parser.ParserError:
+				result = dateparser.parse(str_date)
 		except AttributeError as attr_err:
 			str_date = bson.json_util.dumps({"date":str_date})
 			print("[arcrawler][error] {}".format(str_date))
 			print("[arcrawler][error] DATE ERROR!")
 			result = None
 		except ValueError as value_error:
-			str_date = bson.json_util.dumps({"date":str_date})
-			print("[arcrawler][error] {}".format(str_date))
-			print("[arcrawler][error] DATE ERROR!")
-			result = None
-		except arrow.parser.ParserError:
 			str_date = bson.json_util.dumps({"date":str_date})
 			print("[arcrawler][error] {}".format(str_date))
 			print("[arcrawler][error] DATE ERROR!")

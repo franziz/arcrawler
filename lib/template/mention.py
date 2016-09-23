@@ -61,10 +61,10 @@ class MentionTemplate(object):
 		self.SourceType                   = "Forums"
 		self.SourceName                   = source_name
 		self.SentFromHost                 = "220.100.163.132"
-		self.DateInsertedIntoCrawlerDB    = document["_insert_time"]
+		self.DateInsertedIntoCrawlerDB    = document["_insert_time"] # Insert time is in UTC, it has tzinfo
 		self.DateInsertedIntoCrawlerDBISO = document["_insert_time"]
 		self.DateInsertedIntoCentralDB    = arrow.now().datetime
-		self.DateInsertedIntoCentralDBISO = arrow.now().datetime
+		self.DateInsertedIntoCentralDBISO = arrow.utcnow().datetime
 		self.Country                      = document["_country"]
 		return self
 
@@ -152,6 +152,7 @@ class MentionTemplate(object):
 	@MentionCreatedDate.setter
 	def MentionCreatedDate(self,value):
 		date                      = arrow.get(value)
+		date                      = date.to("Asia/Singapore")
 		date                      = date.format("YYYY-MM-DD HH:mm:ss")
 		self.mention_created_date = date
 
@@ -277,6 +278,7 @@ class MentionTemplate(object):
 	@DateInsertedIntoCrawlerDB.setter
 	def DateInsertedIntoCrawlerDB(self, value):
 		date                               = arrow.get(value)
+		date                               = date.to("Asia/Singapore")
 		date                               = date.format("YYYY-MM-DD HH:mm:ss")
 		self.date_inserted_into_crawler_db = date
 
@@ -298,6 +300,7 @@ class MentionTemplate(object):
 	@DateInsertedIntoCentralDB.setter
 	def DateInsertedIntoCentralDB(self, value):
 		date                               = arrow.get(value)
+		date                               = date.to("Asia/Singapore")
 		date                               = date.format("YYYY-MM-DD HH:mm:ss")
 		self.date_inserted_into_central_db = date
 
