@@ -2,8 +2,9 @@ from ..network_tools     import NetworkTools
 from ..factory.parser    import ParserFactory
 from ..factory.generator import GeneratorFactory
 from ..obj.thread        import Thread
-from ..exceptions        import CannotFindThreadLink, ExtractError
+from ..exceptions        import CannotFindThreadLink, ExtractError, CannotFindThread
 from .page               import LastPageExtractor
+from curtsies            import fmtstr
 import copy
 
 class ThreadExtractor:
@@ -48,6 +49,8 @@ class ThreadExtractor:
 				print(fmtstr("[thread_extractor][error] %s" % ex,"red"))
 			except ExtractError as ex:
 				print(fmtstr("[thread_extractor][error] %s" % ex,"red"))
+		if len(extracted_threads) == 0:
+			raise CannotFindThread("Number of thread for %s is 0 thread." % link.encode("utf8"))
 		return extracted_threads
 
 class ThreadLinkExtractor:

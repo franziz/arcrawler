@@ -1,4 +1,5 @@
 from ..exceptions import DuplicateKeyError
+from curtsies     import fmtstr
 import pymongo
 
 class PostSaver:
@@ -25,3 +26,24 @@ class PostSaver:
 			raise DuplicateKeyError("Ops! Duplciate Data!")
 		finally:
 			connection.close()
+
+	def batch_save(self, documents=None):
+		""" Return:
+			success<bool> : Indicate if all the documents is success or not
+		"""
+		assert documents is not None, "documents is not defined."
+		
+		success = True
+		try:
+			for document in documents:
+				self.save(document)
+				print(fmtstr("[PostSaver][success] Inserted One Document!","green"))
+			success = True
+		except DuplicateKeyError as ex:
+			# Just do not try to push any more document if you find any DuplicateKeyError
+			print(fmtstr("[PostSaver][debug] %s" % ex,"red"))
+			success =  False
+		except AssertionError as ex:
+			print(fmtstr("[PostSaver][error] Assertion is not passed!","red"))
+			success =  False
+		return success

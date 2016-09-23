@@ -1,6 +1,6 @@
 from ..network_tools  import NetworkTools
 from ..factory.parser import ParserFactory
-from ..exceptions     import CannotSetValue
+from ..exceptions     import CannotSetValue, CannotFindPost
 
 class PostExtractor:
 	def __init__(self):
@@ -31,4 +31,6 @@ class PostExtractor:
 				extracted_documents.append(extracted_document)
 			except CannotSetValue as ex:
 				pass
+		if len(extracted_documents) == 0:
+			raise CannotFindPost("Number of post for %s is 0 post" % thread.last_page.encode("utf-8"))
 		return extracted_documents
