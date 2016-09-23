@@ -46,9 +46,9 @@ class ThreadExtractor:
 				extracted_thread.element   = copy.deepcopy(page)
 				extracted_threads.append(extracted_thread)
 			except CannotFindThreadLink as ex:
-				print(fmtstr("[thread_extractor][error] %s" % ex,"red"))
+				print(fmtstr("[ThreadExtractor][error] %s" % ex,"red"))
 			except ExtractError as ex:
-				print(fmtstr("[thread_extractor][error] %s" % ex,"red"))
+				print(fmtstr("[ThreadExtractor][error] %s" % ex,"red"))
 		if len(extracted_threads) == 0:
 			raise CannotFindThread("Number of thread for %s is 0 thread." % link.encode("utf8"))
 		return extracted_threads

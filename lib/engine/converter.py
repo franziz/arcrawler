@@ -22,11 +22,11 @@ class ConverterEngine:
 
 			author_info = author_info_db.generate_info(mention)
 			author_info_db.save(author_info)
-			print(fmtstr("[converter_engine][success] Converted one document!","green"))
+			print(fmtstr("[ConverterEngine][success] Converted one document!","green"))
 		except pymongo.errors.DuplicateKeyError:
-			print(fmtstr("[converter_engine][error] Ops! Duplicate mention","red"))
+			print(fmtstr("[ConverterEngine][error] Ops! Duplicate mention","red"))
 		except pymongo.errors.NetworkTimeout:
-			print(fmtstr("[converter_engine][error] Network Timeout","red"))
+			print(fmtstr("[ConverterEngine][error] Network Timeout","red"))
 		finally:
 			connection = pymongo.MongoClient("mongodb://%s" % source_address)
 			db         = connection[source_name]
