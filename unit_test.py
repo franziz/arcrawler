@@ -1,14 +1,14 @@
-import pymongo
-import bson.json_util
-import arrow
+# import pymongo
+# import bson.json_util
+# import arrow
 
-if __name__ == "__main__":
-	db = pymongo.MongoClient("mongodb://220.100.163.132")
-	db = db["kaskus"]
-	documents = db.data.find({}).sort([("$natural",-1)]).limit(1)
+# if __name__ == "__main__":
+# 	db = pymongo.MongoClient("mongodb://220.100.163.132")
+# 	db = db["kaskus"]
+# 	documents = db.data.find({}).sort([("$natural",-1)]).limit(1)
 
-	for document in documents:
-		print(bson.json_util.dumps(document, indent=4))
+# 	for document in documents:
+# 		print(bson.json_util.dumps(document, indent=4))
 # from lib.engine.converter import ConverterEngine
 
 # if __name__ == "__main__":

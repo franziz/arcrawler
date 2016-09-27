@@ -1,7 +1,9 @@
 from ..saver.post import PostSaver
+from ..saver.meta import MetaSaver
 
 class SaverFactory:
 	POST = 0 
+	META = 1
 
 	def __init__(self):
 		pass
@@ -12,3 +14,5 @@ class SaverFactory:
 
 		if saver_name == SaverFactory.POST:
 			return PostSaver()
+		elif saver_name == SaverFactory.META:
+			return MetaSaver()
