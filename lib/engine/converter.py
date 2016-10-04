@@ -97,7 +97,7 @@ class AuthorInfoDB(object):
 		assert "AuthorLocation"    in mention, "AuthorLocation is not defined."
 
 		update_time      = arrow.now().format("YYYY-MM-DD HH:mm:ss")
-		update_time_iso  = "%sZ" % arrow.now().format("YYYY-MM-DDTHH:mm:ss")
+		update_time_iso  = "%sZ" % arrow.utcnow().format("YYYY-MM-DDTHH:mm:ss")
 		author_info = {
 			                "AuthorType" : mention["SourceName"],
 			                  "AuthorId" : mention["AuthorId"],
