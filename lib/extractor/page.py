@@ -23,8 +23,9 @@ class LastPageExtractor:
 		last_page    = xpath_parser.parse(current_page, xpath)
 		
 		# Make it as None if cannot find any last_page
+		if len(last_page) == 0:
+			last_page = None
 		if type(last_page) is list:
-			if len(last_page) == 0: last_page = [None]
 			last_page = last_page[0]
 
 		if last_page is not None:
@@ -49,9 +50,10 @@ class PrevPageExtractor:
 		prev_link    = xpath_parser.parse(last_page, xpath)
 
 		# Make it as None if cannot find any last_page
-		if type(prev_link) is list:
-			if len(prev_link) == 0: prev_link = [None]
-			prev_link = prev_link[0]
+		if len(last_page) == 0:
+			last_page = None
+		if type(last_page) is list:
+			last_page = last_page[0]
 
 		if prev_link is not None:
 			generator = GeneratorFactory.get_generator(GeneratorFactory.LINK)

@@ -29,7 +29,7 @@ class ThreadExtractor:
 				extracted_thread      = Thread()
 				extractor             = ThreadLinkExtractor(domain=domain)
 				extracted_thread.link = extractor.extract(thread, thread_link_xpath)
-
+				
 				if extracted_thread.link is None:
 					raise CannotFindThreadLink("Cannot find thread link for %s" % link)
 

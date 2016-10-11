@@ -1,6 +1,7 @@
-from ..exceptions import DuplicateKeyError
+from ..exceptions import DuplicateKeyError, SaveError
 from curtsies     import fmtstr
 import pymongo
+import bson.errors
 
 class PostSaver:
 	def __init__(self, **kwargs):
@@ -24,6 +25,8 @@ class PostSaver:
 			db.data.insert_one(document)
 		except pymongo.errors.DuplicateKeyError:
 			raise DuplicateKeyError("Ops! Duplciate Data!")
+		except bson.errors.InvalidBSON:
+			raise SaveError("Invalid BSON. Cannot save data!")
 		finally:
 			connection.close()
 
@@ -46,4 +49,7 @@ class PostSaver:
 		except AssertionError as ex:
 			print(fmtstr("[PostSaver][error] Assertion is not passed!","red"))
 			success =  False
+		except SaveError as ex:
+			print(fmtstr("[PostSaver][error] %s" % ex, "red"))
+			success = False
 		return success

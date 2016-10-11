@@ -1,3 +1,15 @@
+# from lib.factory.extractor import ExtractorFactory
+
+# if __name__ == "__main__":
+# 	extractor = ExtractorFactory.get_extractor(ExtractorFactory.THREAD)
+# 	threads = extractor.extract(
+# 		link="http://www.indianrealestateboard.com/forums/forumdisplay.php/42-Mumbai-Real-Estate-Classifieds?",
+# 		thread_xpath="//a[re:test(@id,'thread_title')]",
+# 		thread_link_xpath="concat('forums/',./@href)",
+# 		last_page_xpath="concat(substring(concat('forums/',(//div[@id='pagination_top']//span[@class='first_last'])[last()]/a/@href),1 div contains((//div[@id='pagination_top']//span[@class='first_last'])[last()]/a/@href,'showthread')),substring('',1 div not(contains((//div[@id='pagination_top']//span[@class='first_last'])[last()]/a/@href,'showthread'))))"
+# 	)
+# 	print(threads[0].link)
+
 # import pymongo
 # import bson.json_util
 # import arrow

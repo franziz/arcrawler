@@ -12,10 +12,14 @@ class NetworkTools(object):
 		self.use_proxy = use_proxy
 
 	@classmethod
-	def get_domain(self, url=None):
+	def get_domain(self, url=None, with_scheme=True):
 		assert url is not None, "url is not defined."
 		url = urlparse(url)
-		return '{uri.scheme}://{uri.netloc}/'.format(uri=url)
+
+		if with_scheme:
+			return '{uri.scheme}://{uri.netloc}/'.format(uri=url)
+		else:
+			return "{uri.netloc}".format(uri=url)
 
 	def parse(self,url=None, parse=True):
 		""" This function will help to get web source code as HTML document.
