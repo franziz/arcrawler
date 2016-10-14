@@ -1,12 +1,16 @@
-from ..extractor.thread import ThreadExtractor
-from ..extractor.page   import PrevPageExtractor, LastPageExtractor
-from ..extractor.post   import PostExtractor
+from ..extractor.thread  import ThreadExtractor
+from ..extractor.page    import PrevPageExtractor, LastPageExtractor
+from ..extractor.post    import PostExtractor
+from ..extractor.link    import ArticleLinkExtractor
+from ..extractor.article import ArticleExtractor
 
 class ExtractorFactory:
-	THREAD    = 0
-	PREV_PAGE = 1
-	POST      = 2
-	LAST_PAGE = 3
+	THREAD       = 0
+	PREV_PAGE    = 1
+	POST         = 2
+	LAST_PAGE    = 3
+	ARTICLE_LINK = 4
+	ARTICLE      = 5
 
 	def __init__(self):
 		pass
@@ -23,3 +27,7 @@ class ExtractorFactory:
 			return PostExtractor()
 		elif extractor_name == ExtractorFactory.LAST_PAGE:
 			return LastPageExtractor()
+		elif extractor_name == ExtractorFactory.ARTICLE_LINK:
+			return ArticleLinkExtractor()
+		elif extractor_name == ExtractorFactory.ARTICLE:
+			return ArticleExtractor()

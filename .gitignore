@@ -5,6 +5,7 @@ ghostdriver.log
 *.json
 *.openssh
 src/
+test.py
 
 # Created by https://www.gitignore.io/api/python,git
 

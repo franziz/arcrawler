@@ -3,6 +3,22 @@ from ..factory.generator import GeneratorFactory
 from ..obj.thread        import Thread
 from ..network_tools     import NetworkTools
 
+class ArticlePageExtractor:
+	""" Return:
+		articles: All article link from given link
+	"""
+	def __init__(self):
+		pass
+
+	def extract(self, link=None, xpath=None, **kwargs):
+		assert link  is not None, "link is not defined."
+		assert xpath is not None, "xpath is not defined."
+
+		network_tools = kwargs.get("network_tools", NetworkTools(use_proxy=False))
+		page          = network_tools.parse(link)
+		# TODO:
+		
+
 class LastPageExtractor:
 	def __init__(self, **kwargs):
 		self.domain = kwargs.get("domain",None)

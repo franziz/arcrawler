@@ -37,14 +37,7 @@ class Builder:
 		callback("[build][debug] Injecting Crawler inside Template")
 		template_parser  = ParserFactory.get_parser(ParserFactory.TEMPLATE)
 		crawlers         = []
-		converter_config = {}
 		for source in selected_sources:
-			converter_config.update({
-				source.CRAWLER_NAME.title():{
-					"db_address" : source.DB_SERVER_ADDRESS,
-					   "db_name" : source.DB_SERVER_NAME
-				}
-			})
 			crawlers.extend(template_parser.parse(source, templates[source.TEMPLATE]))
 
 		if os.path.isdir(Builder.BUILD_PATH): shutil.rmtree(Builder.BUILD_PATH)
@@ -64,6 +57,7 @@ class Builder:
 		explorer = ExplorerFactory.get_explorer(ExplorerFactory.LIBRARY)
 		explorer.copy("config", target_location=Builder.BUILD_PATH)
 		explorer.copy("engine", target_location=Builder.BUILD_PATH)
+		explorer.copy("validator", target_location=Builder.BUILD_PATH)
 		explorer.copy("extractor", target_location=Builder.BUILD_PATH)
 		explorer.copy("factory", target_location=Builder.BUILD_PATH)
 		explorer.copy("generator", target_location=Builder.BUILD_PATH)
@@ -77,17 +71,12 @@ class Builder:
 		explorer.copy("proxy_switcher.py", target_location=Builder.BUILD_PATH)
 		explorer.copy("database.py", target_location=Builder.BUILD_PATH)
 		explorer.copy("run.py", target_location=Builder.BUILD_PATH, outside_lib=True)
-		explorer.copy("convert.py", target_location=Builder.BUILD_PATH, outside_lib=True)
 		explorer.copy("kick_start.sh", target_location=Builder.BUILD_PATH, outside_lib=True)
 		explorer.copy("proxy_crawler.py", target_location=Builder.BUILD_PATH, outside_lib=True)
 		
 		callback("[build][debug] Making new run.json")
 		writer = WriterFactory.get_writer(WriterFactory.RUN_CONFIG)
 		writer.write(workers=section.workers, section=section.name, run=section.items, location=Builder.BUILD_PATH)
-
-		callback("[build][debug] Making new converter.json")
-		writer = WriterFactory.get_writer(WriterFactory.CONVERTER_CONFIG)
-		writer.write(copy_from=os.path.join(os.getcwd(),"config","converter.json"), crawlers=converter_config, location=Builder.BUILD_PATH)
 
 		callback("[build][debug] Making new route.json (%s)" % section.name)
 		writer = WriterFactory.get_writer(WriterFactory.ROUTE_CONFIG)
