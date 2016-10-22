@@ -22,7 +22,7 @@ class Field:
 		if type(new_value) is list:
 			new_value = [str(val) for val in new_value]
 		if len(new_value) == 0:
-			raise CannotSetValue("Cannot set value since new_value is Nothing")
+			raise CannotSetValue("Cannot set %s since new_value is Nothing" % self.name)
 
 		if self.single and self.concat:
 			new_value = "".join(new_value)
