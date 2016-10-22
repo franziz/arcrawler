@@ -66,10 +66,10 @@ class PrevPageExtractor:
 		prev_link    = xpath_parser.parse(last_page, xpath)
 
 		# Make it as None if cannot find any last_page
-		if len(last_page) == 0:
-			last_page = None
-		if type(last_page) is list:
-			last_page = last_page[0]
+		if len(prev_link) == 0:
+			prev_link = None
+		if type(prev_link) is list:
+			prev_link = prev_link[0]
 
 		if prev_link is not None:
 			generator = GeneratorFactory.get_generator(GeneratorFactory.LINK)
