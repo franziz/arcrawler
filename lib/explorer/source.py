@@ -18,5 +18,5 @@ class SourceFilesExplorer:
 			
 			module  = importlib.import_module("src.%s" % file_name)
 			crawler = module.Crawler()
-			crawlers.update({crawler.CRAWLER_NAME:crawler})
+			crawlers.update({crawler.CRAWLER_NAME.title():crawler})
 		return crawlers
