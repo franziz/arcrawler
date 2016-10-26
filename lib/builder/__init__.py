@@ -25,9 +25,12 @@ class Builder:
 		sources  = explorer.explore()
 
 		callback("[build][debug] Filtering crawler by name")
-		selected_sources = [sources[crawler_name] for crawler_name in section.items]
-
-		if len(selected_sources) == 0: raise CannotFindCrawler("Cannot find crawler inside cofing files.")
+		selected_sources = []
+		for crawler_name in section.items:
+			if crawler_name not in sources:
+				raise CannotFindCrawler("Cannot find %s inside config files" % crawler_name)
+			selected_sources.append(sources[crawler_name])
+		if len(selected_sources) == 0: raise CannotFindCrawler("Cannot find crawlers inside config files.")
 
 		# This explorer will return you template object of template files <dict>
 		callback("[build][debug] Exploring Templates")
@@ -91,7 +94,7 @@ class Builder:
 		for section_name, section_items in sections.items():
 			obj_sections.append(Section(
 				   name = section_name,
-				  items = section_items["crawlers"],
+				  items = [item.title() for item in section_items["crawlers"]],
 		    	workers = section_items["workers"]
 			))
 		obj_sections.sort(key=lambda x:x.name)
