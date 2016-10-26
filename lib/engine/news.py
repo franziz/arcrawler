@@ -2,7 +2,7 @@ from ..network_tools     import NetworkTools
 from ..factory.extractor import ExtractorFactory
 from ..factory.generator import GeneratorFactory
 from ..factory.validator import ValidatorFactory
-from ..exceptions        import ValidationError
+from ..exceptions        import ValidationError, ParseError
 from curtsies 			 import fmtstr
 
 class NewsEngine:
@@ -49,4 +49,6 @@ class NewsEngine:
 
 				saver.save(article)
 			except ValidationError as ex:
+				print(fmtstr("[NewsEngine][error] %s" % ex, "red"))
+			except ParseError as ex:
 				print(fmtstr("[NewsEngine][error] %s" % ex, "red"))
