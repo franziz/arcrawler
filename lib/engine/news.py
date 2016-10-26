@@ -1,7 +1,9 @@
-from lib.network_tools     import NetworkTools
-from lib.factory.extractor import ExtractorFactory
-from lib.factory.generator import GeneratorFactory
-from lib.factory.validator import ValidatorFactory
+from ..network_tools     import NetworkTools
+from ..factory.extractor import ExtractorFactory
+from ..factory.generator import GeneratorFactory
+from ..factory.validator import ValidatorFactory
+from ..exceptions        import ValidationError
+from curtsies 			 import fmtstr
 
 class NewsEngine:
 	def __init__(self, **kwargs):
@@ -29,19 +31,22 @@ class NewsEngine:
 		print("[NewsEngine] Got %s articles" % len(articles))
 		
 		for article in articles:
-			extractor = ExtractorFactory.get_extractor(ExtractorFactory.ARTICLE)
-			article   = extractor.extract(
-				             article = article,
-				         title_xpath = self.title_xpath,
-				published_date_xpath = self.published_date_xpath,
-				   author_name_xpath = self.author_name_xpath,
-				       content_xpath = self.content_xpath
-			)
+			try:
+				extractor = ExtractorFactory.get_extractor(ExtractorFactory.ARTICLE)
+				article   = extractor.extract(
+					             article = article,
+					         title_xpath = self.title_xpath,
+					published_date_xpath = self.published_date_xpath,
+					   author_name_xpath = self.author_name_xpath,
+					       content_xpath = self.content_xpath
+				)
 
-			generator = GeneratorFactory.get_generator(GeneratorFactory.POST_DATA)
-			article   = generator.generate(article, origin=self.category_link, country=self.country, crawled_by=self.name)
-			
-			validator = ValidatorFactory.get_validator(ValidatorFactory.ARTICLE)
-			validator.validate(article)
+				generator = GeneratorFactory.get_generator(GeneratorFactory.POST_DATA)
+				article   = generator.generate(article, origin=self.category_link, country=self.country, crawled_by=self.name)
+				
+				validator = ValidatorFactory.get_validator(ValidatorFactory.ARTICLE)
+				validator.validate(article)
 
-			saver.save(article)
+				saver.save(article)
+			except ValidationError as ex:
+				print(fmtstr("[NewsEngine][error] %s" % ex, "red"))
