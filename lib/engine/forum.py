@@ -25,7 +25,8 @@ class ForumEngine:
 		if self.fields is not None and self.link_to_crawl is not None:
 			parser        = ParserFactory.get_parser(ParserFactory.FIELDS)
 			parser.domain = NetworkTools.get_domain(self.link_to_crawl)
-			self.fields   = parser.parse(self.fields)	
+			self.fields   = parser.parse(self.fields)
+		# TODO: Add error if fields or link_to_crawl is None,
 
 	def crawl(self, saver=None):
 		assert saver    			  is not None, "saver is not defined."
