@@ -69,6 +69,7 @@ class NetworkTools(object):
 					data = page.content
 				except TypeError:
 					data = page.content
+				# data = page.content.decode("utf-8")
 				_html       = html.fromstring(data) if parse else data
 				proxy_is_ok = True
 			except requests.exceptions.ProxyError as proxy_error:
