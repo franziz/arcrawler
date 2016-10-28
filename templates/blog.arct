@@ -1,0 +1,19 @@
+from lib.engine.blog   import BlogEngine
+from lib.factory.saver import SaverFactory
+
+class Crawler:
+	def __init__(self):
+		pass
+
+	def crawl(self):
+		engine = BlogEngine(
+			                name = "{{template.CRAWLER_NAME}}",
+			             country = "{{template.COUNTRY}}",
+			       category_link = "{{template.LINK_TO_CRAWL}}",
+			       article_xpath = "{{template.ARTICLE_XPATH}}",
+			         title_xpath = "{{template.TITLE_XPATH}}",
+			published_date_xpath = "{{template.PUBLISHED_DATE_XPATH}}",
+			   author_name_xpath = "{{template.AUTHOR_NAME_XPATH}}" ,
+			       content_xpath = "{{template.CONTENT_XPATH}}"
+		)
+		engine.crawl(saver=SaverFactory.get_saver(SaverFactory.BLOG))
