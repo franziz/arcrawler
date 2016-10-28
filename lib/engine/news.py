@@ -30,11 +30,11 @@ class NewsEngine:
 		articles  = extractor.extract(self.category_link, self.article_xpath, network_tools=self.network_tools)
 		print("[NewsEngine] Got %s articles" % len(articles))
 		
-		for article in articles:
+		for article_link in articles:
 			try:
 				extractor = ExtractorFactory.get_extractor(ExtractorFactory.ARTICLE)
 				article   = extractor.extract(
-					             article = article,
+					             article = article_link,
 					         title_xpath = self.title_xpath,
 					published_date_xpath = self.published_date_xpath,
 					   author_name_xpath = self.author_name_xpath,
@@ -49,6 +49,6 @@ class NewsEngine:
 
 				saver.save(article)
 			except ValidationError as ex:
-				print(fmtstr("[NewsEngine][error] %s" % ex, "red"))
+				print(fmtstr("[NewsEngine][error] %s\nPlease go to: %s" % (ex, article_link), "red"))
 			except ParseError as ex:
 				print(fmtstr("[NewsEngine][error] %s" % ex, "red"))
