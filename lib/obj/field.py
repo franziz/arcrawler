@@ -1,4 +1,4 @@
-from ..exceptions        import NotSupported, CannotSetValue
+from ..exceptions        import NotSupported, CannotSetValue, ParseError
 from ..factory.generator import GeneratorFactory
 from ..parser.date       import DateParser
 
@@ -19,6 +19,10 @@ class Field:
 
 	@value.setter
 	def value(self,new_value):
+		""" Exceptions:
+			- CannotSetValue
+			- NotSupported
+		"""
 		if type(new_value) is list:
 			new_value = [str(val) for val in new_value]
 		if len(new_value) == 0:
@@ -32,8 +36,12 @@ class Field:
 			raise NotSupported("You request is does not make sense! How come you can 'Not Single' but 'Concat'")
 
 		if self.data_type == "date":
-			parser    = DateParser()
-			new_value = parser.parse(new_value)
+			try:
+				parser    = DateParser()
+				new_value = parser.parse(new_value)
+			except ParseError as ex:
+				self.logger.error(str(ex), exc_info=True)
+				raise CannotSetValue("You have date error, in that case, the crawler cannot set any value")
 		elif self.data_type == "url":
 			generator = GeneratorFactory.get_generator(GeneratorFactory.LINK)
 			new_value = generator.generate(self.domain, new_value)

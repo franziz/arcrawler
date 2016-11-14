@@ -2,19 +2,26 @@ from lib.factory.config import ConfigFactory
 from lib.monitor        import Monitor
 from curtsies 			import fmtstr
 from multiprocessing    import Pool
+from lib.logger         import Logger
 import time
 import glob
 import os
 import importlib
 import random
+import logging
 
 def execute_worker(crawler_name=None):
-	assert crawler_name is not None, "crawler_name is not defined."
-	module  = importlib.import_module("crawlers.%s" % crawler_name)
-	crawler = module.Crawler()
-	crawler.crawl()
+	try:
+		assert crawler_name is not None, "crawler_name is not defined."
+		module  = importlib.import_module("crawlers.%s" % crawler_name)
+		crawler = module.Crawler()
+		crawler.crawl()
+	except:
+		logger = logging.getLogger(__name__)
+		logger.error("Something is wrong!", exc_info=True)
 
 if __name__ == "__main__":
+	Logger()
 	while True:
 		run_config    = ConfigFactory.get_config(ConfigFactory.RUN)
 		crawler_names = run_config.get("run")

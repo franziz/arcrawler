@@ -10,6 +10,10 @@ class DateParser:
 		pass
 
 	def parse(self, str_date=None):
+		""" Exceptions
+			- AssertionError
+			- ParseError
+		""" 
 		assert str_date is not None, "str_date is not defined."		
 
 		# manual date conversion
@@ -23,15 +27,9 @@ class DateParser:
 			except arrow.parser.ParserError:
 				result = dateparser.parse(str_date)
 		except AttributeError as attr_err:
-			str_date = bson.json_util.dumps({"date":str_date})
-			print("[arcrawler][error] {}".format(str_date))
-			print("[arcrawler][error] DATE ERROR!")
-			result = None
+			raise ParseError("Cannot parse date: %s" % str_date)
 		except ValueError as value_error:
-			str_date = bson.json_util.dumps({"date":str_date})
-			print("[arcrawler][error] {}".format(str_date))
-			print("[arcrawler][error] DATE ERROR!")
-			result = None
+			raise ParseError("Cannot parse date: %s" % str_date)
 		except:
 			raise ParseError("Cannot parse date: %s" % str_date)
 

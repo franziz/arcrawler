@@ -3,6 +3,9 @@ class LinkGenerator:
 		pass
 
 	def generate(self, domain=None, link=None):
+		""" Exceptions
+			- AssertionError
+		"""
 		assert domain    is not None                      , "domain is not defined."
 		assert "http://" in domain or "https://" in domain, "domain should have http schema."
 		assert link      is not None                      , "link is not defined." 

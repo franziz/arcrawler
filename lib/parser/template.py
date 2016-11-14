@@ -5,6 +5,9 @@ class TemplateParser:
 		pass
 
 	def parse(self, crawler_source=None, template=None):
+		""" Exceptions
+			- AssertionError
+		"""
 		assert crawler_source is not None, "crawler_source is not defined."
 		assert template       is not None, "template is not defined."
 
