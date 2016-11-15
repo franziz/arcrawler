@@ -12,6 +12,7 @@ class PostExtractor:
 		""" Exceptions:
 			- AssertionError
 			- CannotFindPost
+			- IncorrectXPATHSyntax
 
 			This function will go to last_page of thread object and get all the post inside the page
 		"""

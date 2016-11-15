@@ -24,6 +24,8 @@ class ForumEngine:
 		self.post_xpath        = kwargs.get("post_xpath",None)
 		self.fields            = kwargs.get("fields",None)
 
+		# If not valid, just throw the error
+		# We cannot continue with error
 		validator = ValidatorFactory.get_validator(ValidatorFactory.FORUM_ENGINE)
 		validator.validate(self)
 
@@ -86,6 +88,7 @@ class ForumEngine:
 		""" Exceptions
 			- AssertionError
 			- CannotFindPost
+			- IncorrectXPATHSyntax
 		"""
 		assert thread is not None, "thread is not defined."
 		validator = ValidatorFactory.get_validator(ValidatorFactory.FORUM_ENGINE)
@@ -142,6 +145,11 @@ class ForumEngine:
 		print("[%s][debug] Finding threads on %s" % (self.name, self.link_to_crawl.encode("utf8")))
 		threads = self.get_threads()
 		print("[%s][debug] Thread found!" % self.name)
+
+		# Continue to crawl next thread even if
+		# - CannotFindTheadLink is found
+		# - CannotFindPost is found
+		# - CannotFindPrevlink is found
 		for thread in threads:
 			try:
 				print("[%s][debug] Getting Thread Link" % self.name)
