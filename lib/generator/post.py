@@ -5,6 +5,9 @@ class PostDataGenerator:
 		pass
 
 	def generate(self, post=None, **kwargs):
+		""" Exceptions:
+			- AssertionError
+		"""
 		assert post       is not None, "post is not defined."
 		assert type(post) is dict    , "incorrect post data type."
 			

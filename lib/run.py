@@ -1,5 +1,6 @@
 from lib.factory.config import ConfigFactory
 from lib.monitor        import Monitor
+from lib.exceptions     import CannotFindThread, IncorrectXPATHSyntax, CannotFindArticleLink
 from curtsies 			import fmtstr
 from multiprocessing    import Pool
 from lib.logger         import Logger
@@ -11,14 +12,20 @@ import random
 import logging
 
 def execute_worker(crawler_name=None):
+	logger = logging.getLogger(__name__)
 	try:
 		assert crawler_name is not None, "crawler_name is not defined."
 		module  = importlib.import_module("crawlers.%s" % crawler_name)
 		crawler = module.Crawler()
 		crawler.crawl()
-	except:
-		logger = logging.getLogger(__name__)
-		logger.error("Something is wrong!", exc_info=True)
+	except CannotFindThread as ex:
+		logger.error(str(ex), exc_info=True)
+	except IncorrectXPATHSyntax as ex:
+		logger.error(str(ex), exc_info=True)
+	except CannotFindArticleLink as ex:
+		logger.error(str(ex), exc_info=True)
+	except AssertionError as ex:
+		logger.error(str(ex), exc_info=True)
 
 if __name__ == "__main__":
 	Logger()

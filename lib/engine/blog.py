@@ -2,7 +2,7 @@ from ..network_tools     import NetworkTools
 from ..factory.extractor import ExtractorFactory
 from ..factory.generator import GeneratorFactory
 from ..factory.validator import ValidatorFactory
-from ..exceptions        import ValidationError, ParseError
+from ..exceptions        import ValidationError, CannotSetValue, NotSupported, ParseError
 from curtsies 			 import fmtstr
 
 class BlogEngine:
@@ -18,6 +18,11 @@ class BlogEngine:
 		self.network_tools        = kwargs.get("network_tools", NetworkTools(use_proxy=False))
 
 	def crawl(self, saver=None):
+		""" Exceptions:
+			- AssertionError (ArticleLinkExtractor, ArticleExtractor, PostDataGenerator, ArticleSaver)
+			- IncorrectXPATHSyntax (ArticleLinkExtractor, ArticleExtractor)
+			- CannotFindArticleLink (ArticleLinkExtractor)
+		"""
 		assert self.category_link        is not None, "category_link is not defined."
 		assert self.article_xpath        is not None, "article_xpath is not defined."
 		assert self.title_xpath          is not None, "title_xpath is not defined."
@@ -28,13 +33,13 @@ class BlogEngine:
 
 		extractor = ExtractorFactory.get_extractor(ExtractorFactory.ARTICLE_LINK)
 		articles  = extractor.extract(self.category_link, self.article_xpath, network_tools=self.network_tools)
-		print("[BlogEngine] Got %s articles" % len(articles))
+		print("[NewsEngine] Got %s articles" % len(articles))
 		
-		for article in articles:
+		for article_link in articles:
 			try:
 				extractor = ExtractorFactory.get_extractor(ExtractorFactory.ARTICLE)
 				article   = extractor.extract(
-					             article = article,
+					             article = article_link,
 					         title_xpath = self.title_xpath,
 					published_date_xpath = self.published_date_xpath,
 					   author_name_xpath = self.author_name_xpath,
@@ -49,6 +54,10 @@ class BlogEngine:
 
 				saver.save(article)
 			except ValidationError as ex:
-				print(fmtstr("[BlogEngine][error] %s" % ex, "red"))
+				self.logger.error(str(ex), exc_info=True)
+			except CannotSetValue as ex:
+				self.logger.warning(str(ex), exc_info=True)
+			except NotSupported as ex:
+				self.logger.error(str(ex), exc_info=True)
 			except ParseError as ex:
-				print(fmtstr("[BlogEngine][error] %s" % ex, "red"))
+				self.logger.error(str(ex), exc_info=True)

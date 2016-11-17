@@ -1,7 +1,7 @@
 from ..factory.parser    import ParserFactory
 from ..factory.generator import GeneratorFactory
 from ..network_tools     import NetworkTools
-from ..exceptions        import IncorrectXPATHSyntax, CannotFindThread, CannotFindThreadLink
+from ..exceptions        import CannotFindThread, CannotFindThreadLink
 from ..obj.thread        import Thread
 import logging
 import copy
@@ -14,6 +14,7 @@ class ThreadExtractor:
 		""" Exceptions:
 			- AssertionError
 			- CannotFindThread
+			- IncorrectXPATHSyntax (XPATHParser)
 		"""
 		assert link  is not None, "link is not defined."
 		assert xpath is not None, "xpath is not defined."
@@ -42,7 +43,8 @@ class ThreadLinkExtractor:
 
 	def extract(self, thread=None, xpath=None, **kwargs):
 		""" Exceptions:
-			- AssertionError
+			- AssertionError (LinkGenerator)
+			- IncorrectXPATHSyntax (XPATHParser)
 			- CannotFindThreadLink
 		"""
 		assert thread      is not None, "thread is not defined."
@@ -57,6 +59,9 @@ class ThreadLinkExtractor:
 
 		if type(link) is list:
 			link = copy.copy(link[0])
+
+		if len(link) == 0:
+			raise CannotFindThreadLink("Cannot find thread link!")
 		
 		generator = GeneratorFactory.get_generator(GeneratorFactory.LINK)
 		result    = generator.generate(self.domain, link)

@@ -1,6 +1,6 @@
 from ..factory.parser     import ParserFactory
 from ..factory.generator  import GeneratorFactory
-from ..exceptions         import IncorrectXPATHSyntax, CannotFindPrevLink
+from ..exceptions         import CannotFindPrevLink
 from ..obj.thread         import Thread
 from ..network_tools      import NetworkTools
 import logging
@@ -28,7 +28,8 @@ class LastPageExtractor:
 
 	def extract(self, thread_link=None, xpath=None, **kwargs):
 		""" this function will return
-			- AssertionError
+			- AssertionError (LinkGenerator)
+			- IncorrectXPATHSyntax (XPATHParser)
 
 			Return:
 			last_page : will return None or <str>
@@ -44,7 +45,6 @@ class LastPageExtractor:
 		xpath_parser = ParserFactory.get_parser(ParserFactory.XPATH)
 		last_page    = xpath_parser.parse(current_page, xpath)
 
-		
 		# Make it as None if cannot find any last_page
 		if len(last_page) == 0:
 			last_page = thread_link
@@ -63,8 +63,9 @@ class PrevPageExtractor:
 
 	def extract(self, thread=None, xpath=None, **kwargs):
 		""" Exceptions:
-			- AssertionError
+			- AssertionError (LinkGenerator)
 			- CannotFindPrevLink
+			- IncorrectXPATHSyntax (XPATHParser)
 		"""
 		assert thread       is not None, "last_page is not defined."
 		assert xpath        is not None, "xpath is not defiend."

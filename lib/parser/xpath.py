@@ -1,4 +1,4 @@
-from ..exceptions import IncorrectXPATHSyntax
+from ..exceptions import IncorrectXPATHSyntax, ParseError
 import lxml
 
 class XPATHParser:
@@ -22,5 +22,5 @@ class XPATHParser:
 		except lxml.etree.XPathEvalError as invalid_expression:
 			raise IncorrectXPATHSyntax("Following syntax is not correct: %s" % xpath)
 		except UnicodeDecodeError:
-			result = None
+			raise ParseError("Cannot decode Unicode!")
 		return result

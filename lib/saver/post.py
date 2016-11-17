@@ -2,13 +2,22 @@ from ..exceptions import DuplicateKeyError, SaveError
 from curtsies     import fmtstr
 import pymongo
 import bson.errors
+import logging
 
 class PostSaver:
 	def __init__(self, **kwargs):
+		self.logger     = logging.getLogger(__name__)
 		self.db_address = kwargs.get("db_address",None)
 		self.db_name    = kwargs.get("db_name",None)
 
 	def save(self,document=None):
+		""" Exceptions:
+			- AssertionError
+			- DuplicateKeyError
+			- SaveError
+		"""
+		assert self.db_address          is not None, "db_address is not defined."
+		assert self.db_name 		    is not None, "db_name is not defined."
 		assert "permalink"              in document, "permalink is not defined."
 		assert "content"                in document, "content is not defined."
 		assert len(document["content"]) > 0        , "content cannot be empty."
@@ -31,12 +40,14 @@ class PostSaver:
 			connection.close()
 
 	def batch_save(self, documents=None):
-		""" Return:
+		""" Exceptions:
+			- AssertionError (save)
+
+			Return:
 			success<bool> : Indicate if all the documents is success or not
 		"""
 		assert documents is not None, "documents is not defined."
 		
-
 		success = True
 		try:
 			for document in documents:
@@ -44,6 +55,7 @@ class PostSaver:
 					self.save(document)
 					print(fmtstr("[PostSaver][success] Inserted One Document!","green"))
 				except SaveError as ex:
+					self.logger.error(str(ex), exc_info=True)
 					print(fmtstr("[PostSaver][error] %s" % ex, "red"))
 			success = True
 		except DuplicateKeyError as ex:

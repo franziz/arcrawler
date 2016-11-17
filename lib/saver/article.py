@@ -7,6 +7,9 @@ class ArticleSaver:
 		pass
 
 	def save(self, article=None):
+		""" Exceptions:
+			-  AssertionError
+		"""
 		assert article is not None, "article is not defined."
 
 		conn = pymongo.MongoClient("mongodb://220.100.163.132/news_crawler")
