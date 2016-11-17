@@ -3,8 +3,9 @@ import pymongo
 import bson.json_util
 
 class ArticleSaver:
-	def __init__(self):
-		pass
+	def __init__(self, **kwargs):
+		self.db_address = kwargs.get("db_address", "mongo:27017")
+		self.db_name    = kwargs.get("db_name", "news_crawler")
 
 	def save(self, article=None):
 		""" Exceptions:
@@ -12,8 +13,8 @@ class ArticleSaver:
 		"""
 		assert article is not None, "article is not defined."
 
-		conn = pymongo.MongoClient("mongodb://220.100.163.132/news_crawler")
-		db   = conn["news_crawler"]
+		conn = pymongo.MongoClient("mongodb://%s/%s" % (self.db_address, self.db_name))
+		db   = conn[self.db_name]
 
 		# Ensuring index		
 		db.data.create_index([("permalink", pymongo.ASCENDING)], unique=True, background=True)
