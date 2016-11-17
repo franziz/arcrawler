@@ -65,6 +65,7 @@ class Builder:
 		explorer.copy("factory", target_location=Builder.BUILD_PATH)
 		explorer.copy("generator", target_location=Builder.BUILD_PATH)
 		explorer.copy("obj", target_location=Builder.BUILD_PATH)
+		explorer.copy("cleanser", target_location=Builder.BUILD_PATH)
 		explorer.copy("parser", target_location=Builder.BUILD_PATH)
 		explorer.copy("logger", target_location=Builder.BUILD_PATH)
 		explorer.copy("saver", target_location=Builder.BUILD_PATH)

@@ -1,5 +1,6 @@
 from ..exceptions        import NotSupported, CannotSetValue, ParseError
 from ..factory.generator import GeneratorFactory
+from ..factory.cleanser  import CleanserFactory
 from ..parser.date       import DateParser
 
 class Field:
@@ -45,4 +46,7 @@ class Field:
 		elif self.data_type == "url":
 			generator = GeneratorFactory.get_generator(GeneratorFactory.LINK)
 			new_value = generator.generate(self.domain, new_value)
+		elif self.data_type == "string":
+			cleanser = CleanserFactory.get_cleanser(CleanserFactory.STRING)
+			new_value = cleanser.clean(new_value)
 		self._value = new_value
