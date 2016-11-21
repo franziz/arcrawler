@@ -7,7 +7,7 @@ class MetaSaver:
 	def save(self, document=None):
 		assert document is not None, "document is not defined."
 
-		conn = pymongo.MongoClient("mongodb://220.100.163.132/monitor")
+		conn = pymongo.MongoClient("mongodb://mongo:27017/monitor")
 		db   = conn["monitor"]
 
 		db.crawlers_meta.create_index([("name",pymongo.ASCENDING)], unique=True)
