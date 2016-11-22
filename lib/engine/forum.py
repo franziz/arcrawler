@@ -70,7 +70,7 @@ class ForumEngine:
 						# For example, _insert_time and TTL
 						print("[%s][debug] Generating additional post_data" % self.name)
 						generator = GeneratorFactory.get_generator(GeneratorFactory.POST_DATA)
-						posts     = [generator.generate(post, origin=self.link_to_crawl, country=self.country) for post in posts]
+						posts     = [generator.generate(post, crawled_by=self.name, origin=self.link_to_crawl, country=self.country) for post in posts]
 						
 						# Exception handling is being handled by batch_save function
 						all_saved = saver.batch_save(posts)
