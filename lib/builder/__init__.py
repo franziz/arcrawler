@@ -15,6 +15,10 @@ class Builder:
 
 	@classmethod
 	def build(self, section=None, callback=None):
+		""" Exceptions:
+			- AssertionError (TemplateParser, CrawlerWriter, LibraryExplorer, RunConfigWriter, RouteWriter)
+			- CannotFindCrawler
+		"""
 		assert section       is not None, "section_name is not defined."
 		assert callback      is not None, "callback is not defined."
 		assert type(section) is Section, "incorrect section data type."
@@ -89,6 +93,10 @@ class Builder:
 
 	@classmethod
 	def get_sections(self):
+		""" Exceptions:
+			- AssertionError (RunConfig)
+			- CannotFindField (RunConfig)
+		"""
 		run_config   = ConfigFactory.get_config(ConfigFactory.RUN)
 		sections     = run_config.get("sections")
 		obj_sections = []

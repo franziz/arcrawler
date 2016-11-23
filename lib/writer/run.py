@@ -6,6 +6,9 @@ class RunConfigWriter:
 		pass
 
 	def write(self, **kwargs):
+		""" Exceptions:
+			- AssertionError
+		"""
 		workers  = kwargs.get("workers",10)
 		section  = kwargs.get("section",None)
 		run      = kwargs.get("run",None)
