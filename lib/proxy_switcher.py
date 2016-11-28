@@ -8,19 +8,23 @@ import arrow
 
 class ProxySwitcher(object):
 	def get_proxy(self):
-		db = MongoClient("mongodb://mongo:27017/proxies")
-		db = db.proxies
+		conn = MongoClient("mongodb://mongo:27017/proxies")
+		db   = conn["proxies"]
 
 		success = False
 		while not success:
-			proxies = [doc for doc in db.data.find()]
-			if len(proxies) > 0: 
-				document = proxies[random.randint(0,len(proxies)-1)]
-				success  = True
-		return {"http":"http://{}:{}".format(document["ip"], document["port"])}		
-	#end def
-#end class
-
+			proxies = [doc for doc in db.manual.find()]
+			if len(proxies) > 0:
+				document = proxies[random.randint(0, len(proxies)-1)]
+				success = True
+		conn.close()
+		return {"http":"http://{username}:{password}@{ip}:{port}".format(
+			username = document["username"],
+			password = document["password"],
+			ip = document["ip"],
+			port = document["port"]
+		)}
+		
 class ProxyCrawler(object):
 	def crawl(self):
 		# connect to database

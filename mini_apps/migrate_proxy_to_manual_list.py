@@ -10,17 +10,17 @@ import pymongo
 
 @click.command()
 @click.option("--location", default=os.path.join(os.getcwd(),"data","proxy.txt"))
-@click.option("--mongodb", default="mongodb://220.100.163.132/proxy")
+@click.option("--mongodb", default="mongodb://220.100.163.132/proxies")
 def migrate(location, mongodb):
 	conn = pymongo.MongoClient(mongodb)
-	db   = conn["proxy"]
+	db   = conn["proxies"]
 
 	file = open(location,"r")
 	for line in file.readlines():
 		line = line.replace("\n","")
 		proxy = line.split(":")
 		document = {
-			"url": proxy[0],
+			"ip": proxy[0],
 			"port": proxy[1],
 			"username": proxy[2],
 			"password": proxy[3]
