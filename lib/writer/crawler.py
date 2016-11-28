@@ -8,6 +8,9 @@ class CrawlerWriter:
 		pass
 
 	def write(self, crawler=None, **kwargs):
+		""" Exceptions:
+			- AssertionError
+		"""
 		assert crawler       is not None, "crawler is not defined."
 		assert type(crawler) is str     , "incorrect crawler data type."
 

@@ -7,6 +7,9 @@ class RouteConfigWriter:
 		pass
 
 	def write(self, route=None, **kwargs):
+		""" Exceptions:
+			- AssertionError
+		"""
 		assert route is not None, "route is not defined."
 
 		location = kwargs.get("location", os.getcwd())

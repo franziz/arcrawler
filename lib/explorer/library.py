@@ -6,6 +6,9 @@ class LibraryExplorer:
 		pass
 
 	def copy(self, file_or_folder=None, **kwargs):
+		""" Exceptions:
+			- AssertionError
+		"""
 		assert file_or_folder is not None, "file_or_folder is not defined."
 
 		origin_location = kwargs.get("origin_location", os.path.join(os.getcwd(),"lib"))
