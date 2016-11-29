@@ -5,9 +5,9 @@ import logging
 
 class Logger(raven.Client):
 	def __init__(self, **kwargs):
-		self.public_key = "5570134675474d8682b476c6da319812"
-		self.secret_key = "000f2481edcb4eda870c7d05f0126f3a"
-		self.project_id = 2
+		self.public_key = "18c90be1b6da4d78a8bf375354f0ea53"
+		self.secret_key = "11a8c866ce2340529c8cf20e84f629af"
+		self.project_id = 3
 
 		self.dsn = "http://%s:%s@sentry:9000/%s" % (
 			self.public_key,

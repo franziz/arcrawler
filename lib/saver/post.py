@@ -3,6 +3,8 @@ from curtsies     import fmtstr
 import pymongo
 import bson.errors
 import logging
+import arrow
+import re
 
 class PostSaver:
 	def __init__(self, **kwargs):
@@ -22,8 +24,11 @@ class PostSaver:
 		assert "content"                in document, "content is not defined."
 		assert len(document["content"]) > 0        , "content cannot be empty."
 
-		connection = pymongo.MongoClient("mongodb://%s" % self.db_address)
-		db         = connection[self.db_name]
+		monitor_conn = pymongo.MongoClient("mongodb://mongo:27017/monitor")
+		monitor_db   = monitor_conn["monitor"]
+
+		conn = pymongo.MongoClient("mongodb://%s" % self.db_address)
+		db   = conn[self.db_name]
 
 		# Ensuring Index
 		db.data.create_index([("permalink", pymongo.ASCENDING)], unique=True)
@@ -32,12 +37,21 @@ class PostSaver:
 
 		try:
 			db.data.insert_one(document)
+			monitor_db.status.update(
+				{"crawler_name": re.compile(document["_crawled_by"], re.IGNORECASE)},
+				{"$set":{
+					"crawler_name": document["_crawled_by"].title(),
+					"last_insert_time": arrow.utcnow().datetime
+				}},
+				upsert=True
+			)
 		except pymongo.errors.DuplicateKeyError:
 			raise DuplicateKeyError("Ops! Duplciate Data!")
 		except bson.errors.InvalidBSON:
 			raise SaveError("Invalid BSON. Cannot save data!")
 		finally:
-			connection.close()
+			conn.close()
+			monitor_conn.close()
 
 	def batch_save(self, documents=None):
 		""" Exceptions:

@@ -52,8 +52,9 @@ class ForumEngine:
 
 		extractor = ExtractorFactory.get_extractor(ExtractorFactory.THREAD)
 		threads   = extractor.extract(
-			 link = self.link_to_crawl,
-			xpath = self.thread_xpath
+			 		 link = self.link_to_crawl,
+				    xpath = self.thread_xpath,
+			network_tools = self.network_tools
 		)
 		return threads
 
@@ -70,8 +71,9 @@ class ForumEngine:
 		extractor        = ExtractorFactory.get_extractor(ExtractorFactory.THREAD_LINK)
 		extractor.domain = NetworkTools.get_domain(self.link_to_crawl)
 		return extractor.extract(
-			thread = thread.element,
-			 xpath = self.thread_link_xpath
+				   thread = thread.element,
+			 		xpath = self.thread_link_xpath,
+			network_tools = self.network_tools
 		)
 
 	def get_last_page(self, thread=None):
@@ -121,7 +123,7 @@ class ForumEngine:
 
 		print("[%s][debug] Generating additional post_data" % self.name)
 		generator = GeneratorFactory.get_generator(GeneratorFactory.POST_DATA)
-		posts     = [generator.generate(post, origin=self.link_to_crawl, country=self.country) for post in posts]
+		posts     = [generator.generate(post, origin=self.link_to_crawl, crawled_by= self.name, country=self.country) for post in posts]
 
 		# All saved means, all document are saved without any duplicate
 		# Possible you will have prev_page,

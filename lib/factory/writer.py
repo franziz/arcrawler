@@ -20,7 +20,5 @@ class WriterFactory:
 			return CrawlerWriter()
 		elif writer_name == WriterFactory.RUN_CONFIG:
 			return RunConfigWriter()
-		elif writer_name == WriterFactory.CONVERTER_CONFIG:
-			return ConverterConfigWriter()
 		elif writer_name == WriterFactory.ROUTE_CONFIG:
 			return RouteConfigWriter()

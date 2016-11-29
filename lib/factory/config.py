@@ -1,11 +1,9 @@
 from ..config.run       import RunConfig
-from ..config.converter import ConverterConfig
 from ..config.route     import RouteConfig
 
 class ConfigFactory:
 	RUN       = 0
-	CONVERTER = 1
-	ROUTE     = 2
+	ROUTE     = 1
 
 	def __init__(self):
 		pass
@@ -16,7 +14,5 @@ class ConfigFactory:
 
 		if config_name == ConfigFactory.RUN:
 			return RunConfig()
-		elif config_name == ConfigFactory.CONVERTER:
-			return ConverterConfig()
 		elif config_name == ConfigFactory.ROUTE:
 			return RouteConfig()
