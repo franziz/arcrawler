@@ -1,4 +1,5 @@
 from ..exceptions import DuplicateKeyError, SaveError
+from ..monitor    import Monitor
 from curtsies     import fmtstr
 import pymongo
 import bson.errors
@@ -14,7 +15,9 @@ class PostSaver:
 
 	def save(self,document=None):
 		""" Exceptions:
-			- AssertionError
+			- AssertionError (Monitor)
+			- CannotFindField (Monitor)
+			- ValidationError (Monitor)
 			- DuplicateKeyError
 			- SaveError
 		"""
@@ -24,8 +27,7 @@ class PostSaver:
 		assert "content"                in document, "content is not defined."
 		assert len(document["content"]) > 0        , "content cannot be empty."
 
-		monitor_conn = pymongo.MongoClient("mongodb://mongo:27017/monitor")
-		monitor_db   = monitor_conn["monitor"]
+		monitor = Monitor()
 
 		conn = pymongo.MongoClient("mongodb://%s" % self.db_address)
 		db   = conn[self.db_name]
@@ -37,25 +39,20 @@ class PostSaver:
 
 		try:
 			db.data.insert_one(document)
-			monitor_db.status.update(
-				{"crawler_name": re.compile(document["_crawled_by"], re.IGNORECASE)},
-				{"$set":{
-					"crawler_name": document["_crawled_by"].title(),
-					"last_insert_time": arrow.utcnow().datetime
-				}},
-				upsert=True
-			)
+			monitor.capture_insert_document(crawler_name=document["_crawled_by"])
 		except pymongo.errors.DuplicateKeyError:
 			raise DuplicateKeyError("Ops! Duplciate Data!")
 		except bson.errors.InvalidBSON:
 			raise SaveError("Invalid BSON. Cannot save data!")
 		finally:
 			conn.close()
-			monitor_conn.close()
+			# monitor_conn.close()
 
 	def batch_save(self, documents=None):
 		""" Exceptions:
 			- AssertionError (save)
+			- CannotFindField (save)
+			- ValidationError (save)
 
 			Return:
 			success<bool> : Indicate if all the documents is success or not

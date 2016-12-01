@@ -116,6 +116,8 @@ class ForumEngine:
 			- AssertionError (extract_post, PostDataGenerator, PostSaver.batch_save, PrevPageExtractor)
 			- CannotFindPost (extract_post)
 			- IncorrectXPATHSyntax (extract_post, PrevPageExtractor)
+			- CannotFindField (PostSaver.batch_save)
+			- ValidationError (PostSaver.batch_save)
 		"""
 		print("[%s][debug] Extracting Post(s)" % self.name)
 		posts = self.extract_post(thread)
@@ -152,7 +154,8 @@ class ForumEngine:
 			- AssertionError (ForumEngineValidator, get_threads, get_thread_link, get_last_page, crawl_thread)
 			- CannotFindThread (get_threads)
 			- IncorrectXPATHSyntax (get_threads, get_thread_link, get_last_page, crawl_thread)
-
+			- CannotFindField (crawl_thread)
+			- ValidationError (crawl_thread)
 			This is the main function for ForumEngine crawler.
 		"""
 		assert saver is not None, "saver is not defined."

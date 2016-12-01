@@ -94,6 +94,10 @@ class Builder:
 		callback("[build][debug] Making new sentry.json")
 		writer = WriterFactory.get_writer(WriterFactory.SENTRY_CONFIG)
 		writer.write(location=Builder.BUILD_PATH)
+
+		callback("[build][debug] Making new monitor.json")
+		writer = WriterFactory.get_writer(WriterFactory.MONITOR_CONFIG)
+		writer.write(location=Builder.BUILD_PATH)
 		
 		callback("[build][debug] Completed!")
 

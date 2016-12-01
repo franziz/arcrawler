@@ -1,11 +1,13 @@
-from ..config.run    import RunConfig
-from ..config.route  import RouteConfig
-from ..config.sentry import SentryConfig
+from ..config.run     import RunConfig
+from ..config.route   import RouteConfig
+from ..config.sentry  import SentryConfig
+from ..config.monitor import MonitorConfig
 
 class ConfigFactory:
-	RUN    = 0
-	ROUTE  = 1
-	SENTRY = 2
+	RUN     = 0
+	ROUTE   = 1
+	SENTRY  = 2
+	MONITOR = 3
 
 	def __init__(self):
 		pass
@@ -23,3 +25,5 @@ class ConfigFactory:
 			return RouteConfig()
 		elif config_name == ConfigFactory.SENTRY:
 			return SentryConfig()
+		elif config_name == ConfigFactory.MONITOR:
+			return MonitorConfig()
