@@ -46,9 +46,9 @@ if __name__ == "__main__":
 		crawler_names = run_config.get("run")
 		section_name  = run_config.get("section")
 
-		monitor.capture_section_start(name=section_name.title())
+		# monitor.capture_section_start(name=section_name.title())
 		for crawler_name in crawler_names:
-			monitor.capture_crawler_start(name=crawler_name.title())
+			# monitor.capture_crawler_start(name=crawler_name.title())
 			name 	   = crawler_name.replace(" ","_")
 			name       = name.lower()
 			crawlers   = []
@@ -64,8 +64,8 @@ if __name__ == "__main__":
 			workers    = run_config.get("workers")
 			with Pool(workers) as pool:
 				pool.map(execute_worker, crawlers)
-			monitor.capture_crawler_stop(name=crawler_name.title())
-		monitor.capture_section_stop(name=section_name.title())
+			# monitor.capture_crawler_stop(name=crawler_name.title())
+		# monitor.capture_section_stop(name=section_name.title())
 
 		rnd = random.randint(60,360)
 		print(fmtstr("[run][debug] Sleeping %s seconds" % rnd, "yellow"))

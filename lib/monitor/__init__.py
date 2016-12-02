@@ -89,6 +89,7 @@ class Monitor:
 		""" Exceptions:
 			- AssertionError
 		"""
+		pass
 		
 
 

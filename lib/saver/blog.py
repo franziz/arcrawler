@@ -1,4 +1,5 @@
-from curtsies import fmtstr
+from curtsies  import fmtstr
+from ..monitor import Monitor
 import pymongo
 import bson.json_util
 import re
@@ -15,11 +16,11 @@ class BlogSaver:
 		"""
 		assert article is not None, "article is not defined."
 		
-		monitor_conn = pymongo.MongoClient("mongodb://mongo:27017/monitor")
-		monitor_db   = monitor_conn["monitor"]
-
-		conn = pymongo.MongoClient("mongodb://mongo:27017/blog_crawler")
-		db   = conn["blog_crawler"]
+		# monitor_conn = pymongo.MongoClient("mongodb://mongo:27017/monitor")
+		# monitor_db   = monitor_conn["monitor"]
+		monitor = Monitor()
+		conn    = pymongo.MongoClient("mongodb://mongo:27017/blog_crawler")
+		db      = conn["blog_crawler"]
 
 		# Ensuring index		
 		db.data.create_index([("permalink", pymongo.ASCENDING)], unique=True, background=True)
@@ -28,17 +29,18 @@ class BlogSaver:
 
 		try:
 			db.data.insert_one(article)
-			monitor_db.status.update(
-				{"crawler_name": re.compile(article["_crawled_by"], re.IGNORECASE)},
-				{"$set":{
-					"crawler_name": article["_crawled_by"].title(),
-					"last_insert_time": arrow.utcnow().datetime
-				}},
-				upsert=True
-			)
+			monitor.capture_insert_document(article["_crawled_by"])
+			# monitor_db.status.update(
+			# 	{"crawler_name": re.compile(article["_crawled_by"], re.IGNORECASE)},
+			# 	{"$set":{
+			# 		"crawler_name": article["_crawled_by"].title(),
+			# 		"last_insert_time": arrow.utcnow().datetime
+			# 	}},
+			# 	upsert=True
+			# )
 			print(fmtstr("[BlogSaver][success] Inserted One Document!"))
 		except pymongo.errors.DuplicateKeyError:
 			print(fmtstr("[BlogSaver][error] Duplicate Document!","red"))
 		finally:
 			conn.close()
-			monitor_conn.close()
+			# monitor_conn.close()

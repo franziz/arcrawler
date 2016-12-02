@@ -27,10 +27,10 @@ class PostSaver:
 		assert "content"                in document, "content is not defined."
 		assert len(document["content"]) > 0        , "content cannot be empty."
 
-		monitor = Monitor()
 
-		conn = pymongo.MongoClient("mongodb://%s" % self.db_address)
-		db   = conn[self.db_name]
+		monitor = Monitor()
+		conn    = pymongo.MongoClient("mongodb://%s" % self.db_address)
+		db      = conn[self.db_name]
 
 		# Ensuring Index
 		db.data.create_index([("permalink", pymongo.ASCENDING)], unique=True)
