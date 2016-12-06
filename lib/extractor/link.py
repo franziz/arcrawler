@@ -11,6 +11,7 @@ class ArticleLinkExtractor:
 		""" Exceptions
 			- AssertionError (LinkGenerator)
 			- IncorrectXPATHSyntax (XPATHParser)
+			- CannotFindArticleLink
 		"""
 		assert home  is not None, "home is not defined."
 		assert xpath is not None, "xpath is not defined."

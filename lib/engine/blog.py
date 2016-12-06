@@ -4,9 +4,11 @@ from ..factory.generator import GeneratorFactory
 from ..factory.validator import ValidatorFactory
 from ..exceptions        import ValidationError, CannotSetValue, NotSupported, ParseError
 from curtsies 			 import fmtstr
+import logging
 
 class BlogEngine:
 	def __init__(self, **kwargs):
+		self.logger 			  = logging.getLogger(__name__)
 		self.name 				  = kwargs.get("name",None)
 		self.country			  = kwargs.get("country", None)
 		self.category_link 		  = kwargs.get("category_link", None)
@@ -33,7 +35,7 @@ class BlogEngine:
 
 		extractor = ExtractorFactory.get_extractor(ExtractorFactory.ARTICLE_LINK)
 		articles  = extractor.extract(self.category_link, self.article_xpath, network_tools=self.network_tools)
-		print("[NewsEngine] Got %s articles" % len(articles))
+		print("[BlogsEngine] Got %s articles" % len(articles))
 		
 		for article_link in articles:
 			try:

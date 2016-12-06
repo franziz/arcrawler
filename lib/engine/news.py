@@ -4,9 +4,11 @@ from ..factory.generator import GeneratorFactory
 from ..factory.validator import ValidatorFactory
 from ..exceptions        import ValidationError, CannotSetValue, NotSupported, ParseError
 from curtsies 			 import fmtstr
+import logging
 
 class NewsEngine:
 	def __init__(self, **kwargs):
+		self.logger               = logging.getLogger(__name__)
 		self.name 				  = kwargs.get("name",None)
 		self.country			  = kwargs.get("country", None)
 		self.category_link 		  = kwargs.get("category_link", None)

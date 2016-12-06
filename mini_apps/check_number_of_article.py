@@ -31,7 +31,9 @@ def check(crawler_name):
 			 home = category_link,
 			xpath = crawler.ARTICLE_XPATH
 		)
-		
+		for article in articles:
+			if "//" in article:
+				raise Exception("URL error")
 		click.echo("Got %s article" % len(articles))
 if __name__ == "__main__":
 	check()
