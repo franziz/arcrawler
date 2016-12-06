@@ -1,13 +1,18 @@
+import copy
+
 class LinkGenerator:
 	def __init__(self):
 		pass
 
 	def generate(self, domain=None, link=None):
+		""" Exceptions
+			- AssertionError
+		"""
 		assert domain    is not None                      , "domain is not defined."
 		assert "http://" in domain or "https://" in domain, "domain should have http schema."
 		assert link      is not None                      , "link is not defined." 
 
-		generated_link = link
+		generated_link = copy.copy(link)
 		if "http://" not in link and "https://" not in link:
 			generated_link = "{domain}{link}".format(domain=domain, link=link)
 		if "s=" in generated_link:

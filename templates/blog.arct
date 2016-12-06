@@ -6,6 +6,10 @@ class Crawler:
 		pass
 
 	def crawl(self):
+		saver            = SaverFactory.get_saver(SaverFactory.BLOG)
+		saver.db_address = "{{template.DB_SERVER_ADDRESS}}"
+		saver.db_name    = "{{template.DB_SERVER_NAME}}"
+
 		engine = BlogEngine(
 			                name = "{{template.CRAWLER_NAME}}",
 			             country = "{{template.COUNTRY}}",
@@ -16,4 +20,4 @@ class Crawler:
 			   author_name_xpath = "{{template.AUTHOR_NAME_XPATH}}" ,
 			       content_xpath = "{{template.CONTENT_XPATH}}"
 		)
-		engine.crawl(saver=SaverFactory.get_saver(SaverFactory.BLOG))
+		engine.crawl(saver=saver)

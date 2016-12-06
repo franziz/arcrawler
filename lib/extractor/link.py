@@ -1,12 +1,18 @@
 from ..network_tools     import NetworkTools
 from ..factory.parser    import ParserFactory
 from ..factory.generator import GeneratorFactory
+from ..exceptions        import CannotFindArticleLink
 
 class ArticleLinkExtractor:
 	def __init__(self):
 		pass
 
 	def extract(self, home=None, xpath=None, **kwargs):
+		""" Exceptions
+			- AssertionError (LinkGenerator)
+			- IncorrectXPATHSyntax (XPATHParser)
+			- CannotFindArticleLink
+		"""
 		assert home  is not None, "home is not defined."
 		assert xpath is not None, "xpath is not defined."
 
@@ -19,4 +25,8 @@ class ArticleLinkExtractor:
 
 		generator = GeneratorFactory.get_generator(GeneratorFactory.LINK)
 		links     = [generator.generate(domain=domain, link=link) for link in links]
+
+		if len(links) == 0:
+			raise CannotFindArticleLink("Cannot find article link for %s" % home.encode("utf-8"))
+
 		return links

@@ -2,11 +2,13 @@ from ..network_tools     import NetworkTools
 from ..factory.extractor import ExtractorFactory
 from ..factory.generator import GeneratorFactory
 from ..factory.validator import ValidatorFactory
-from ..exceptions        import ValidationError, ParseError
+from ..exceptions        import ValidationError, CannotSetValue, NotSupported, ParseError
 from curtsies 			 import fmtstr
+import logging
 
 class NewsEngine:
 	def __init__(self, **kwargs):
+		self.logger               = logging.getLogger(__name__)
 		self.name 				  = kwargs.get("name",None)
 		self.country			  = kwargs.get("country", None)
 		self.category_link 		  = kwargs.get("category_link", None)
@@ -18,6 +20,11 @@ class NewsEngine:
 		self.network_tools        = kwargs.get("network_tools", NetworkTools(use_proxy=False))
 
 	def crawl(self, saver=None):
+		""" Exceptions:
+			- AssertionError (ArticleLinkExtractor, ArticleExtractor, PostDataGenerator, ArticleSaver)
+			- IncorrectXPATHSyntax (ArticleLinkExtractor, ArticleExtractor)
+			- CannotFindArticleLink (ArticleLinkExtractor)
+		"""
 		assert self.category_link        is not None, "category_link is not defined."
 		assert self.article_xpath        is not None, "article_xpath is not defined."
 		assert self.title_xpath          is not None, "title_xpath is not defined."
@@ -49,6 +56,10 @@ class NewsEngine:
 
 				saver.save(article)
 			except ValidationError as ex:
-				print(fmtstr("[NewsEngine][error] %s\nPlease go to: %s" % (ex, article_link), "red"))
+				self.logger.error(str(ex), exc_info=True)
+			except CannotSetValue as ex:
+				self.logger.warning(str(ex), exc_info=True)
+			except NotSupported as ex:
+				self.logger.error(str(ex), exc_info=True)
 			except ParseError as ex:
-				print(fmtstr("[NewsEngine][error] %s" % ex, "red"))
+				self.logger.error(str(ex), exc_info=True)

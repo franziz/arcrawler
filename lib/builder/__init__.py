@@ -71,6 +71,7 @@ class Builder:
 		explorer.copy("obj", target_location=Builder.BUILD_PATH)
 		explorer.copy("cleanser", target_location=Builder.BUILD_PATH)
 		explorer.copy("parser", target_location=Builder.BUILD_PATH)
+		explorer.copy("logger", target_location=Builder.BUILD_PATH)
 		explorer.copy("saver", target_location=Builder.BUILD_PATH)
 		explorer.copy("monitor", target_location=Builder.BUILD_PATH)
 		explorer.copy("template", target_location=Builder.BUILD_PATH)
@@ -89,6 +90,15 @@ class Builder:
 		callback("[build][debug] Making new route.json (%s)" % section.name)
 		writer = WriterFactory.get_writer(WriterFactory.ROUTE_CONFIG)
 		writer.write(route=section.name, location=Builder.BUILD_PATH)
+
+		callback("[build][debug] Making new sentry.json")
+		writer = WriterFactory.get_writer(WriterFactory.SENTRY_CONFIG)
+		writer.write(location=Builder.BUILD_PATH)
+
+		callback("[build][debug] Making new monitor.json")
+		writer = WriterFactory.get_writer(WriterFactory.MONITOR_CONFIG)
+		writer.write(location=Builder.BUILD_PATH)
+		
 		callback("[build][debug] Completed!")
 
 	@classmethod

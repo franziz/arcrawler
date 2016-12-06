@@ -1,6 +1,5 @@
 from ..factory.parser import ParserFactory
 from ..network_tools  import NetworkTools
-from ..exceptions     import CannotSetValue
 from ..obj.field      import Field
 from curtsies         import fmtstr
 import copy
@@ -10,6 +9,13 @@ class ArticleExtractor:
 		pass
 
 	def extract(self, **kwargs):
+		""" Exceptions
+			- AssertionError (Field)
+			- CannotSetValue (Field)
+			- NotSupported (Field)
+			- ParseError (Field)
+			- IncorrectXPATHSyntax (XPATHParser)
+		"""
 		article 			 = kwargs.get("article", None)
 		title_xpath  		 = kwargs.get("title_xpath", None)
 		published_date_xpath = kwargs.get("published_date_xpath", None)
@@ -27,59 +33,44 @@ class ArticleExtractor:
 		article     = network_tools.parse(article_url)
 		parser      = ParserFactory.get_parser(ParserFactory.XPATH)
 
-		permalink = Field()
-		try:
-			permalink.name      = "permalink"
-			permalink.single    = True
-			permalink.concat    = True
-			permalink.data_type = "string"
-			permalink.value     = article_url
-		except CannotSetValue as ex:
-			print(fmtstr("[ArticleExtractor][warning] %s" % ex, "yellow"))
+		permalink           = Field()
+		permalink.name      = "permalink"
+		permalink.single    = True
+		permalink.concat    = True
+		permalink.data_type = "string"
+		permalink.value     = article_url
 
-		title = Field()
-		try:
-			title.name      = "title"
-			title.single    = True
-			title.concat    = True
-			title.data_type = "string"
-			title.xpath     = title_xpath
-			title.value     = parser.parse(article, title_xpath)
-		except CannotSetValue as ex:
-			print(fmtstr("[ArticleExtractor][warning] %s" % ex, "yellow"))
+		title           = Field()
+		title.name      = "title"
+		title.single    = True
+		title.concat    = True
+		title.data_type = "string"
+		title.xpath     = title_xpath
+		title.value     = parser.parse(article, title_xpath)
 
-		published_date = Field()
-		try:
-			published_date.name      = "published_date"
-			published_date.single    = True
-			published_date.concat    = True
-			published_date.data_type = "date"
-			published_date.xpath     = published_date_xpath
-			published_date.value     = parser.parse(article, published_date_xpath)
-		except CannotSetValue as ex:
-			print(fmtstr("[ArticleExtractor][warning] %s" % ex, "yellow"))
+		published_date 		     = Field()
+		published_date.name      = "published_date"
+		published_date.single    = True
+		published_date.concat    = True
+		published_date.data_type = "date"
+		published_date.xpath     = published_date_xpath
+		published_date.value     = parser.parse(article, published_date_xpath)
 
-		author_name = Field()
-		try:			
-			author_name.name      = "author_name"
-			author_name.single    = True
-			author_name.concat    = True
-			author_name.data_type = "string"
-			author_name.xpath     = author_name_xpath
-			author_name.value     = parser.parse(article, author_name_xpath)
-		except CannotSetValue as ex:
-			print(fmtstr("[ArticleExtractor][warning] %s" % ex, "yellow"))
+		author_name 		  = Field()
+		author_name.name      = "author_name"
+		author_name.single    = True
+		author_name.concat    = True
+		author_name.data_type = "string"
+		author_name.xpath     = author_name_xpath
+		author_name.value     = parser.parse(article, author_name_xpath)
 
-		content = Field()
-		try:
-			content.name      = "content"
-			content.single    = True
-			content.concat    = True
-			content.data_type = "string"
-			content.xpath     = content_xpath
-			content.value     = parser.parse(article, content_xpath)
-		except CannotSetValue as ex:
-			print(fmtstr("[ArticleExtractor][warning] %s" % ex, "yellow"))
+		content           = Field()
+		content.name      = "content"
+		content.single    = True
+		content.concat    = True
+		content.data_type = "string"
+		content.xpath     = content_xpath
+		content.value     = parser.parse(article, content_xpath)
 
 
 		return {

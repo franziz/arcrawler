@@ -6,6 +6,9 @@ class FieldsParser:
 		self.domain = kwargs.get("domain", None)
 
 	def parse(self, fields=None):
+		""" Exceptions
+			- AssertionError
+		"""
 		assert fields       is not None, "fields is not defined."
 		assert type(fields) is list    , "incorrect fields data type."
 

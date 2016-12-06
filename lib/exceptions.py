@@ -58,7 +58,7 @@ class CannotFindCrawler(Exception):
 	def __str__(self):
 		return repr(self.value)
 
-class CannotSetValue(Exception):
+class CannotFindArticleLink(Exception):
 	def __init__(self, value):
 		self.value = value
 	def __str__(self):
@@ -71,6 +71,18 @@ class CannotFindPost(Exception):
 		return repr(self.value)
 
 class CannotFindThread(Exception):
+	def __init__(self, value):
+		self.value = value
+	def __str__(self):
+		return repr(self.value)
+
+class CannotFindPrevLink(Exception):
+	def __init__(self, value):
+		self.value = value
+	def __str__(self):
+		return repr(self.value)
+
+class CannotSetValue(Exception):
 	def __init__(self, value):
 		self.value = value
 	def __str__(self):

@@ -2,6 +2,7 @@ from lib.network_tools import NetworkTools
 from lib.engine.forum  import ForumEngine
 from lib.factory.saver import SaverFactory
 
+
 class Crawler:
 	def __init__(self):
 		pass

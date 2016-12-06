@@ -1,3 +1,37 @@
+from lib.network_tools import NetworkTools
+from lib.engine.forum  import ForumEngine
+from lib.factory.saver import SaverFactory
+from lib.logger        import Logger
+
+class Crawler:
+	def __init__(self):
+		Logger()
+
+	def crawl(self):
+		saver            = SaverFactory.get_saver(SaverFactory.POST)
+		saver.db_address = "mongo:27017"
+		saver.db_name    = "pakwheels"
+		
+		engine = ForumEngine(
+			             name = "Pakwheels Crawler",
+			    network_tools = NetworkTools(use_proxy=False),
+			    link_to_crawl = "http://www.pakwheels.com/forums/corolla/",
+			          country = "PAK",
+			     thread_xpath = "//ol//li[re:test(@id,'thread*')]",
+			thread_link_xpath = ".//a[@class='title']/@href",
+			  last_page_xpath = "//span[@class='first_last']/a/@href",
+			       prev_xpath = "//span[@class='prev_next']/a[@rel='prev']/@href",
+			       post_xpath = "//ol//li[re:test(@id,'post*')]",
+			           fields = [{'published_date': {'data_type': 'date', 'concat': False, 'xpath': "concat(substring-before(substring-after(substring-after(concat(.//span[@class='date']/text(),' ', .//span[@class='time']/text()),'-'),'-'),' '),'/',substring-before(substring-after(concat(.//span[@class='date']/text(),' ', .//span[@class='time']/text()),'-'),'-'),'/',substring-before(substring-after(concat(.//span[@class='date']/text(),' ', .//span[@class='time']/text()),'-'),'-'),' ',substring-after(substring-after(substring-after(concat(.//span[@class='date']/text(),' ', .//span[@class='time']/text()),'-'),'-'),' '))", 'single': True}}, {'permalink': {'data_type': 'url', 'concat': False, 'xpath': ".//div[@class='posthead']//span[@class='nodecontrols']/a[@class='postcounter']/@href", 'single': True}}, {'author_name': {'data_type': 'string', 'concat': False, 'xpath': "normalize-space(.//a[re:test(@class,'username*')]//strong/text())", 'single': True}}, {'content': {'data_type': 'string', 'concat': True, 'xpath': ".//div[@class='content']//div[re:test(@id,'post_*')]//text()", 'single': True}}, {'title': {'data_type': 'string', 'concat': True, 'xpath': "//div[@class='pagetitle']//span[@class='threadtitle']//text()", 'single': True}}]
+		)
+		engine.crawl(saver=saver)
+
+if __name__ == "__main__":
+	crawler = Crawler()
+	crawler.crawl()
+
+
+
 # from lib.tester.factory import TesterFactory
 # from curtsies		    import fmtstr
 

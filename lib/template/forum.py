@@ -1,4 +1,4 @@
 class ForumTemplate:
-	TYPE = "Forum"
+	TYPE = "Forums"
 
 	
