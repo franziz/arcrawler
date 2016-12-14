@@ -2,6 +2,7 @@ from ..network_tools     import NetworkTools
 from ..factory.parser    import ParserFactory
 from ..factory.generator import GeneratorFactory
 from ..exceptions        import CannotFindArticleLink
+import copy
 
 class ArticleLinkExtractor:
 	def __init__(self):
@@ -22,6 +23,9 @@ class ArticleLinkExtractor:
 
 		parser = ParserFactory.get_parser(ParserFactory.XPATH)
 		links  = parser.parse(page, xpath)
+
+		if type(links) is not list:
+			links = copy.deepcopy([links])
 
 		generator = GeneratorFactory.get_generator(GeneratorFactory.LINK)
 		links     = [generator.generate(domain=domain, link=link) for link in links]
