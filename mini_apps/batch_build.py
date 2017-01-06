@@ -24,7 +24,9 @@ def run(config):
 	for config_section in config_sections:
 		selected_section = [section for section in sections if section.name == config_section]
 		selected_sections.extend(selected_section)
-
+		if len(selected_section) == 0:
+			print("Not found %s" % (config_section))
+	
 	assert len(config_sections) == len(selected_sections), "Cannot find one or some sections inside your config"
 	deployer        = Deployer()
 	failed_sections = []
