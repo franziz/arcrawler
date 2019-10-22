@@ -24,7 +24,7 @@ newspaper3k==0.1.7
 nltk==3.2.1
 paramiko==2.0.2
 pika==0.10.0
-Pillow==3.2.0
+Pillow==6.2.0
 pyasn1==0.1.9
 pycountry==1.20
 pycparser==2.14
